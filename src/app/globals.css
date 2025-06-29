@@ -24,3 +24,83 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+.switch {
+  display: flex;
+  justify-content: center;
+}
+
+.switch__wrapper {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 32px;
+  background: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  margin-left: 1rem;
+}
+
+.switch__wrapper input {
+  display: none;
+}
+
+.switch__wrapper input:checked + .switch__slider::before {
+  transform: translateX(40px);
+}
+
+.switch__wrapper input:checked ~ div::after {
+  color: #ffffff;
+}
+.switch__wrapper input:checked ~ div::before {
+  color: #888;
+}
+
+.switch label div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.switch div::before {
+  content: "TH";
+  color: #ffffff;
+}
+
+.switch div::after {
+  content: "EN";
+  color: #888;
+}
+
+.switch__slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+  border-radius: 16px;
+}
+
+.switch__slider::before {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 32px;
+  left: -1px;
+  bottom: -1px;
+  background-color: #4eaae0;
+  transition: all 0.3s ease;
+  border-radius: 16px;
+}

@@ -1,6 +1,6 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
+"use client";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -23,7 +23,8 @@ export default function Home() {
               Find your dream home in Phuket
             </h1>
             <p className="text-lg md:text-xl  mb-6">
-              Explore our exclusive collection of luxury properties in Phuket's most sought-after locations.
+              Explore our exclusive collection of luxury properties in
+              PhuketRuby&quot;s Real Estate Phukets most sought-after locations.
             </p>
             <div className="w-full max-w-xl flex">
               <input
@@ -59,8 +60,12 @@ export default function Home() {
                   />
                 </div>
                 <div className="p-4 flex-grow">
-                  <h3 className="font-bold text-lg mb-2 text-gray-800">Luxury Villa in Kamala</h3>
-                  <p className="text-gray-600 text-sm">4 Bedrooms | 4 Bathrooms | Private Pool</p>
+                  <h3 className="font-bold text-lg mb-2 text-gray-800">
+                    Luxury Villa in Kamala
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    4 Bedrooms | 4 Bathrooms | Private Pool
+                  </p>
                 </div>
               </div>
             </Link>
@@ -76,8 +81,12 @@ export default function Home() {
                 />
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-lg mb-2 text-gray-800">Beachfront Condo in Patong</h3>
-                <p className="text-gray-600 text-sm">2 Bedrooms | 2 Bathrooms | Ocean View</p>
+                <h3 className="font-bold text-lg mb-2 text-gray-800">
+                  Beachfront Condo in Patong
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  2 Bedrooms | 2 Bathrooms | Ocean View
+                </p>
               </div>
             </div>
 
@@ -92,8 +101,12 @@ export default function Home() {
                 />
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-lg mb-2 text-gray-800">Modern Apartment in Surin</h3>
-                <p className="text-gray-600 text-sm">1 Bedroom | 1 Bathroom | City Center</p>
+                <h3 className="font-bold text-lg mb-2 text-gray-800">
+                  Modern Apartment in Surin
+                </h3>
+                <p className="text-gray-600 text-sm">
+                  1 Bedroom | 1 Bathroom | City Center
+                </p>
               </div>
             </div>
           </div>

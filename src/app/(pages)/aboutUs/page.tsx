@@ -20,7 +20,7 @@ export default function AboutPage() {
           {/* Overlay Content */}
           <div className="absolute inset-0 flex flex-col justify-end items-start text-white text-left pl-8 md:pl-16 pr-4 pb-10">
             <h1 className="text-3xl md:text-5xl font-bold mb-4">
-              Your Gateway to Phuket&quot;;s Finest Properties
+              Your Gateway to Phuket&quot;s Finest Properties
             </h1>
             <p className="text-lg md:text-xl mb-6">
               Ruby Real Estate is the premier agency for luxury properties in

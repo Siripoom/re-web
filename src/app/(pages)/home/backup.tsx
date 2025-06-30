@@ -1,5 +1,5 @@
-'use client';
-import Image from 'next/image';
+"use client";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -18,9 +18,12 @@ export default function Home() {
         </div>
 
         <div className="relative z-10">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Find your dream home in Phuket</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            Find your dream home in Phuket
+          </h1>
           <p className="text-lg mb-8 max-w-2xl mx-auto">
-            Explore our exclusive collection of luxury properties in Phuket's most sought-after locations.
+            Explore our exclusive collection of luxury properties in
+            Phuket&quot;s most sought-after locations.
           </p>
           <div className="flex justify-center">
             <input
@@ -36,8 +39,12 @@ export default function Home() {
       </div>
 
       {/* Featured Properties - เปลี่ยนเป็นสีขาวทั้งหมด */}
-      <div className="py-12 px-4 md:px-20 bg-white"> {/* เพิ่ม bg-white ที่ container หลัก */}
-        <h2 className="text-2xl font-bold mb-8 text-center text-gray-800">Featured Properties</h2>
+      <div className="py-12 px-4 md:px-20 bg-white">
+        {" "}
+        {/* เพิ่ม bg-white ที่ container หลัก */}
+        <h2 className="text-2xl font-bold mb-8 text-center text-gray-800">
+          Featured Properties
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Property 1 */}
           <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -50,8 +57,12 @@ export default function Home() {
               />
             </div>
             <div className="p-4">
-              <h3 className="font-bold text-lg mb-2 text-gray-800">Luxury Villa in Kamala</h3>
-              <p className="text-gray-600">5 Bedrooms | 6 Bathrooms | Private Pool</p>
+              <h3 className="font-bold text-lg mb-2 text-gray-800">
+                Luxury Villa in Kamala
+              </h3>
+              <p className="text-gray-600">
+                5 Bedrooms | 6 Bathrooms | Private Pool
+              </p>
             </div>
           </div>
 
@@ -66,8 +77,12 @@ export default function Home() {
               />
             </div>
             <div className="p-4">
-              <h3 className="font-bold text-lg mb-2 text-gray-800">Beachfront Condo in Patong</h3>
-              <p className="text-gray-600">2 Bedrooms | 2 Bathrooms | Ocean View</p>
+              <h3 className="font-bold text-lg mb-2 text-gray-800">
+                Beachfront Condo in Patong
+              </h3>
+              <p className="text-gray-600">
+                2 Bedrooms | 2 Bathrooms | Ocean View
+              </p>
             </div>
           </div>
 
@@ -82,8 +97,12 @@ export default function Home() {
               />
             </div>
             <div className="p-4">
-              <h3 className="font-bold text-lg mb-2 text-gray-800">Modern Apartment in Surin</h3>
-              <p className="text-gray-600">1 Bedroom | 1 Bathroom | City Center</p>
+              <h3 className="font-bold text-lg mb-2 text-gray-800">
+                Modern Apartment in Surin
+              </h3>
+              <p className="text-gray-600">
+                1 Bedroom | 1 Bathroom | City Center
+              </p>
             </div>
           </div>
         </div>

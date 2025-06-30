@@ -1,16 +1,16 @@
-'use client';
-import Image from 'next/image';
-import Link from 'next/link';
+"use client";
+import Image from "next/image";
+// import Link from 'next/link';
 
 export default function PropertyDetails() {
   return (
     <div className="bg-white min-h-screen">
-
-
       {/* Property Content */}
       <div className="max-w-6xl mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Luxury Villa in Kamala</h1>
-        
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">
+          Luxury Villa in Kamala
+        </h1>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Image */}
           <div className="lg:col-span-2">
@@ -27,8 +27,10 @@ export default function PropertyDetails() {
           {/* Property Details */}
           <div className="lg:col-span-1">
             <div className="bg-gray-50 p-6 rounded-xl shadow-sm">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Property Details</h2>
-              
+              <h2 className="text-xl font-semibold mb-4 text-gray-800">
+                Property Details
+              </h2>
+
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <p className="text-sm text-gray-500">Bedrooms</p>
@@ -48,7 +50,9 @@ export default function PropertyDetails() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Pool</p>
-                  <p className="font-medium text-gray-400">Private Infinity Pool</p>
+                  <p className="font-medium text-gray-400">
+                    Private Infinity Pool
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">View</p>
@@ -65,34 +69,66 @@ export default function PropertyDetails() {
 
         {/* Description */}
         <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Description</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            Description
+          </h2>
           <p className="text-gray-700 mb-6">
-            This stunning villa offers breathtaking ocean views and luxurious amenities, perfect for a serene retreat or a family vacation. Located in the exclusive Kamala area, it provides privacy and easy access to the beach.
+            This stunning villa offers breathtaking ocean views and luxurious
+            amenities, perfect for a serene retreat or a family vacation.
+            Located in the exclusive Kamala area, it provides privacy and easy
+            access to the beach.
           </p>
         </div>
 
         {/* Amenities */}
         <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Amenities</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            Amenities
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div className="flex items-center">
-              <input type="checkbox" checked readOnly className="mr-2 h-5 w-5 text-blue-600 rounded" />
+              <input
+                type="checkbox"
+                checked
+                readOnly
+                className="mr-2 h-5 w-5 text-blue-600 rounded"
+              />
               <span className="text-gray-700">Fully Equipped Kitchen</span>
             </div>
             <div className="flex items-center">
-              <input type="checkbox" checked readOnly className="mr-2 h-5 w-5 text-blue-600 rounded" />
+              <input
+                type="checkbox"
+                checked
+                readOnly
+                className="mr-2 h-5 w-5 text-blue-600 rounded"
+              />
               <span className="text-gray-700">Air Conditioning</span>
             </div>
             <div className="flex items-center">
-              <input type="checkbox" checked readOnly className="mr-2 h-5 w-5 text-blue-600 rounded" />
+              <input
+                type="checkbox"
+                checked
+                readOnly
+                className="mr-2 h-5 w-5 text-blue-600 rounded"
+              />
               <span className="text-gray-700">High-Speed Internet</span>
             </div>
             <div className="flex items-center">
-              <input type="checkbox" checked readOnly className="mr-2 h-5 w-5 text-blue-600 rounded" />
+              <input
+                type="checkbox"
+                checked
+                readOnly
+                className="mr-2 h-5 w-5 text-blue-600 rounded"
+              />
               <span className="text-gray-700">Outdoor Dining Area</span>
             </div>
             <div className="flex items-center">
-              <input type="checkbox" checked readOnly className="mr-2 h-5 w-5 text-blue-600 rounded" />
+              <input
+                type="checkbox"
+                checked
+                readOnly
+                className="mr-2 h-5 w-5 text-blue-600 rounded"
+              />
               <span className="text-gray-700">24/7 Security</span>
             </div>
           </div>
@@ -100,9 +136,12 @@ export default function PropertyDetails() {
 
         {/* Contact Information */}
         <div className="mt-12 bg-gray-50 p-6 rounded-xl shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Contact Information</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">
+            Contact Information
+          </h2>
           <p className="text-gray-700 mb-4">
-            For inquiries and viewings, please contact our agent, Sophia Carter, at +66 76 555 1234 or email sophia.carter@rubyrealestate.com.
+            For inquiries and viewings, please contact our agent, Sophia Carter,
+            at +66 76 555 1234 or email sophia.carter@rubyrealestate.com.
           </p>
           <button className="bg-blue-700 text-white py-3 px-6 rounded-lg hover:bg-blue-800 font-medium">
             Contact Agent

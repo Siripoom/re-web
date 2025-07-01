@@ -1,5 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
+/* Google Fonts Import */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -24,7 +26,6 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
 
 .switch {
   display: flex;
@@ -103,4 +104,265 @@ body {
   background-color: #4eaae0;
   transition: all 0.3s ease;
   border-radius: 16px;
+}
+
+/* src/app/globals.css - อัปเดต CSS */
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Font Variables */
+  --font-prompt: "Prompt", sans-serif;
+  --font-kanit: "Kanit", sans-serif;
+  --font-sarabun: "Sarabun", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-prompt);
+  --font-heading: var(--font-kanit);
+  --font-body: var(--font-prompt);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Base Styles */
+* {
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-prompt);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Typography Classes */
+.font-prompt {
+  font-family: var(--font-prompt);
+}
+
+.font-kanit {
+  font-family: var(--font-kanit);
+}
+
+.font-sarabun {
+  font-family: var(--font-sarabun);
+}
+
+.font-inter {
+  font-family: var(--font-inter);
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.ant-typography-h1,
+.ant-typography-h2,
+.ant-typography-h3,
+.ant-typography-h4,
+.ant-typography-h5 {
+  font-family: var(--font-kanit) !important;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Body Text */
+p,
+span,
+div,
+.ant-typography,
+.ant-input,
+.ant-select,
+.ant-button,
+.ant-table,
+.ant-card,
+.ant-menu {
+  font-family: var(--font-prompt) !important;
+}
+
+/* Specific Ant Design Overrides */
+.ant-btn {
+  font-family: var(--font-prompt) !important;
+  font-weight: 500;
+}
+
+.ant-menu-item,
+.ant-menu-submenu-title {
+  font-family: var(--font-prompt) !important;
+  font-weight: 500;
+}
+
+.ant-table-thead > tr > th {
+  font-family: var(--font-kanit) !important;
+  font-weight: 600;
+}
+
+.ant-card-head-title {
+  font-family: var(--font-kanit) !important;
+  font-weight: 600;
+}
+
+.ant-statistic-title {
+  font-family: var(--font-prompt) !important;
+  font-weight: 500;
+}
+
+.ant-statistic-content-value {
+  font-family: var(--font-kanit) !important;
+  font-weight: 700;
+}
+
+/* Form Elements */
+.ant-form-item-label > label {
+  font-family: var(--font-prompt) !important;
+  font-weight: 500;
+}
+
+.ant-input,
+.ant-input-number,
+.ant-select-selector,
+.ant-picker,
+.ant-input-affix-wrapper {
+  font-family: var(--font-prompt) !important;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1,
+  .ant-typography-h1 {
+    font-size: 1.75rem !important;
+  }
+
+  h2,
+  .ant-typography-h2 {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Language Switch */
+.switch {
+  display: flex;
+  justify-content: center;
+}
+
+.switch__wrapper {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 32px;
+  background: #f1f1f1;
+  border: 1px solid #ccc;
+  border-radius: 16px;
+  margin-left: 1rem;
+}
+
+.switch__wrapper input {
+  display: none;
+}
+
+.switch__wrapper input:checked + .switch__slider::before {
+  transform: translateX(40px);
+}
+
+.switch__wrapper input:checked ~ div::after {
+  color: #ffffff;
+}
+.switch__wrapper input:checked ~ div::before {
+  color: #888;
+}
+
+.switch label div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  font-weight: 600;
+  font-size: 14px;
+  pointer-events: none;
+  font-family: var(--font-prompt);
+}
+
+.switch div::before {
+  content: "TH";
+  color: #ffffff;
+}
+
+.switch div::after {
+  content: "EN";
+  color: #888;
+}
+
+.switch__slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.3s;
+  border-radius: 16px;
+}
+
+.switch__slider::before {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 32px;
+  left: -1px;
+  bottom: -1px;
+  background-color: #4eaae0;
+  transition: all 0.3s ease;
+  border-radius: 16px;
+}
+
+/* Utility Classes */
+.text-thai {
+  font-family: var(--font-prompt) !important;
+}
+
+.text-english {
+  font-family: var(--font-inter) !important;
+}
+
+.heading-thai {
+  font-family: var(--font-kanit) !important;
+}
+
+/* Custom Spacing for Thai Text */
+.thai-text {
+  letter-spacing: 0.01em;
+  word-spacing: 0.05em;
+}
+
+/* Number formatting for Thai */
+.thai-number {
+  font-family: var(--font-kanit) !important;
+  font-feature-settings: "tnum" 1;
 }

@@ -1,29 +1,46 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import Navbar from '../components/์navbar/page';
-import Footer from '../components/footer/page';
+// src/app/layout.tsx
+"use client";
 
-const inter = Inter({ subsets: ['latin'] });
+// import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: 'Ruby Real Estate',
-  description: 'Find your dream home in Phuket',
-};
+import "./globals.css";
+import { Prompt, Inter, Kanit } from "next/font/google";
+
+import LayoutWrapper from "../components/LayoutWrapper";
+
+// Google Fonts สำหรับภาษาไทย-อังกฤษ
+const prompt = Prompt({
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-prompt",
+  display: "swap",
+});
+
+const kanit = Kanit({
+  subsets: ["thai", "latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-kanit",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col font-sans bg-gray-50`}>
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+    <html
+      lang="en"
+      className={`${prompt.variable} ${kanit.variable} ${inter.variable}`}
+    >
+      <body className={`${prompt.className} antialiased`}>
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );

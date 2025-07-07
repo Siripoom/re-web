@@ -1,4 +1,6 @@
 export interface Property {
+  amenities: any;
+  area: any;
   id: string;
   name: string;
   address: string;

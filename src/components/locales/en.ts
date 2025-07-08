@@ -14,7 +14,7 @@ const en = {
   searchbtn: "Search",
   location: "Location",
   propertyType: "Property Type",
-  propertyFormat: "Property Format",
+  propertyFormat: "Sell or Rent",
   priceRange: "Price Range (THB)",
   noMatch: "No properties match your search criteria",
   tryAdjustFilters: "Try adjusting your filters or search terms",
@@ -26,9 +26,9 @@ const en = {
 
   // About Page
   aboutHeroTitle: `Your Gateway to Phuket's Finest Properties`,
-  aboutHeroDesc: `Ruby Real Estate is the premier agency for luxury properties in Phuket. With a deep understanding of the local market and a commitment to exceptional service, we help clients find their dream homes and investment opportunities.`,
+  aboutHeroDesc: `Ruby's Real Estate is the premier agency for luxury properties in Phuket. With a deep understanding of the local market and a commitment to exceptional service, we help clients find their dream homes and investment opportunities.`,
   aboutMissionTitle: "Our Mission",
-  aboutMission1: "At Ruby Real Estate, our mission is to provide unparalleled service and expertise in the Phuket luxury real estate market.",
+  aboutMission1: "At Ruby's Real Estate, our mission is to provide unparalleled service and expertise in the Phuket luxury real estate market.",
   aboutMission2: "We strive to exceed client expectations by offering personalized guidance, in-depth market knowledge, and a curated selection of the finest properties.",
   aboutMission3: "Our goal is to make the process of buying, selling, or renting luxury real estate seamless and rewarding.",
   aboutTeamTitle: "Meet Our Team",

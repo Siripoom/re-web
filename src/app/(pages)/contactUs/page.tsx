@@ -111,7 +111,7 @@ export default function ContactPage() {
         <div className="bg-white py-10 px-4">
           <div className="max-w-6xl mx-auto rounded-xl overflow-hidden shadow-md relative h-[500px] hero-image">
             <Image
-              src="/header1.jpeg"
+              src="/bg.jpg"
               alt="Phuket Beach"
               fill
               className="object-cover"
@@ -153,9 +153,9 @@ export default function ContactPage() {
               <Card className="contact-info-card h-full">
                 <Title level={4}>{t("officeAddressTitle")}</Title>
                 <Paragraph>
-                  123/45 Ruby Tower, Patong Beach Road
-                  <br />
-                  Kathu, Phuket 83150, Thailand
+                {language === "th"
+                    ? "111/151 หมู่ 4 ศุภาลัย เบลล่า ตำบลเกาะแก้ว  อำเภอเมือง จังหวัดภูเก็ต 83000"
+                    : "111/151 Moo 4 Supalai bella  Kohkeaw Muang  Phuket 83000"}
                 </Paragraph>
               </Card>
             </Col>
@@ -165,7 +165,7 @@ export default function ContactPage() {
               <Card className="contact-info-card h-full">
                 <Title level={4}>{t("contactDetailsTitle")}</Title>
                 <ul className="text-gray-800 space-y-2">
-                  <li>📞 093-781-2945 , 083-542-2358</li>
+                  <li>📞 093-781-2945 , 087-276-1225</li>
                   <li>✉️ rubyagent7@gmail.com</li>
                   <li>🕒 {t("officeHours")}: 09:00 - 18:00 (Mon-Sat)</li>
                 </ul>

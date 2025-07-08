@@ -23,8 +23,7 @@ import type { MenuProps } from "antd";
 import { useLanguage } from "../contexts/LanguageContext";
 import en from "../locales/en";
 import th from "../locales/th";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import image from "../../../public/logo.png";
+
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -38,7 +37,6 @@ const Navbar: React.FC = () => {
   const isMobile = !screens.md;
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // ✅ ป้องกัน hydration mismatch
   const [hasMounted, setHasMounted] = useState(false);
   useEffect(() => {
     setHasMounted(true);
@@ -110,7 +108,7 @@ const Navbar: React.FC = () => {
     <>
       <Header
         style={{
-          background: "#fff",
+          background: "#721716",
           padding: "0 24px",
           display: "flex",
           justifyContent: "space-between",
@@ -132,7 +130,7 @@ const Navbar: React.FC = () => {
           )}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <img
-              src="/logo.png"
+              src="/logo2.jpg"
               alt="Logo"
               style={{
                 width: "62px",
@@ -143,7 +141,7 @@ const Navbar: React.FC = () => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
             />
-            <Text strong style={{ fontSize: "20px", color: "black" }}>
+            <Text strong style={{ fontSize: "20px", color: "white" }}>
               Ruby&apos;s Real Estate
             </Text>
           </div>
@@ -152,24 +150,24 @@ const Navbar: React.FC = () => {
         {/* Main Menu */}
         {!isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <Link href="/home" style={{ color: "black", fontWeight: 500 }}>
+            <Link href="/home" style={{ color: "white", fontWeight: 500 }}>
               {t("home")}
             </Link>
-            <Link href="/product" style={{ color: "black", fontWeight: 500 }}>
+            <Link href="/product" style={{ color: "white", fontWeight: 500 }}>
               {t("product")}
             </Link>
-            <Link href="/aboutUs" style={{ color: "black", fontWeight: 500 }}>
+            <Link href="/aboutUs" style={{ color: "white", fontWeight: 500 }}>
               {t("aboutUs")}
             </Link>
-            <Link href="/contactUs" style={{ color: "black", fontWeight: 500 }}>
+            <Link href="/contactUs" style={{ color: "white", fontWeight: 500 }}>
               {t("contactUs")}
             </Link>
 
             <Space>
-              <GlobalOutlined style={{ color: "#d4af37" }} />
+              <GlobalOutlined style={{ color: "#ffff" }} />
               <Switch
-                checkedChildren="TH"
-                unCheckedChildren="EN"
+                checkedChildren={<span style={{ color: "white" }}>TH</span>}
+                unCheckedChildren={<span style={{ color: "black" }}>EN</span>}
                 checked={language === "th"}
                 onChange={handleLanguageToggle}
                 style={{
@@ -191,18 +189,28 @@ const Navbar: React.FC = () => {
       >
         {navigationLinks}
       </Drawer>
-
       <style jsx global>{`
+        .gold-switch.ant-switch .ant-switch-inner {
+          color: black !important;
+        }
+
+        .gold-switch.ant-switch-checked .ant-switch-inner {
+          color: white !important;
+        }
+
         .gold-switch.ant-switch-checked {
           background-color: #d4af37 !important;
         }
+
         .gold-switch.ant-switch-checked:hover:not(.ant-switch-disabled) {
           background-color: #c9a227 !important;
         }
+
         .gold-switch.ant-switch:focus {
           box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
       `}</style>
+
     </>
   );
 };

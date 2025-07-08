@@ -39,7 +39,7 @@ export default function Home() {
           }`}
         >
           <Image
-            src="/header1.jpeg"
+            src="/bg.jpg"
             alt="Phuket Beach"
             fill
             className="object-cover"
@@ -57,8 +57,8 @@ export default function Home() {
                     className="!text-white !text-4xl md:!text-5xl"
                   >
                     {language === "th"
-                      ? "ค้นหาบ้านในฝันของคุณที่ภูเก็ต"
-                      : "Find your dream home in Phuket"}
+                      ? "ค้นหาวิลล่าในฝันของคุณที่ภูเก็ต"
+                      : "Find your dream villa in Phuket"}
                   </Title>
                 </div>
 

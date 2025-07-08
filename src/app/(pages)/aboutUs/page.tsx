@@ -167,7 +167,7 @@ export default function AboutPage() {
         <div className="bg-white py-10 px-4">
           <div className="max-w-6xl mx-auto rounded-xl overflow-hidden shadow-md relative h-[500px] hero-image">
             <Image
-              src="/header1.jpeg"
+              src="/bg.jpg"
               alt="Phuket Beach"
               fill
               className="object-cover"

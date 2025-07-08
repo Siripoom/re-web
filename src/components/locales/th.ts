@@ -14,7 +14,7 @@ const th = {
   searchbtn: "ค้นหา",
   location: "ทำเล",
   propertyType: "ประเภทอสังหา",
-  propertyFormat: "รูปแบบอสังหา",
+  propertyFormat: "เช่าหรือซื้อ",
   priceRange: "ช่วงราคา (บาท)",
   noMatch: "ไม่พบอสังหาที่ตรงกับเงื่อนไขของคุณ",
   tryAdjustFilters: "ลองปรับตัวกรองหรือคำค้นหาใหม่",

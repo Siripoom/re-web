@@ -1,79 +1,122 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { Input, Select, Typography, Row, Col, Card, Button } from 'antd';
-import { usePropertyContext } from '../../../components/contexts/PropertyContext';
-import { useLanguage } from '../../../components/contexts/LanguageContext';
-import en from '../../../components/locales/en';
-import th from '../../../components/locales/th';
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import Image from "next/image";
+import Link from "next/link";
+import { Input, Select, Typography, Row, Col, Card, Button } from "antd";
+import { usePropertyContext } from "../../../components/contexts/PropertyContext";
+import { useLanguage } from "../../../components/contexts/LanguageContext";
+import en from "../../../components/locales/en";
+import th from "../../../components/locales/th";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 const { Title } = Typography;
 const { Option } = Select;
 
 const translations = { en, th };
 
-export default function PropertySearch() {
+// แยก SearchHandler component ออกมา
+function SearchHandler({
+  setSearchTerm,
+}: {
+  setSearchTerm: (term: string) => void;
+}) {
   const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [location, setLocation] = useState('');
-  const [propertyType, setPropertyType] = useState('');
-  const [propertyFormat, setPropertyFormat] = useState('');
-  const [priceRange, setPriceRange] = useState('');
+
+  useEffect(() => {
+    const searchQuery = searchParams.get("search");
+    if (searchQuery) {
+      setSearchTerm(decodeURIComponent(searchQuery));
+    }
+  }, [searchParams, setSearchTerm]);
+
+  return null;
+}
+
+// Loading component สำหรับ Suspense fallback
+function SearchFallback() {
+  return <div style={{ height: "1px" }} />; // Invisible loading state
+}
+
+function PropertySearchContent() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
+  const [propertyType, setPropertyType] = useState("");
+  const [propertyFormat, setPropertyFormat] = useState("");
+  const [priceRange, setPriceRange] = useState("");
   const { allProperties: properties, loading } = usePropertyContext();
   const { language } = useLanguage();
   const t = (key: keyof typeof en) => translations[language][key];
 
-  useEffect(() => {
-    const searchQuery = searchParams.get('search');
-    if (searchQuery) {
-      setSearchTerm(decodeURIComponent(searchQuery));
-    }
-  }, [searchParams]);
-
-  const filteredProperties = properties.filter(property => {
+  const filteredProperties = properties.filter((property) => {
     return (
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (location === '' || property.location === location) &&
-      (property.property_type === propertyType || propertyType === '') &&
-      (propertyFormat === '' || property.type === propertyFormat) &&
-      (priceRange === '' ||
-        (priceRange === '0-10' && property.price < 10000000) ||
-        (priceRange === '10-20' && property.price >= 10000000 && property.price < 20000000) ||
-        (priceRange === '20+' && property.price >= 20000000))
+      (location === "" || property.location === location) &&
+      (property.property_type === propertyType || propertyType === "") &&
+      (propertyFormat === "" || property.type === propertyFormat) &&
+      (priceRange === "" ||
+        (priceRange === "0-10" && property.price < 10000000) ||
+        (priceRange === "10-20" &&
+          property.price >= 10000000 &&
+          property.price < 20000000) ||
+        (priceRange === "20+" && property.price >= 20000000))
     );
   });
 
-  const locations = Array.from(new Set(properties.map(p => p.location).filter(loc => loc !== undefined && loc !== null)));
-  const propertyTypes = Array.from(new Set(properties.map(p => p.property_type).filter(type => type !== undefined && type !== null)));
-  const propertyFormats = Array.from(new Set(properties.map(p => p.type).filter(format => format !== undefined && format !== null)));
+  const locations = Array.from(
+    new Set(
+      properties
+        .map((p) => p.location)
+        .filter((loc) => loc !== undefined && loc !== null)
+    )
+  );
+  const propertyTypes = Array.from(
+    new Set(
+      properties
+        .map((p) => p.property_type)
+        .filter((type) => type !== undefined && type !== null)
+    )
+  );
+  const propertyFormats = Array.from(
+    new Set(
+      properties
+        .map((p) => p.type)
+        .filter((format) => format !== undefined && format !== null)
+    )
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-6xl mx-auto">
+        {/* Search Handler with Suspense */}
+        <Suspense fallback={<SearchFallback />}>
+          <SearchHandler setSearchTerm={setSearchTerm} />
+        </Suspense>
+
         {loading ? (
           <div className="skeleton-title mb-6"></div>
         ) : (
-          <Title level={2} className="animate-fadeIn">{t('product')}</Title>
+          <Title level={2} className="animate-fadeIn">
+            {t("product")}
+          </Title>
         )}
 
         {loading ? (
           <div className="skeleton-search mb-6"></div>
         ) : (
-        <Input.Search
-          placeholder={t('search') || 'Search'}
-          enterButton={
-            <Button type="primary" className="gold-search-button">
-              {t('searchbtn') || 'Search'}
-            </Button>
-          }
-          allowClear
-          size="large"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mb-6 animate-fadeIn gold-search-btn"
-        />
+          <Input.Search
+            placeholder={t("search") || "Search"}
+            enterButton={
+              <Button type="primary" className="gold-search-button">
+                {t("searchbtn") || "Search"}
+              </Button>
+            }
+            allowClear
+            size="large"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-6 animate-fadeIn gold-search-btn"
+          />
         )}
 
         <Row gutter={[16, 16]} className="mb-8">
@@ -89,49 +132,55 @@ export default function PropertySearch() {
             <>
               <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-100">
                 <Select
-                  placeholder={t('location') || 'Location'}
+                  placeholder={t("location") || "Location"}
                   value={location || undefined}
                   onChange={(value) => setLocation(value)}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   allowClear
                 >
-                  {locations.map(loc => (
-                    <Option key={loc} value={loc}>{loc}</Option>
+                  {locations.map((loc) => (
+                    <Option key={loc} value={loc}>
+                      {loc}
+                    </Option>
                   ))}
                 </Select>
               </Col>
               <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-200">
                 <Select
-                  placeholder={t('propertyType') || 'Property Type'}
+                  placeholder={t("propertyType") || "Property Type"}
                   value={propertyType || undefined}
                   onChange={(value) => setPropertyType(value)}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   allowClear
                 >
-                  {propertyTypes.map(type => (
-                    <Option key={type} value={type}>{type}</Option>
+                  {propertyTypes.map((type) => (
+                    <Option key={type} value={type}>
+                      {type}
+                    </Option>
                   ))}
                 </Select>
               </Col>
               <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-300">
                 <Select
-                  placeholder={t('propertyFormat') || 'Property Format'}
+                  placeholder={t("propertyFormat") || "Property Format"}
                   value={propertyFormat || undefined}
                   onChange={(value) => setPropertyFormat(value)}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   allowClear
                 >
-                  {propertyFormats.map(format => (
-                    <Option key={format} value={format}>{format}</Option>
+                  {propertyFormats.map((format) => (
+                    <Option key={format} value={format}>
+                      {format}
+                    </Option>
                   ))}
                 </Select>
               </Col>
               <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-400">
                 <Select
-                  placeholder={t('priceRange') || 'Price Range'}
+                  placeholder={t("priceRange") || "Price Range"}
                   value={priceRange || undefined}
                   onChange={(value) => setPriceRange(value)}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                   allowClear
                 >
                   <Option value="0-10">0 - 10M</Option>
@@ -163,20 +212,23 @@ export default function PropertySearch() {
             <Row gutter={[16, 16]}>
               {filteredProperties.map((property, index) => {
                 const primaryImage =
-                  property.images?.find(img => img.is_primary)?.image_url ||
+                  property.images?.find((img) => img.is_primary)?.image_url ||
                   property.images?.[0]?.image_url ||
-                  '/placeholder-property.jpg';
+                  "/placeholder-property.jpg";
 
                 return (
-                  <Col 
-                    xs={24} 
-                    sm={12} 
-                    md={8} 
+                  <Col
+                    xs={24}
+                    sm={12}
+                    md={8}
                     key={property.id}
                     className="animate-fadeInUp"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <Link href={`/property/${property.id}`} className="hover:no-underline">
+                    <Link
+                      href={`/property/${property.id}`}
+                      className="hover:no-underline"
+                    >
                       <Card
                         hoverable
                         className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1 gold-card"
@@ -192,14 +244,18 @@ export default function PropertySearch() {
                         }
                       >
                         <Card.Meta
-                          title={<span className="!text-lg">{property.name}</span>}
+                          title={
+                            <span className="!text-lg">{property.name}</span>
+                          }
                           description={
                             <>
                               <div className="!text-base">
-                                🛏 {property.bedrooms} | 🚿 {property.bathrooms} | 🏠 {property.property_type} | 📌 {property.type}
+                                🛏 {property.bedrooms} | 🚿 {property.bathrooms}{" "}
+                                | 🏠 {property.property_type} | 📌{" "}
+                                {property.type}
                               </div>
                               <div className="text-[#D4AF37] font-semibold mt-1 !text-base">
-                                {property.price.toLocaleString('en-US')} THB
+                                {property.price.toLocaleString("en-US")} THB
                               </div>
                             </>
                           }
@@ -214,8 +270,10 @@ export default function PropertySearch() {
 
           {!loading && filteredProperties.length === 0 && (
             <div className="text-center py-12 animate-fadeIn">
-              <h3 className="text-xl font-medium text-gray-600">{t('noMatch')}</h3>
-              <p className="text-gray-500 mt-2">{t('tryAdjustFilters')}</p>
+              <h3 className="text-xl font-medium text-gray-600">
+                {t("noMatch")}
+              </h3>
+              <p className="text-gray-500 mt-2">{t("tryAdjustFilters")}</p>
             </div>
           )}
         </div>
@@ -367,7 +425,7 @@ export default function PropertySearch() {
         .skeleton-filter:after,
         .skeleton-image:after,
         .skeleton-line:after {
-          content: '';
+          content: "";
           position: absolute;
           top: 0;
           right: 0;
@@ -375,17 +433,17 @@ export default function PropertySearch() {
           left: 0;
           background: linear-gradient(
             to right,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.8) 50%,
-            rgba(255,255,255,0) 100%
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.8) 50%,
+            rgba(255, 255, 255, 0) 100%
           );
           animation: shimmer 2s infinite;
         }
 
         /* Updated color scheme */
         .gold-search-btn .ant-btn-primary {
-          background-color: #D4AF37 !important;
-          border-color: #D4AF37 !important;
+          background-color: #d4af37 !important;
+          border-color: #d4af37 !important;
           color: #fff !important;
         }
 
@@ -393,39 +451,40 @@ export default function PropertySearch() {
         .gold-search-btn .ant-btn-primary:focus {
           background-color: #000 !important;
           border-color: #000 !important;
-          color: #D4AF37 !important;
+          color: #d4af37 !important;
         }
 
         .gold-search-btn .ant-input:hover,
         .gold-search-btn .ant-input:focus {
-          border-color: #D4AF37;
+          border-color: #d4af37;
         }
 
         .gold-search-btn .ant-input-affix-wrapper-focused {
-          border-color: #D4AF37;
+          border-color: #d4af37;
           box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
 
         .gold-search-btn .ant-input-affix-wrapper:hover {
-            border-color: #D4AF37 !important;
-            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
-          }
-
+          border-color: #d4af37 !important;
+          box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
 
         .gold-card.ant-card-hoverable:hover {
-          border-color: #D4AF37 !important;
+          border-color: #d4af37 !important;
           box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3) !important;
           transform: translateY(-4px);
         }
 
-
         /* Select dropdown styling */
         .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
-          border-color: #D4AF37 !important;
+          border-color: #d4af37 !important;
         }
 
-        .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
-          border-color: #D4AF37 !important;
+        .ant-select-focused:not(.ant-select-disabled).ant-select:not(
+            .ant-select-customize-input
+          )
+          .ant-select-selector {
+          border-color: #d4af37 !important;
           box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
 
@@ -439,9 +498,33 @@ export default function PropertySearch() {
 
         .ant-select-item-option:hover {
           background-color: #000 !important;
-          color: #D4AF37 !important;
+          color: #d4af37 !important;
         }
       `}</style>
     </div>
+  );
+}
+
+export default function PropertySearch() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 p-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="skeleton-title mb-6"></div>
+            <div className="skeleton-search mb-6"></div>
+            <Row gutter={[16, 16]} className="mb-8">
+              {[1, 2, 3, 4].map((item) => (
+                <Col xs={24} sm={12} md={6} key={item}>
+                  <div className="skeleton-filter"></div>
+                </Col>
+              ))}
+            </Row>
+          </div>
+        </div>
+      }
+    >
+      <PropertySearchContent />
+    </Suspense>
   );
 }

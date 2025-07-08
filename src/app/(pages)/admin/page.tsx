@@ -12,10 +12,9 @@ import {
   Space,
   Button,
   Progress,
-  Divider,
   Avatar,
-  List,
   Badge,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Tooltip,
 } from "antd";
 import {
@@ -24,17 +23,12 @@ import {
   EyeOutlined,
   TrophyOutlined,
   ArrowUpOutlined,
-  ArrowDownOutlined,
   PieChartOutlined,
   BarChartOutlined,
-  RiseOutlined,
-  FallOutlined,
   CalendarOutlined,
-  UserOutlined,
   StarOutlined,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   StarFilled,
-  EnvironmentOutlined,
-  FireOutlined,
   ThunderboltOutlined,
 } from "@ant-design/icons";
 import { PropertyService } from "@/services/propertyService";
@@ -79,11 +73,13 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [allProperties, setAllProperties] = useState<Property[]>([]);
   const [recentProperties, setRecentProperties] = useState<Property[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [propertyTypeData, setPropertyTypeData] = useState<PropertyTypeData[]>(
     []
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [locationData, setLocationData] = useState<LocationData[]>([]);
 
   useEffect(() => {
@@ -183,6 +179,7 @@ export default function AdminDashboard() {
       dataIndex: "images",
       key: "image",
       width: 60,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (images: any[]) => {
         const primaryImage =
           images?.find((img) => img.is_primary) || images?.[0];
@@ -310,9 +307,8 @@ export default function AdminDashboard() {
   const salesRate = stats
     ? Math.round((stats.soldProperties / stats.totalProperties) * 100)
     : 0;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const totalValue = allProperties.reduce((sum, p) => sum + (p.price || 0), 0);
-  const avgPrice =
-    allProperties.length > 0 ? totalValue / allProperties.length : 0;
 
   return (
     <div style={{ padding: "0", background: "#f5f5f5", minHeight: "100vh" }}>
@@ -578,7 +574,7 @@ export default function AdminDashboard() {
               <div
                 style={{ height: "280px", overflowY: "auto", padding: "8px 0" }}
               >
-                {propertyTypeData.map((item, index) => (
+                {propertyTypeData.map((item) => (
                   <div key={item.type} style={{ marginBottom: "16px" }}>
                     <div
                       style={{

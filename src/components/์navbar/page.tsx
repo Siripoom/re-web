@@ -6,6 +6,7 @@ import {
   Space,
   Button,
   Typography,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   Avatar,
   Switch,
   Drawer,
@@ -22,7 +23,8 @@ import type { MenuProps } from "antd";
 import { useLanguage } from "../contexts/LanguageContext";
 import en from "../locales/en";
 import th from "../locales/th";
-import image from "../../../public/logo.png"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import image from "../../../public/logo.png";
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -50,6 +52,7 @@ const Navbar: React.FC = () => {
     setLanguage(newLang);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const userMenuItems: MenuProps["items"] = [
     { key: "login", icon: <LoginOutlined />, label: t("login") },
     { type: "divider" },
@@ -61,16 +64,32 @@ const Navbar: React.FC = () => {
     },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     console.log("Menu Clicked:", key);
   };
 
   const navigationLinks = (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "16px" }}>
-      <Link href="/home" style={{ color: "black", fontWeight: 500 }}>{t("home")}</Link>
-      <Link href="/product" style={{ color: "black", fontWeight: 500 }}>{t("product")}</Link>
-      <Link href="/aboutUs" style={{ color: "black", fontWeight: 500 }}>{t("aboutUs")}</Link>
-      <Link href="/contactUs" style={{ color: "black", fontWeight: 500 }}>{t("contactUs")}</Link>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        padding: "16px",
+      }}
+    >
+      <Link href="/home" style={{ color: "black", fontWeight: 500 }}>
+        {t("home")}
+      </Link>
+      <Link href="/product" style={{ color: "black", fontWeight: 500 }}>
+        {t("product")}
+      </Link>
+      <Link href="/aboutUs" style={{ color: "black", fontWeight: 500 }}>
+        {t("aboutUs")}
+      </Link>
+      <Link href="/contactUs" style={{ color: "black", fontWeight: 500 }}>
+        {t("contactUs")}
+      </Link>
       <Space>
         <GlobalOutlined style={{ color: "#d4af37" }} />
         <Switch
@@ -112,21 +131,20 @@ const Navbar: React.FC = () => {
             />
           )}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <img 
-              src="/logo.png" 
+            <img
+              src="/logo.png"
               alt="Logo"
-              style={{ 
-                width: "62px", 
+              style={{
+                width: "62px",
                 height: "62px",
-                objectFit: "contain"
+                objectFit: "contain",
               }}
               onError={(e) => {
-                
-                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).style.display = "none";
               }}
             />
             <Text strong style={{ fontSize: "20px", color: "black" }}>
-              Ruby's Real Estate
+              Ruby&apos;s Real Estate
             </Text>
           </div>
         </div>
@@ -134,10 +152,18 @@ const Navbar: React.FC = () => {
         {/* Main Menu */}
         {!isMobile && (
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <Link href="/home" style={{ color: "black", fontWeight: 500 }}>{t("home")}</Link>
-            <Link href="/product" style={{ color: "black", fontWeight: 500 }}>{t("product")}</Link>
-            <Link href="/aboutUs" style={{ color: "black", fontWeight: 500 }}>{t("aboutUs")}</Link>
-            <Link href="/contactUs" style={{ color: "black", fontWeight: 500 }}>{t("contactUs")}</Link>
+            <Link href="/home" style={{ color: "black", fontWeight: 500 }}>
+              {t("home")}
+            </Link>
+            <Link href="/product" style={{ color: "black", fontWeight: 500 }}>
+              {t("product")}
+            </Link>
+            <Link href="/aboutUs" style={{ color: "black", fontWeight: 500 }}>
+              {t("aboutUs")}
+            </Link>
+            <Link href="/contactUs" style={{ color: "black", fontWeight: 500 }}>
+              {t("contactUs")}
+            </Link>
 
             <Space>
               <GlobalOutlined style={{ color: "#d4af37" }} />
@@ -165,7 +191,6 @@ const Navbar: React.FC = () => {
       >
         {navigationLinks}
       </Drawer>
-
 
       <style jsx global>{`
         .gold-switch.ant-switch-checked {

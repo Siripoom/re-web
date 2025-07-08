@@ -1,5 +1,7 @@
 export interface Property {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   amenities: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   area: any;
   id: string;
   name: string;

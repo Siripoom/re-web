@@ -25,6 +25,7 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   SearchOutlined,
   UserOutlined,
   LockOutlined,
@@ -39,7 +40,9 @@ import {
   USER_ROLES,
   getRoleLabel,
   getRoleColor,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getStatusLabel,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getStatusColor,
 } from "@/types/user";
 
@@ -272,6 +275,7 @@ export default function AdminUsersPage() {
       title: "การดำเนินการ",
       key: "action",
       width: 180,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: User) => (
         <Space size="small">
           <Tooltip title="ดูข้อมูล">

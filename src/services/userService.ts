@@ -25,6 +25,7 @@ export class UserService {
 
     // ไม่ส่ง password กลับไป
     return (data || []).map((user) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
@@ -46,6 +47,7 @@ export class UserService {
     if (!data) return null;
 
     // ไม่ส่ง password กลับไป
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
@@ -82,6 +84,7 @@ export class UserService {
 
     // ไม่ส่ง password กลับไป
     return (data || []).map((user) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
@@ -109,6 +112,7 @@ export class UserService {
     }
 
     // ไม่ส่ง password กลับไป
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
@@ -118,6 +122,7 @@ export class UserService {
     id: string,
     userData: UpdateUserRequest
   ): Promise<User> {
+    // eslint-disable-next-line prefer-const
     let updateData = { ...userData };
 
     // Hash password ใหม่ถ้ามีการเปลี่ยน
@@ -138,6 +143,7 @@ export class UserService {
     }
 
     // ไม่ส่ง password กลับไป
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
@@ -167,6 +173,7 @@ export class UserService {
     }
 
     // ไม่ส่ง password กลับไป
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
@@ -222,6 +229,7 @@ export class UserService {
       .eq("id", data.id);
 
     // ไม่ส่ง password กลับไป
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
 
     return {
@@ -317,6 +325,7 @@ export class UserService {
 
     // ไม่ส่ง password กลับไป
     return (data || []).map((user) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });

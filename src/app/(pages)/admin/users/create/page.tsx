@@ -56,6 +56,7 @@ export default function CreateUserPage() {
       await UserService.createUser(values);
       message.success("เพิ่มผู้ใช้สำเร็จ");
       router.push("/admin/users");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       message.error("เกิดข้อผิดพลาดในการเพิ่มผู้ใช้");
       console.error("Error creating user:", error);
@@ -108,6 +109,7 @@ export default function CreateUserPage() {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getRoleDescription = (role: string) => {
     switch (role) {
       case "super_admin":

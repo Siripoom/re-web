@@ -1,30 +1,31 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { Input, Button, Typography, Row, Col, Card, Spin, Alert } from 'antd';
-import { useLanguage } from '../../../components/contexts/LanguageContext';
-import { usePropertyContext } from '../../../components/contexts/PropertyContext';
-import en from '../../../components/locales/en';
-import th from '../../../components/locales/th';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Image from "next/image";
+import Link from "next/link";
+import { Input, Button, Typography, Row, Col, Card, Spin, Alert } from "antd";
+import { useLanguage } from "../../../components/contexts/LanguageContext";
+import { usePropertyContext } from "../../../components/contexts/PropertyContext";
+import en from "../../../components/locales/en";
+import th from "../../../components/locales/th";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const { Title, Paragraph } = Typography;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const translations = { en, th };
 
 export default function Home() {
   const { featuredProperties, loading } = usePropertyContext();
   const { language } = useLanguage();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
       router.push(`/product?search=${encodeURIComponent(searchQuery)}`);
     } else {
-      router.push('/product');
+      router.push("/product");
     }
   };
 
@@ -34,7 +35,7 @@ export default function Home() {
       <div className="bg-white py-10 px-4 relative">
         <div
           className={`max-w-6xl mx-auto rounded-xl overflow-hidden shadow-md relative h-[500px] transition-all duration-500 ${
-            loading ? 'blur-[1px]' : 'blur-none'
+            loading ? "blur-[1px]" : "blur-none"
           }`}
         >
           <Image
@@ -51,17 +52,20 @@ export default function Home() {
             {!loading && (
               <>
                 <div className="animate-fadeInUp">
-                  <Title level={1} className="!text-white !text-4xl md:!text-5xl">
-                    {language === 'th'
-                      ? 'ค้นหาบ้านในฝันของคุณที่ภูเก็ต'
-                      : 'Find your dream home in Phuket'}
+                  <Title
+                    level={1}
+                    className="!text-white !text-4xl md:!text-5xl"
+                  >
+                    {language === "th"
+                      ? "ค้นหาบ้านในฝันของคุณที่ภูเก็ต"
+                      : "Find your dream home in Phuket"}
                   </Title>
                 </div>
 
                 <div className="animate-fadeInUp delay-150">
                   <Paragraph className="!text-white !text-lg md:!text-xl">
-                    {language === 'th'
-                      ? 'สำรวจอสังหาริมทรัพย์หรูเฉพาะของเราที่ภูเก็ตในทำเลที่เป็นที่ต้องการที่สุด'
+                    {language === "th"
+                      ? "สำรวจอสังหาริมทรัพย์หรูเฉพาะของเราที่ภูเก็ตในทำเลที่เป็นที่ต้องการที่สุด"
                       : "Explore our exclusive collection of luxury properties in Phuket's most sought-after locations."}
                   </Paragraph>
                 </div>
@@ -70,9 +74,9 @@ export default function Home() {
                   <div className="relative w-full bg-white rounded-lg p-1 flex">
                     <Input
                       placeholder={
-                        language === 'th'
-                          ? 'ค้นหาจากทำเล ประเภทอสังหา หรือคำสำคัญ'
-                          : 'Search by location, property type, or keyword'
+                        language === "th"
+                          ? "ค้นหาจากทำเล ประเภทอสังหา หรือคำสำคัญ"
+                          : "Search by location, property type, or keyword"
                       }
                       className="flex-1 !border-0 !shadow-none !text-base"
                       size="large"
@@ -86,7 +90,7 @@ export default function Home() {
                       className="!bg-gradient-to-r !from-[#D4AF37] !to-[#FFD700] !border-none !text-white !text-base hover:!scale-105 transition-transform"
                       onClick={handleSearch}
                     >
-                      {language === 'th' ? 'ค้นหา' : 'Search'}
+                      {language === "th" ? "ค้นหา" : "Search"}
                     </Button>
                   </div>
                 </div>
@@ -112,7 +116,9 @@ export default function Home() {
                 }
               />
               <Alert
-                message={language === 'th' ? 'กำลังโหลดข้อมูล...' : 'Loading data...'}
+                message={
+                  language === "th" ? "กำลังโหลดข้อมูล..." : "Loading data..."
+                }
                 type="info"
                 showIcon
                 className="!text-base !text-[#D4AF37] !bg-[#FFF8E1] !border-[#FFD700]"
@@ -139,8 +145,13 @@ export default function Home() {
       <div className="bg-white py-12 px-4">
         <div className="max-w-6xl mx-auto">
           {!loading && (
-            <Title level={2} className="text-center text-gray-800 mb-10 !text-3xl">
-              {language === 'th' ? 'อสังหาริมทรัพย์แนะนำ' : 'Featured Properties'}
+            <Title
+              level={2}
+              className="text-center text-gray-800 mb-10 !text-3xl"
+            >
+              {language === "th"
+                ? "อสังหาริมทรัพย์แนะนำ"
+                : "Featured Properties"}
             </Title>
           )}
 
@@ -150,11 +161,14 @@ export default function Home() {
                   const primaryImage =
                     property.images?.find((img) => img.is_primary)?.image_url ||
                     property.images?.[0]?.image_url ||
-                    '/placeholder-property.jpg';
+                    "/placeholder-property.jpg";
 
                   return (
                     <Col xs={24} md={8} key={property.id}>
-                      <Link href={`/property/${property.id}`} className="hover:no-underline">
+                      <Link
+                        href={`/property/${property.id}`}
+                        className="hover:no-underline"
+                      >
                         <Card
                           hoverable
                           className="transition-all duration-500 hover:-translate-y-1 hover:shadow-lg"
@@ -170,14 +184,18 @@ export default function Home() {
                           }
                         >
                           <Card.Meta
-                            title={<span className="!text-lg">{property.name}</span>}
+                            title={
+                              <span className="!text-lg">{property.name}</span>
+                            }
                             description={
                               <>
                                 <div className="!text-base">
-                                  🛏 {property.bedrooms} | 🚿 {property.bathrooms} | 🏠 {property.property_type} | 📌 {property.type}
+                                  🛏 {property.bedrooms} | 🚿{" "}
+                                  {property.bathrooms} | 🏠{" "}
+                                  {property.property_type} | 📌 {property.type}
                                 </div>
                                 <div className="text-[#D4AF37] font-semibold mt-1 !text-base">
-                                  {property.price.toLocaleString('en-US')} THB
+                                  {property.price.toLocaleString("en-US")} THB
                                 </div>
                               </>
                             }
@@ -251,11 +269,16 @@ export default function Home() {
         }
 
         .gold-dot {
-          background-color: #D4AF37 !important;
+          background-color: #d4af37 !important;
         }
 
         .skeleton-title {
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite linear;
           border-radius: 4px;
@@ -272,14 +295,24 @@ export default function Home() {
         .skeleton-image {
           height: 200px;
           width: 100%;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite linear;
         }
 
         .skeleton-line {
           height: 14px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
           background-size: 200% 100%;
           animation: shimmer 1.5s infinite linear;
           border-radius: 4px;

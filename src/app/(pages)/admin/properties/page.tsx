@@ -116,6 +116,7 @@ export default function AdminPropertiesPage() {
       dataIndex: "images",
       key: "image",
       width: 80,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (images: any[]) => {
         const primaryImage =
           images?.find((img) => img.is_primary) || images?.[0];
@@ -218,6 +219,7 @@ export default function AdminPropertiesPage() {
       title: "การดำเนินการ",
       key: "action",
       width: 150,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: Property) => (
         <Space size="small">
           <Button

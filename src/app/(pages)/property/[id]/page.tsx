@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Breadcrumb,
   Typography,
@@ -14,12 +14,13 @@ import {
   Divider,
   Result,
   Tag,
-} from 'antd';
-import { useLanguage } from '../../../../components/contexts/LanguageContext';
-import en from '../../../../components/locales/en';
-import th from '../../../../components/locales/th';
-import { PropertyService } from '@/services/propertyService';
-import type { Property } from '@/types/property';
+} from "antd";
+import { useLanguage } from "../../../../components/contexts/LanguageContext";
+import en from "../../../../components/locales/en";
+import th from "../../../../components/locales/th";
+import { PropertyService } from "@/services/propertyService";
+import type { Property } from "@/types/property";
+import Link from "next/link";
 
 const translations = { en, th };
 const { Title, Text, Paragraph } = Typography;
@@ -39,10 +40,11 @@ export default function PropertyDetails() {
       try {
         setLoading(true);
         const data = await PropertyService.getPropertyById(propertyId);
-        if (!data) throw new Error('Not found');
+        if (!data) throw new Error("Not found");
         setProperty(data);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
-        router.push('/properties');
+        router.push("/properties");
       } finally {
         setLoading(false);
       }
@@ -55,43 +57,58 @@ export default function PropertyDetails() {
       <>
         <style jsx global>{`
           @keyframes shine {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
           @keyframes pulse {
-            0% { transform: scale(0.9); opacity: 0.7; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(0.9); opacity: 0.7; }
+            0% {
+              transform: scale(0.9);
+              opacity: 0.7;
+            }
+            50% {
+              transform: scale(1.1);
+              opacity: 1;
+            }
+            100% {
+              transform: scale(0.9);
+              opacity: 0.7;
+            }
           }
           .gold-spinner .ant-spin-dot-item {
-            background-color: #D4AF37 !important;
+            background-color: #d4af37 !important;
             box-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
           }
           .ant-spin-dot {
             animation: pulse 1.5s infinite ease-in-out;
           }
         `}</style>
-        <Row justify="center" align="middle" style={{ minHeight: '80vh' }}>
-          <div style={{
-            position: 'relative',
-            display: 'inline-block'
-          }}>
-            <Spin 
-              size="large" 
-              className="gold-spinner"
-            />
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)',
-              backgroundSize: '200% 100%',
-              animation: 'shine 2s infinite',
-              borderRadius: '50%',
-              pointerEvents: 'none'
-            }}></div>
+        <Row justify="center" align="middle" style={{ minHeight: "80vh" }}>
+          <div
+            style={{
+              position: "relative",
+              display: "inline-block",
+            }}
+          >
+            <Spin size="large" className="gold-spinner" />
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background:
+                  "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)",
+                backgroundSize: "200% 100%",
+                animation: "shine 2s infinite",
+                borderRadius: "50%",
+                pointerEvents: "none",
+              }}
+            ></div>
           </div>
         </Row>
       </>
@@ -102,11 +119,11 @@ export default function PropertyDetails() {
     return (
       <Result
         status="404"
-        title={t('notFound')}
-        subTitle={t('propertyNotFound')}
+        title={t("notFound")}
+        subTitle={t("propertyNotFound")}
         extra={
-          <Button type="primary" onClick={() => router.push('/properties')}>
-            {t('backToProperties')}
+          <Button type="primary" onClick={() => router.push("/properties")}>
+            {t("backToProperties")}
           </Button>
         }
       />
@@ -114,24 +131,32 @@ export default function PropertyDetails() {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: "24px" }}>
       <Breadcrumb
         items={[
-          { title: <a href="/">{t('home')}</a> },
-          { title: <a href="/properties">{t('properties')}</a> },
+          { title: <Link href="/">{t("home")}</Link> },
+          { title: <Link href="/properties">{t("properties")}</Link> },
           { title: property.name },
         ]}
       />
 
-      <Title level={2} style={{ marginTop: 16 }}>{property.name}</Title>
+      <Title level={2} style={{ marginTop: 16 }}>
+        {property.name}
+      </Title>
 
-      <Text type="secondary" style={{ display: 'block', marginBottom: 4, whiteSpace: 'normal', wordBreak: 'break-word' }}>
+      <Text
+        type="secondary"
+        style={{
+          display: "block",
+          marginBottom: 4,
+          whiteSpace: "normal",
+          wordBreak: "break-word",
+        }}
+      >
         📍 {property.location}
       </Text>
 
-      <Text type="secondary">
-        🏠 {property.property_type}
-      </Text>
+      <Text type="secondary">🏠 {property.property_type}</Text>
 
       <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
         <Col xs={24} lg={16}>
@@ -139,28 +164,32 @@ export default function PropertyDetails() {
             <Image
               width="100%"
               height={400}
-              style={{ objectFit: 'cover', borderRadius: 12 }}
-              src={property.images?.[0]?.image_url || '/default-property.jpg'}
+              style={{ objectFit: "cover", borderRadius: 12 }}
+              src={property.images?.[0]?.image_url || "/default-property.jpg"}
               alt={property.name}
             />
           </Image.PreviewGroup>
 
-          <Divider orientation="left">{t('description')}</Divider>
+          <Divider orientation="left">{t("description")}</Divider>
           <Paragraph>
-            {property.description?.split('\n').map((p, i) => (
+            {property.description?.split("\n").map((p, i) => (
               <p key={i}>{p}</p>
             ))}
           </Paragraph>
 
           {property.address && (
             <>
-              <Divider orientation="left">{language === 'th' ? 'แผนที่' : 'Location Map'}</Divider>
+              <Divider orientation="left">
+                {language === "th" ? "แผนที่" : "Location Map"}
+              </Divider>
               <Paragraph type="secondary">{property.address}</Paragraph>
               <iframe
-                src={`https://www.google.com/maps?q=${encodeURIComponent(property.address)}&output=embed`}
+                src={`https://www.google.com/maps?q=${encodeURIComponent(
+                  property.address
+                )}&output=embed`}
                 width="100%"
                 height="400"
-                style={{ border: 0, borderRadius: '10px' }}
+                style={{ border: 0, borderRadius: "10px" }}
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
@@ -170,37 +199,78 @@ export default function PropertyDetails() {
         </Col>
 
         <Col xs={24} lg={8}>
-          <Card style={{ borderRadius: 10, boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}>
-            <Title level={3} style={{ color: '#D4AF37' }}>
+          <Card
+            style={{
+              borderRadius: 10,
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Title level={3} style={{ color: "#D4AF37" }}>
               ฿{property.price.toLocaleString()}
             </Title>
 
             <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-              <Col span={12}><Text>{t('bedrooms')}:</Text><br /><strong>{property.bedrooms}</strong></Col>
-              <Col span={12}><Text>{t('bathrooms')}:</Text><br /><strong>{property.bathrooms}</strong></Col>
-              <Col span={12}><Text>{t('kitchens')}:</Text><br /><strong>{property.kitchens ?? '-'}</strong></Col>
-              <Col span={12}><Text>{t('livingRooms')}:</Text><br /><strong>{property.living_rooms ?? '-'}</strong></Col>
-              <Col span={12}><Text>{t('carParks')}:</Text><br /><strong>{property.car_parks ?? '-'}</strong></Col>
-              <Col span={12}><Text>{t('area')}:</Text><br /><strong>{property.area_sqm} sqm</strong></Col>
-              <Col span={12}><Text>{t('landArea')}:</Text><br /><strong>{property.land_area_sqm ?? '-'} sqm</strong></Col>
-              <Col span={12}><Text>{t('type')}:</Text><br /><strong>{property.type}</strong></Col>
-              <Col span={24}><Text>{t('status')}:</Text><br /><strong>{property.status}</strong></Col>
+              <Col span={12}>
+                <Text>{t("bedrooms")}:</Text>
+                <br />
+                <strong>{property.bedrooms}</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("bathrooms")}:</Text>
+                <br />
+                <strong>{property.bathrooms}</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("kitchens")}:</Text>
+                <br />
+                <strong>{property.kitchens ?? "-"}</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("livingRooms")}:</Text>
+                <br />
+                <strong>{property.living_rooms ?? "-"}</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("carParks")}:</Text>
+                <br />
+                <strong>{property.car_parks ?? "-"}</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("area")}:</Text>
+                <br />
+                <strong>{property.area_sqm} sqm</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("landArea")}:</Text>
+                <br />
+                <strong>{property.land_area_sqm ?? "-"} sqm</strong>
+              </Col>
+              <Col span={12}>
+                <Text>{t("type")}:</Text>
+                <br />
+                <strong>{property.type}</strong>
+              </Col>
+              <Col span={24}>
+                <Text>{t("status")}:</Text>
+                <br />
+                <strong>{property.status}</strong>
+              </Col>
             </Row>
 
-            <Button 
-              href='/contactUs'
-              type="primary" 
-              block 
-              style={{ 
+            <Button
+              href="/contactUs"
+              type="primary"
+              block
+              style={{
                 marginTop: 24,
-                backgroundColor: '#D4AF37',
-                borderColor: '#C9A227',
-                height: '40px',
-                fontSize: '16px',
-                fontWeight: 'bold'
+                backgroundColor: "#D4AF37",
+                borderColor: "#C9A227",
+                height: "40px",
+                fontSize: "16px",
+                fontWeight: "bold",
               }}
             >
-              {t('contactAgent')}
+              {t("contactAgent")}
             </Button>
           </Card>
         </Col>
@@ -208,17 +278,17 @@ export default function PropertyDetails() {
 
       {property.amenities?.length > 0 && (
         <>
-          <Divider orientation="left">{t('amenities')}</Divider>
+          <Divider orientation="left">{t("amenities")}</Divider>
           <Row gutter={[12, 12]}>
             {property.amenities.map((item: string, i: number) => (
               <Col key={i}>
-                <Tag 
+                <Tag
                   style={{
-                    backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                    color: '#D4AF37',
-                    borderColor: '#D4AF37',
-                    padding: '4px 12px',
-                    borderRadius: '4px'
+                    backgroundColor: "rgba(212, 175, 55, 0.1)",
+                    color: "#D4AF37",
+                    borderColor: "#D4AF37",
+                    padding: "4px 12px",
+                    borderRadius: "4px",
                   }}
                 >
                   {item}

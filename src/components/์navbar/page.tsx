@@ -6,8 +6,6 @@ import {
   Space,
   Button,
   Typography,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  Avatar,
   Switch,
   Drawer,
   Grid,
@@ -17,13 +15,13 @@ import {
   LogoutOutlined,
   LoginOutlined,
   MenuOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 
 import { useLanguage } from "../contexts/LanguageContext";
 import en from "../locales/en";
 import th from "../locales/th";
-
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -50,22 +48,6 @@ const Navbar: React.FC = () => {
     setLanguage(newLang);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const userMenuItems: MenuProps["items"] = [
-    { key: "login", icon: <LoginOutlined />, label: t("login") },
-    { type: "divider" },
-    {
-      key: "logout",
-      icon: <LogoutOutlined />,
-      label: t("logout"),
-      danger: true,
-    },
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
-    console.log("Menu Clicked:", key);
-  };
 
   const navigationLinks = (
     <div
@@ -74,25 +56,28 @@ const Navbar: React.FC = () => {
         flexDirection: "column",
         gap: "16px",
         padding: "16px",
+        backgroundColor: "#721716",
+        height: "100%",
+        color: "white",
       }}
     >
-      <Link href="/home" style={{ color: "black", fontWeight: 500 }}>
+      <Link href="/home" style={{ color: "white", fontWeight: 500 }}>
         {t("home")}
       </Link>
-      <Link href="/product" style={{ color: "black", fontWeight: 500 }}>
+      <Link href="/product" style={{ color: "white", fontWeight: 500 }}>
         {t("product")}
       </Link>
-      <Link href="/aboutUs" style={{ color: "black", fontWeight: 500 }}>
+      <Link href="/aboutUs" style={{ color: "white", fontWeight: 500 }}>
         {t("aboutUs")}
       </Link>
-      <Link href="/contactUs" style={{ color: "black", fontWeight: 500 }}>
+      <Link href="/contactUs" style={{ color: "white", fontWeight: 500 }}>
         {t("contactUs")}
       </Link>
       <Space>
-        <GlobalOutlined style={{ color: "#d4af37" }} />
+        <GlobalOutlined style={{ color: "white" }} />
         <Switch
-          checkedChildren="TH"
-          unCheckedChildren="EN"
+          checkedChildren={<span style={{ color: "white" }}>TH</span>}
+          unCheckedChildren={<span style={{ color: "black" }}>EN</span>}
           checked={language === "th"}
           onChange={handleLanguageToggle}
           style={{
@@ -124,17 +109,18 @@ const Navbar: React.FC = () => {
           {isMobile && (
             <Button
               type="text"
-              icon={<MenuOutlined />}
+              icon={<MenuOutlined className="hamburger-icon" />}
               onClick={() => setDrawerVisible(true)}
+              className="hamburger-button"
             />
           )}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <img
-              src="/logo2.jpg"
+              src="/logo2-remove-bg.png"
               alt="Logo"
               style={{
-                width: "62px",
-                height: "62px",
+                width: "70px",
+                height: "70px",
                 objectFit: "contain",
               }}
               onError={(e) => {
@@ -164,7 +150,7 @@ const Navbar: React.FC = () => {
             </Link>
 
             <Space>
-              <GlobalOutlined style={{ color: "#ffff" }} />
+              <GlobalOutlined style={{ color: "white" }} />
               <Switch
                 checkedChildren={<span style={{ color: "white" }}>TH</span>}
                 unCheckedChildren={<span style={{ color: "black" }}>EN</span>}
@@ -182,13 +168,24 @@ const Navbar: React.FC = () => {
 
       {/* Drawer (Mobile Menu) */}
       <Drawer
-        title={t("menu")}
+        title={<span style={{ color: "white" }}>{t("menu")}</span>}
         placement="left"
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
+        styles={{
+          content: {
+            backgroundColor: "#721716",
+          },
+          header: {
+            backgroundColor: "#721716",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          },
+        }}
+        closeIcon={<CloseOutlined className="drawer-close-icon" />}
       >
         {navigationLinks}
       </Drawer>
+
       <style jsx global>{`
         .gold-switch.ant-switch .ant-switch-inner {
           color: black !important;
@@ -209,8 +206,34 @@ const Navbar: React.FC = () => {
         .gold-switch.ant-switch:focus {
           box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
+        
+        /* Hamburger menu styles */
+        .hamburger-icon {
+          font-size: 24px;
+          color: white !important;
+        }
+        
+        .hamburger-button {
+          color: white !important;
+          font-size: 24px;
+        }
+        
+        .hamburger-button:hover {
+          color: white !important;
+          background-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        
+        /* Drawer close icon styles */
+        .drawer-close-icon {
+          font-size: 24px !important;
+          color: white !important;
+        }
+        
+        .drawer-close-icon:hover {
+          color: white !important;
+          opacity: 0.8;
+        }
       `}</style>
-
     </>
   );
 };

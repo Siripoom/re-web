@@ -2,7 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Input, Button, Typography, Row, Col, Card, Spin, Alert } from "antd";
+import {
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Card,
+  Spin,
+  Alert,
+  Tag,
+} from "antd";
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import { usePropertyContext } from "../../../components/contexts/PropertyContext";
 import en from "../../../components/locales/en";
@@ -28,7 +38,15 @@ export default function Home() {
       router.push("/product");
     }
   };
-
+  function getPropertyTypeTag(type: string) {
+    const lowerType = type.toLowerCase();
+    if (lowerType === "rent") {
+      return { color: "#52c41a", text: "FOR RENT" };
+    } else if (lowerType === "sell" || lowerType === "sale") {
+      return { color: "#1890ff", text: "FOR SALE" };
+    }
+    return { color: "#d4af37", text: type.toUpperCase() };
+  }
   return (
     <>
       {/* Hero Section */}
@@ -162,7 +180,7 @@ export default function Home() {
                     property.images?.find((img) => img.is_primary)?.image_url ||
                     property.images?.[0]?.image_url ||
                     "/placeholder-property.jpg";
-
+                  const typeTag = getPropertyTypeTag(property.type);
                   return (
                     <Col xs={24} md={8} key={property.id}>
                       <Link
@@ -190,9 +208,24 @@ export default function Home() {
                             description={
                               <>
                                 <div className="!text-base">
-                                  🛏 {property.bedrooms} | 🚿{" "}
+                                  📌{" "}
+                                  <Tag
+                                    color={typeTag.color}
+                                    className="inline-tag"
+                                    style={{
+                                      color: "white",
+                                      fontSize: "10px",
+                                      fontWeight: "bold",
+                                      padding: "2px 6px",
+                                      borderRadius: "3px",
+                                      marginRight: "8px",
+                                    }}
+                                  >
+                                    {typeTag.text}
+                                  </Tag>{" "}
+                                  | 🛏 {property.bedrooms} | 🚿{" "}
                                   {property.bathrooms} | 🏠{" "}
-                                  {property.property_type} | 📌 {property.type}
+                                  {property.property_type}
                                 </div>
                                 <div className="text-[#D4AF37] font-semibold mt-1 !text-base">
                                   {property.price.toLocaleString("en-US")} THB

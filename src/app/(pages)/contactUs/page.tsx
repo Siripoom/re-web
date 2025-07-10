@@ -221,7 +221,7 @@ export default function ContactPage() {
                   <Col span={12} className="team-member">
                     <div className="text-center">
                       <Image
-                        src="https://img.freepik.com/free-vector/businesswoman-character-avatar-isolated_24877-60111.jpg"
+                        src="/S__8716356.jpg"
                         alt="Ruby"
                         width={120}
                         height={120}

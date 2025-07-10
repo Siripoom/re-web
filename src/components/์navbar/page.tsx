@@ -1,23 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Layout,
-  Space,
-  Button,
-  Typography,
-  Switch,
-  Drawer,
-  Grid,
-} from "antd";
-import {
-  GlobalOutlined,
-  LogoutOutlined,
-  LoginOutlined,
-  MenuOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
-import type { MenuProps } from "antd";
+import { Layout, Space, Button, Typography, Switch, Drawer, Grid } from "antd";
+import { GlobalOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
 
 import { useLanguage } from "../contexts/LanguageContext";
 import en from "../locales/en";
@@ -47,7 +32,6 @@ const Navbar: React.FC = () => {
     const newLang = checked ? "th" : "en";
     setLanguage(newLang);
   };
-
 
   const navigationLinks = (
     <div
@@ -206,29 +190,29 @@ const Navbar: React.FC = () => {
         .gold-switch.ant-switch:focus {
           box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
         }
-        
+
         /* Hamburger menu styles */
         .hamburger-icon {
           font-size: 24px;
           color: white !important;
         }
-        
+
         .hamburger-button {
           color: white !important;
           font-size: 24px;
         }
-        
+
         .hamburger-button:hover {
           color: white !important;
           background-color: rgba(255, 255, 255, 0.1) !important;
         }
-        
+
         /* Drawer close icon styles */
         .drawer-close-icon {
           font-size: 24px !important;
           color: white !important;
         }
-        
+
         .drawer-close-icon:hover {
           color: white !important;
           opacity: 0.8;

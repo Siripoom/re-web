@@ -156,7 +156,9 @@ export default function PropertyDetails() {
         📍 {property.location}
       </Text>
 
-      <Text type="secondary">🏠 {property.property_type}</Text>
+      <Text type="secondary" style={{ fontSize: "20px" }}>
+        🏠 {property.property_type}
+      </Text>
 
       <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
         <Col xs={24} lg={16}>

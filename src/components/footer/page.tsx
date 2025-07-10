@@ -37,7 +37,10 @@ export default function Footer() {
                   objectFit: "contain",
                 }}
               />
-              <Paragraph className="!text-gray-400">
+              <Paragraph
+                className="!text-gray-400"
+                style={{ fontSize: "16px" }}
+              >
                 {language === "th"
                   ? "ผู้เชี่ยวชาญด้านอสังหาริมทรัพย์ระดับพรีเมียมในภูเก็ต"
                   : "Luxury real estate specialists in Phuket"}

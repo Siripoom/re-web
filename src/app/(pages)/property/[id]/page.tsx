@@ -173,7 +173,7 @@ export default function PropertyDetails() {
           </Image.PreviewGroup>
 
           <Divider orientation="left">{t("description")}</Divider>
-          <Paragraph>
+          <Paragraph style={{ fontSize: "16px" }}>
             {property.description?.split("\n").map((p, i) => (
               <p key={i}>{p}</p>
             ))}

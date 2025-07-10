@@ -28,16 +28,20 @@ const en = {
   aboutHeroTitle: `Your Gateway to Phuket's Finest Properties`,
   aboutHeroDesc: `Ruby's Real Estate is the premier agency for luxury properties in Phuket. With a deep understanding of the local market and a commitment to exceptional service, we help clients find their dream homes and investment opportunities.`,
   aboutMissionTitle: "Our Mission",
-  aboutMission1: "At Ruby's Real Estate, our mission is to provide unparalleled service and expertise in the Phuket luxury real estate market.",
-  aboutMission2: "We strive to exceed client expectations by offering personalized guidance, in-depth market knowledge, and a curated selection of the finest properties.",
-  aboutMission3: "Our goal is to make the process of buying, selling, or renting luxury real estate seamless and rewarding.",
+  aboutMission1:
+    "At Ruby's Real Estate, our mission is to provide unparalleled service and expertise in the Phuket luxury real estate market.",
+  aboutMission2:
+    "We strive to exceed client expectations by offering personalized guidance, in-depth market knowledge, and a curated selection of the finest properties.",
+  aboutMission3:
+    "Our goal is to make the process of buying, selling, or renting luxury real estate seamless and rewarding.",
   aboutTeamTitle: "Meet Our Team",
   aboutTeamCEO: "CEO & Founder",
   aboutTeamHeadSales: "Head of Sales",
   aboutTeamCEODesc: "15+ years experience in luxury real estate",
   aboutTeamSalesDesc: "Specializing in high-end property",
   aboutExpertiseTitle: "Our Expertise",
-  aboutExpertiseDesc: "Ruby Real Estate specializes in the luxury property market in Phuket, offering a diverse portfolio of high-end villas, beachfront residences, and investment properties.",
+  aboutExpertiseDesc:
+    "Ruby Real Estate specializes in the luxury property market in Phuket, offering a diverse portfolio of high-end villas, beachfront residences, and investment properties.",
   aboutExpertise1Title: "Luxury Properties",
   aboutExpertise1Desc: "Villas, condos, and beachfront residences",
   aboutExpertise2Title: "Market Analysis",
@@ -45,7 +49,8 @@ const en = {
   aboutExpertise3Title: "Legal Support",
   aboutExpertise3Desc: "Full transaction assistance",
   aboutCTAHeadline: "Ready to Find Your Dream Property?",
-  aboutCTADesc: "Contact our team today for personalized assistance in finding your perfect home or investment property in Phuket.",
+  aboutCTADesc:
+    "Contact our team today for personalized assistance in finding your perfect home or investment property in Phuket.",
 
   //Contact Page
   contactHeroTitle: "Contact Us",
@@ -54,7 +59,7 @@ const en = {
   contactInfoTitle: "Our Information",
   officeAddressTitle: "Office Address",
   contactDetailsTitle: "Contact Details",
-  officeHours: "Monday - Friday: 9:00 AM - 6:00 PM",
+  officeHours: "Monday - Friday: 9:00 AM - 7:00 PM",
   contactTeamTitle: "Meet Our Team",
   formName: "Your Name",
   formEmail: "Email Address",
@@ -68,7 +73,7 @@ const en = {
   mapTitle: "Our Location",
   ceoTitle: "CEO & Founder",
   salesHeadTitle: "Head of Sales",
-  
+
   notFound: "Not Found",
   propertyNotFound: "Sorry, this property does not exist.",
   backToProperties: "Back to Properties",
@@ -79,8 +84,7 @@ const en = {
   contactAgent: "Contact Agent",
   amenities: "Amenities",
   description: "Description",
-  properties: "Properties"
+  properties: "Properties",
 };
-
 
 export default en;

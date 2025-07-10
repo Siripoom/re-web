@@ -262,7 +262,7 @@ function PropertySearchContent() {
                           }
                           description={
                             <>
-                              <div className="!text-base">
+                              <div className="!text-base font-semibold">
                                 📌{" "}
                                 <Tag
                                   color={typeTag.color}

@@ -77,7 +77,7 @@ export default function ContactPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          background-color: #D4AF37;
+          background-color: #d4af37;
           transition: all 0.3s ease;
         }
 
@@ -123,7 +123,8 @@ export default function ContactPage() {
                 style={{
                   color: "white",
                   textShadow: "2px 2px 8px rgba(0,0,0,0.7)",
-                  animation: "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  animation:
+                    "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
                 }}
               >
                 {t("contactHeroTitle")}
@@ -133,7 +134,8 @@ export default function ContactPage() {
                   color: "white",
                   fontSize: "1.25rem",
                   textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
-                  animation: "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  animation:
+                    "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
                   animationDelay: "0.3s",
                   opacity: 0,
                 }}
@@ -146,14 +148,16 @@ export default function ContactPage() {
 
         {/* Contact Info */}
         <div className="max-w-6xl mx-auto py-12 px-4">
-          <Title level={2} className="mb-8">{t("contactInfoTitle")}</Title>
+          <Title level={2} className="mb-8">
+            {t("contactInfoTitle")}
+          </Title>
           <Row gutter={[24, 24]}>
             {/* Address */}
             <Col xs={24} md={8}>
               <Card className="contact-info-card h-full">
                 <Title level={4}>{t("officeAddressTitle")}</Title>
                 <Paragraph>
-                {language === "th"
+                  {language === "th"
                     ? "111/151 หมู่ 4 ศุภาลัย เบลล่า ตำบลเกาะแก้ว  อำเภอเมือง จังหวัดภูเก็ต 83000"
                     : "111/151 Moo 4 Supalai bella  Kohkeaw Muang  Phuket 83000"}
                 </Paragraph>
@@ -167,7 +171,7 @@ export default function ContactPage() {
                 <ul className="text-gray-800 space-y-2">
                   <li>📞 093-781-2945 , 087-276-1225</li>
                   <li>✉️ rubyagent7@gmail.com</li>
-                  <li>🕒 {t("officeHours")}: 09:00 - 18:00 (Mon-Sat)</li>
+                  <li>🕒 {t("officeHours")}: 09:00 - 19:00 (Mon-Sat)</li>
                 </ul>
 
                 {/* Socials */}
@@ -237,7 +241,9 @@ export default function ContactPage() {
                         className="rounded-avatar"
                       />
                       <Paragraph strong>Jeab</Paragraph>
-                      <Paragraph type="secondary">{t("salesHeadTitle")}</Paragraph>
+                      <Paragraph type="secondary">
+                        {t("salesHeadTitle")}
+                      </Paragraph>
                     </div>
                   </Col>
                 </Row>

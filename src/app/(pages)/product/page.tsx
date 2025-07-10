@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Input, Select, Typography, Row, Col, Card, Button } from "antd";
+import { Input, Select, Typography, Row, Col, Card, Button, Tag } from "antd";
 import { usePropertyContext } from "../../../components/contexts/PropertyContext";
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import en from "../../../components/locales/en";
@@ -36,6 +36,17 @@ function SearchHandler({
 // Loading component สำหรับ Suspense fallback
 function SearchFallback() {
   return <div style={{ height: "1px" }} />; // Invisible loading state
+}
+
+// Function to get tag color and text based on property type
+function getPropertyTypeTag(type: string) {
+  const lowerType = type.toLowerCase();
+  if (lowerType === "rent") {
+    return { color: "#52c41a", text: "FOR RENT" };
+  } else if (lowerType === "sell" || lowerType === "sale") {
+    return { color: "#1890ff", text: "FOR SALE" };
+  }
+  return { color: "#d4af37", text: type.toUpperCase() };
 }
 
 function PropertySearchContent() {
@@ -216,6 +227,8 @@ function PropertySearchContent() {
                   property.images?.[0]?.image_url ||
                   "/placeholder-property.jpg";
 
+                const typeTag = getPropertyTypeTag(property.type);
+
                 return (
                   <Col
                     xs={24}
@@ -250,9 +263,24 @@ function PropertySearchContent() {
                           description={
                             <>
                               <div className="!text-base">
-                                🛏 {property.bedrooms} | 🚿 {property.bathrooms}{" "}
-                                | 🏠 {property.property_type} | 📌{" "}
-                                {property.type}
+                                📌{" "}
+                                <Tag
+                                  color={typeTag.color}
+                                  className="inline-tag"
+                                  style={{
+                                    color: "white",
+                                    fontSize: "10px",
+                                    fontWeight: "bold",
+                                    padding: "2px 6px",
+                                    borderRadius: "3px",
+                                    marginRight: "8px",
+                                  }}
+                                >
+                                  {typeTag.text}
+                                </Tag>{" "}
+                                | 🛏 {property.bedrooms} | 🚿{" "}
+                                {property.bathrooms} | 🏠{" "}
+                                {property.property_type}
                               </div>
                               <div className="text-[#D4AF37] font-semibold mt-1 !text-base">
                                 {property.price.toLocaleString("en-US")} THB
@@ -499,6 +527,16 @@ function PropertySearchContent() {
         .ant-select-item-option:hover {
           background-color: #000 !important;
           color: #d4af37 !important;
+        }
+
+        /* Tag styling */
+        .ant-tag {
+          margin: 0;
+        }
+
+        .inline-tag {
+          display: inline-block !important;
+          vertical-align: middle;
         }
       `}</style>
     </div>

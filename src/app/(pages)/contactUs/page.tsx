@@ -168,7 +168,10 @@ export default function ContactPage() {
             <Col xs={24} md={8}>
               <Card className="contact-info-card h-full">
                 <Title level={4}>{t("contactDetailsTitle")}</Title>
-                <ul className="text-gray-800 space-y-2">
+                <ul
+                  className="text-gray-800 space-y-2 "
+                  style={{ fontSize: "16px" }}
+                >
                   <li>📞 093-781-2945 , 087-276-1225</li>
                   <li>✉️ rubyagent7@gmail.com</li>
                   <li>🕒 {t("officeHours")}: 09:00 - 19:00 (Mon-Sat)</li>
@@ -204,6 +207,19 @@ export default function ContactPage() {
                     <Image
                       src="/line-logo.svg"
                       alt="Line"
+                      width={24}
+                      height={24}
+                      className="no-hover-effect"
+                    />
+                  </Link>
+                  <Link
+                    href="https://wa.me/66937812945"
+                    target="_blank"
+                    className="social-icon"
+                  >
+                    <Image
+                      src="/whatsapp.png"
+                      alt="WhatsApp"
                       width={24}
                       height={24}
                       className="no-hover-effect"

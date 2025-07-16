@@ -171,9 +171,9 @@ export default function AboutPage() {
       `}</style>
 
       <div className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <div className="bg-white py-10 px-4">
-          <div className="max-w-6xl mx-auto rounded-xl overflow-hidden shadow-md relative h-[500px] hero-image">
+        {/* Hero Section - Updated */}
+        <div className="relative w-full h-screen">
+          <div className="absolute inset-0">
             <Image
               src="/bg.jpg"
               alt="Phuket Beach"
@@ -182,14 +182,17 @@ export default function AboutPage() {
               priority
             />
             <div className="absolute inset-0 bg-black opacity-15"></div>
+          </div>
 
-            <div className="absolute inset-0 flex flex-col justify-end items-start text-white text-left pl-8 md:pl-16 pr-4 pb-10">
+          <div className="relative h-full flex flex-col justify-center items-center text-center text-white px-4">
+            <div className="max-w-4xl mx-auto">
               <Title
+                className="mb-6"
                 style={{
                   color: "white",
                   textShadow: "2px 2px 8px rgba(0,0,0,0.7)",
-                  animation:
-                    "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  animation: "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  fontSize: "3.5rem",
                 }}
               >
                 {t("aboutHeroTitle")}
@@ -197,10 +200,9 @@ export default function AboutPage() {
               <Paragraph
                 style={{
                   color: "white",
-                  fontSize: "1.25rem",
+                  fontSize: "1.2rem",
                   textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
-                  animation:
-                    "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  animation: "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
                   animationDelay: "0.3s",
                   opacity: 0,
                 }}
@@ -220,13 +222,15 @@ export default function AboutPage() {
                 animation:
                   "fadeInLuxury 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards",
                 opacity: 0,
+                fontSize: "2.25rem",
               }}
             >
               {t("aboutMissionTitle")}
             </Title>
-            <Paragraph>{t("aboutMission1")}</Paragraph>
-            <Paragraph>{t("aboutMission2")}</Paragraph>
-            <Paragraph>{t("aboutMission3")}</Paragraph>
+              <Paragraph style={{ fontSize: '18px' }}>{t("aboutMission1")}</Paragraph>
+              <Paragraph style={{ fontSize: '18px' }}>{t("aboutMission2")}</Paragraph>
+              <Paragraph style={{ fontSize: '18px' }}>{t("aboutMission3")}</Paragraph>
+
           </section>
 
           <section className="mb-16 text-center">
@@ -254,8 +258,8 @@ export default function AboutPage() {
                     />
                   </div>
                   <Title level={4}>Ruby</Title>
-                  <Paragraph>{t("aboutTeamCEO")}</Paragraph>
-                  <Paragraph type="secondary">
+                  <Paragraph style={{ fontSize: '18px' }}>{t("aboutTeamCEO")}</Paragraph>
+                  <Paragraph type="secondary" style={{ fontSize: '16px' }}>
                     {t("aboutTeamCEODesc")}
                   </Paragraph>
                 </Card>
@@ -272,8 +276,8 @@ export default function AboutPage() {
                     />
                   </div>
                   <Title level={4}>Jeab</Title>
-                  <Paragraph>{t("aboutTeamHeadSales")}</Paragraph>
-                  <Paragraph type="secondary">
+                  <Paragraph style={{ fontSize: '18px' }}>{t("aboutTeamHeadSales")}</Paragraph>
+                  <Paragraph type="secondary" style={{ fontSize: '16px' }}>
                     {t("aboutTeamSalesDesc")}
                   </Paragraph>
                 </Card>
@@ -301,6 +305,7 @@ export default function AboutPage() {
                   "fadeInLuxury 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards",
                 opacity: 0,
                 animationDelay: "0.5s",
+                fontSize: "16px",
               }}
             >
               {t("aboutExpertiseDesc")}
@@ -319,16 +324,16 @@ export default function AboutPage() {
               <Col md={12}>
                 <ul className="space-y-6">
                   <li className="expertise-item">
-                    <Title level={4}>{t("aboutExpertise1Title")}</Title>
-                    <Paragraph>{t("aboutExpertise1Desc")}</Paragraph>
+                    <Title level={4} style={{ fontSize: '18px' }}>{t("aboutExpertise1Title")}</Title>
+                    <Paragraph style={{ fontSize: '16px' }}>{t("aboutExpertise1Desc")}</Paragraph>
                   </li>
                   <li className="expertise-item">
-                    <Title level={4}>{t("aboutExpertise2Title")}</Title>
-                    <Paragraph>{t("aboutExpertise2Desc")}</Paragraph>
+                    <Title level={4} style={{ fontSize: '18px' }}>{t("aboutExpertise2Title")}</Title>
+                    <Paragraph style={{ fontSize: '16px' }}>{t("aboutExpertise2Desc")}</Paragraph>
                   </li>
                   <li className="expertise-item">
-                    <Title level={4}>{t("aboutExpertise3Title")}</Title>
-                    <Paragraph>{t("aboutExpertise3Desc")}</Paragraph>
+                    <Title level={4} style={{ fontSize: '18px' }}>{t("aboutExpertise3Title")}</Title>
+                    <Paragraph style={{ fontSize: '16px' }}>{t("aboutExpertise3Desc")}</Paragraph>
                   </li>
                 </ul>
               </Col>
@@ -337,13 +342,13 @@ export default function AboutPage() {
 
           <section className="mt-16 text-center cta-section rounded-xl p-12 relative">
             <div className="relative z-10">
-              <Title level={2}>{t("aboutCTAHeadline")}</Title>
-              <Paragraph className="max-w-2xl mx-auto">
+              <Title level={2} >{t("aboutCTAHeadline")}</Title>
+              <Paragraph className="max-w-2xl mx-auto" style={{ fontSize: '16px' }}>
                 {t("aboutCTADesc")}
               </Paragraph>
               <Link href="/contactUs" className="inline-block mt-6">
                 <Button className="luxury-gold-button" size="large">
-                  <span>{t("contactUs")}</span>
+                  <span style={{ fontSize: '18px' }}>{t("contactUs")}</span>
                 </Button>
               </Link>
             </div>

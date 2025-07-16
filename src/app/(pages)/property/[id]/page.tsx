@@ -131,7 +131,7 @@ export default function PropertyDetails() {
   }
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div style={{ padding: "24px" ,fontSize:"18px" }}>
       <Breadcrumb
         items={[
           { title: <Link href="/">{t("home")}</Link> },
@@ -145,18 +145,19 @@ export default function PropertyDetails() {
       </Title>
 
       <Text
-        type="secondary"
+        type="secondary" 
         style={{
           display: "block",
           marginBottom: 4,
           whiteSpace: "normal",
           wordBreak: "break-word",
+          fontSize: "22px",
         }}
       >
         📍 {property.location}
       </Text>
 
-      <Text type="secondary" style={{ fontSize: "20px" }}>
+      <Text type="secondary" style={{ fontSize: "22px" }}>
         🏠 {property.property_type}
       </Text>
 
@@ -172,8 +173,8 @@ export default function PropertyDetails() {
             />
           </Image.PreviewGroup>
 
-          <Divider orientation="left">{t("description")}</Divider>
-          <Paragraph style={{ fontSize: "16px" }}>
+          <Divider style={{ fontSize: "22px" }} orientation="left">{t("description")}</Divider>
+          <Paragraph style={{ fontSize: "18px" }}>
             {property.description?.split("\n").map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -181,10 +182,10 @@ export default function PropertyDetails() {
 
           {property.address && (
             <>
-              <Divider orientation="left">
+              <Divider orientation="left" style={{ fontSize: "22px" }}>
                 {language === "th" ? "แผนที่" : "Location Map"}
               </Divider>
-              <Paragraph type="secondary">{property.address}</Paragraph>
+              <Paragraph type="secondary" style={{ fontSize: "18px" }}>{property.address}</Paragraph>
               <iframe
                 src={`https://www.google.com/maps?q=${encodeURIComponent(
                   property.address
@@ -211,51 +212,51 @@ export default function PropertyDetails() {
               ฿{property.price.toLocaleString()}
             </Title>
 
-            <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+            <Row gutter={[16, 16]} style={{ marginTop: 16,fontSize: "18px" }}>
               <Col span={12}>
-                <Text>{t("bedrooms")}:</Text>
-                <br />
-                <strong>{property.bedrooms}</strong>
+                <Text style={{ fontSize: "18px" }}>{t("bedrooms")}:</Text>
+                  <br />
+                  <strong style={{ fontSize: "20px" }}>{property.bedrooms}</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("bathrooms")}:</Text>
+                <Text style={{ fontSize: "18px" }}>{t("bathrooms")}:</Text>
                 <br />
-                <strong>{property.bathrooms}</strong>
+                <strong style={{ fontSize: "20px" }}> {property.bathrooms}</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("kitchens")}:</Text>
+                <Text style={{ fontSize: "18px" }}>{t("kitchens")}:</Text>
                 <br />
-                <strong>{property.kitchens ?? "-"}</strong>
+                <strong style={{ fontSize: "20px" }}>{property.kitchens ?? "-"}</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("livingRooms")}:</Text>
+                <Text style={{ fontSize: "18px" }}>{t("livingRooms")}:</Text>
                 <br />
-                <strong>{property.living_rooms ?? "-"}</strong>
+                <strong style={{ fontSize: "20px" }}>{property.living_rooms ?? "-"}</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("carParks")}:</Text>
+                <Text style={{ fontSize: "18px" }}>{t("carParks")}:</Text>
                 <br />
-                <strong>{property.car_parks ?? "-"}</strong>
+                <strong style={{ fontSize: "20px" }}> {property.car_parks ?? "-"}</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("area")}:</Text>
+                <Text style={{ fontSize: "18px" }}> {t("area")}:</Text>
                 <br />
-                <strong>{property.area_sqm} sqm</strong>
+                <strong style={{ fontSize: "20px" }}> {property.area_sqm} sqm</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("landArea")}:</Text>
+                <Text style={{ fontSize: "18px" }}> {t("landArea")}:</Text>
                 <br />
-                <strong>{property.land_area_sqm ?? "-"} sqm</strong>
+                <strong style={{ fontSize: "20px" }}> {property.land_area_sqm ?? "-"} sqm</strong>
               </Col>
               <Col span={12}>
-                <Text>{t("type")}:</Text>
+                <Text style={{ fontSize: "18px" }}> {t("type")}:</Text>
                 <br />
-                <strong>{property.type}</strong>
+                <strong style={{ fontSize: "20px" }}> {property.type}</strong>
               </Col>
               <Col span={24}>
-                <Text>{t("status")}:</Text>
+                <Text style={{ fontSize: "18px" }}> {t("status")}:</Text>
                 <br />
-                <strong>{property.status}</strong>
+                <strong style={{ fontSize: "20px" }}> {property.status}</strong>
               </Col>
             </Row>
 
@@ -268,7 +269,7 @@ export default function PropertyDetails() {
                 backgroundColor: "#D4AF37",
                 borderColor: "#C9A227",
                 height: "40px",
-                fontSize: "16px",
+                fontSize: "18px",
                 fontWeight: "bold",
               }}
             >

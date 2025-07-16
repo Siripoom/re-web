@@ -70,7 +70,7 @@ body {
   justify-content: space-between;
   padding: 0 10px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   pointer-events: none;
 }
 
@@ -148,6 +148,7 @@ body {
   font-family: var(--font-prompt);
   font-weight: 400;
   line-height: 1.6;
+  font-size: 20;
 }
 
 /* Typography Classes */
@@ -247,7 +248,7 @@ div,
 /* Responsive Typography */
 @media (max-width: 768px) {
   body {
-    font-size: 14px;
+    font-size: 20px;
   }
 
   h1,
@@ -305,7 +306,7 @@ div,
   justify-content: space-between;
   padding: 0 10px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 20px;
   pointer-events: none;
   font-family: var(--font-prompt);
 }

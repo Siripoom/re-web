@@ -293,7 +293,25 @@ export default function EditPropertyPage() {
                   </Form.Item>
                 </Col>
 
-                <Col xs={24} sm={12}></Col>
+                <Col xs={24} sm={12}>
+                  <Form.Item
+                    name="location"
+                    label="พื้นที่"
+                    rules={[{ required: true, message: "กรุณาเลือกพื้นที่" }]}
+                  >
+                    <Select placeholder="เลือกพื้นที่">
+                      <Select.Option value="Patong">ป่าตอง</Select.Option>
+                      <Select.Option value="Kamala">กะมะลา</Select.Option>
+                      <Select.Option value="Kata">กะตะ</Select.Option>
+                      <Select.Option value="Karon">กะรน</Select.Option>
+                      <Select.Option value="Rawai">ราไวย์</Select.Option>
+                      <Select.Option value="Phuket Town">เมืองภูเก็ต</Select.Option>
+                      <Select.Option value="Cherngtalay">เชิงทะเล</Select.Option>
+                      <Select.Option value="Bang Tao">บางเทา</Select.Option>
+                      <Select.Option value="Nai Harn">ในหาน</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
               </Row>
             </Card>
 

@@ -49,6 +49,7 @@ export class PropertyService {
 
     return data || [];
   }
+  
 
   // ดึงข้อมูลอสังหาตาม ID
   static async getPropertyById(id: string): Promise<Property | null> {
@@ -70,6 +71,8 @@ export class PropertyService {
 
     return data;
   }
+
+  
 
   // ค้นหาอสังหาตามเงื่อนไข
   static async searchProperties(

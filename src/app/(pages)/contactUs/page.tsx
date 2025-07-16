@@ -107,9 +107,9 @@ export default function ContactPage() {
       `}</style>
 
       <div className="min-h-screen bg-white">
-        {/* Hero Section */}
-        <div className="bg-white py-10 px-4">
-          <div className="max-w-6xl mx-auto rounded-xl overflow-hidden shadow-md relative h-[500px] hero-image">
+        {/* Hero Section - Updated */}
+        <div className="relative w-full h-screen">
+          <div className="absolute inset-0">
             <Image
               src="/bg.jpg"
               alt="Phuket Beach"
@@ -118,13 +118,17 @@ export default function ContactPage() {
               priority
             />
             <div className="absolute inset-0 bg-black opacity-15"></div>
-            <div className="absolute inset-0 flex flex-col justify-end items-start text-white text-left pl-8 md:pl-16 pr-4 pb-10">
+          </div>
+
+          <div className="relative h-full flex flex-col justify-center items-center text-center text-white px-4">
+            <div className="max-w-4xl mx-auto">
               <Title
+                className="mb-6"
                 style={{
                   color: "white",
                   textShadow: "2px 2px 8px rgba(0,0,0,0.7)",
-                  animation:
-                    "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  animation: "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  fontSize: "3.5rem",
                 }}
               >
                 {t("contactHeroTitle")}
@@ -132,10 +136,9 @@ export default function ContactPage() {
               <Paragraph
                 style={{
                   color: "white",
-                  fontSize: "1.25rem",
+                  fontSize: "1.5rem",
                   textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
-                  animation:
-                    "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+                  animation: "fadeInLuxury 1.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
                   animationDelay: "0.3s",
                   opacity: 0,
                 }}
@@ -218,7 +221,7 @@ export default function ContactPage() {
                     className="social-icon"
                   >
                     <Image
-                      src="/whatsapp.png"
+                      src="/whatsapp.svg"
                       alt="WhatsApp"
                       width={24}
                       height={24}

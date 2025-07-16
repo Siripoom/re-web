@@ -158,6 +158,26 @@ export default function CreatePropertyPage() {
 
                 <Col span={24}>
                   <Form.Item
+                    name="location"
+                    label="พื้นที่ตั้ง"
+                    rules={[{ required: true, message: "กรุณาระบุพื้นที่ตั้ง" }]}
+                  >
+                    <Select placeholder="เลือกพื้นที่ตั้ง">
+                      <Select.Option value="Patong">ป่าตอง</Select.Option>
+                      <Select.Option value="Kamala">กะมะลา</Select.Option>
+                      <Select.Option value="Kata">กะตะ</Select.Option>
+                      <Select.Option value="Karon">กะรน</Select.Option>
+                      <Select.Option value="Rawai">ราไวย์</Select.Option>
+                      <Select.Option value="Phuket Town">เมืองภูเก็ต</Select.Option>
+                      <Select.Option value="Cherngtalay">เชิงทะเล</Select.Option>
+                      <Select.Option value="Bang Tao">บางเทา</Select.Option>
+                      <Select.Option value="Nai Harn">ในหาน</Select.Option>
+                    </Select>
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item
                     name="address"
                     label="ที่อยู่"
                     rules={[{ required: true, message: "กรุณาระบุที่อยู่" }]}
@@ -360,4 +380,4 @@ export default function CreatePropertyPage() {
       </Form>
     </div>
   );
-}
+} 

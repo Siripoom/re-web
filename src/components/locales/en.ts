@@ -1,6 +1,6 @@
 const en = {
   home: "Home",
-  product: "Property",
+  product: "Properties",
   aboutUs: "About Us",
   contactUs: "Contact Us",
   login: "Login / Register",
@@ -38,7 +38,7 @@ const en = {
   aboutTeamCEO: "CEO & Founder",
   aboutTeamHeadSales: "Head of Sales",
   aboutTeamCEODesc: "15+ years experience in luxury real estate",
-  aboutTeamSalesDesc: "Specializing in high-end property",
+  aboutTeamSalesDesc: "Specializing in high-end property for elite lifestyles.",
   aboutExpertiseTitle: "Our Expertise",
   aboutExpertiseDesc:
     "Ruby Real Estate specializes in the luxury property market in Phuket, offering a diverse portfolio of high-end villas, beachfront residences, and investment properties.",

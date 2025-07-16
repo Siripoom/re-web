@@ -15,30 +15,62 @@ const { Option } = Select;
 
 const translations = { en, th };
 
-// แยก SearchHandler component ออกมา
 function SearchHandler({
   setSearchTerm,
+  setPropertyType,
+  setPropertyFormat,
+  setPriceRange,
+  setLocation,
 }: {
   setSearchTerm: (term: string) => void;
+  setPropertyType: (type: string) => void;
+  setPropertyFormat: (format: string) => void;
+  setPriceRange: (range: string) => void;
+  setLocation: (loc: string) => void;
 }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const searchQuery = searchParams.get("search");
+    const typeQuery = searchParams.get("type");
+    const propertyTypeQuery = searchParams.get("propertyType");
+    const minPriceQuery = searchParams.get("minPrice");
+    const maxPriceQuery = searchParams.get("maxPrice");
+    const locationQuery = searchParams.get("location");
+
     if (searchQuery) {
       setSearchTerm(decodeURIComponent(searchQuery));
     }
-  }, [searchParams, setSearchTerm]);
+    if (typeQuery) {
+      setPropertyFormat(typeQuery);
+    }
+    if (propertyTypeQuery) {
+      setPropertyType(propertyTypeQuery);
+    }
+    if (locationQuery) {
+      setLocation(locationQuery);
+    }
+    if (minPriceQuery && maxPriceQuery) {
+      const min = parseInt(minPriceQuery);
+      const max = parseInt(maxPriceQuery);
+      
+      if (max <= 10000000) {
+        setPriceRange("0-10");
+      } else if (max <= 20000000) {
+        setPriceRange("10-20");
+      } else {
+        setPriceRange("20+");
+      }
+    }
+  }, [searchParams, setSearchTerm, setPropertyType, setPropertyFormat, setPriceRange, setLocation]);
 
   return null;
 }
 
-// Loading component สำหรับ Suspense fallback
 function SearchFallback() {
-  return <div style={{ height: "1px" }} />; // Invisible loading state
+  return <div style={{ height: "1px" }} />;
 }
 
-// Function to get tag color and text based on property type
 function getPropertyTypeTag(type: string) {
   const lowerType = type.toLowerCase();
   if (lowerType === "rent") {
@@ -58,13 +90,14 @@ function PropertySearchContent() {
   const { allProperties: properties, loading } = usePropertyContext();
   const { language } = useLanguage();
   const t = (key: keyof typeof en) => translations[language][key];
+  
 
   const filteredProperties = properties.filter((property) => {
     return (
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (location === "" || property.location === location) &&
-      (property.property_type === propertyType || propertyType === "") &&
-      (propertyFormat === "" || property.type === propertyFormat) &&
+      (propertyType === "" || property.property_type === propertyType) &&
+      (propertyFormat === "" || property.type.toLowerCase() === propertyFormat.toLowerCase()) &&
       (priceRange === "" ||
         (priceRange === "0-10" && property.price < 10000000) ||
         (priceRange === "10-20" &&
@@ -73,6 +106,7 @@ function PropertySearchContent() {
         (priceRange === "20+" && property.price >= 20000000))
     );
   });
+  
 
   const locations = Array.from(
     new Set(
@@ -97,111 +131,141 @@ function PropertySearchContent() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Search Handler with Suspense */}
-        <Suspense fallback={<SearchFallback />}>
-          <SearchHandler setSearchTerm={setSearchTerm} />
-        </Suspense>
-
-        {loading ? (
-          <div className="skeleton-title mb-6"></div>
-        ) : (
-          <Title level={2} className="animate-fadeIn">
-            {t("product")}
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section with Header Image */}
+      <div className="relative h-64 md:h-96">
+        <Image
+          src="/bg.jpg" // Replace with your header image path
+          alt="Property Search"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black opacity-30"></div>
+        <div className="relative z-10 h-full flex flex-col justify-center items-center text-white">
+          <Title level={1} className="!text-white !text-3xl md:!text-5xl text-center mb-4">
+            {t("product") || "Properties"}
           </Title>
-        )}
+          <p className="text-xl md:text-3xl text-center max-w-2xl px-4">
+            {language === "th" 
+              ? "ค้นหาอสังหาริมทรัพย์ที่เหมาะกับคุณ" 
+              : "Find the perfect property for you"}
+          </p>
+        </div>
+      </div>
 
-        {loading ? (
-          <div className="skeleton-search mb-6"></div>
-        ) : (
-          <Input.Search
-            placeholder={t("search") || "Search"}
-            enterButton={
-              <Button type="primary" className="gold-search-button">
-                {t("searchbtn") || "Search"}
-              </Button>
-            }
-            allowClear
-            size="large"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-6 animate-fadeIn gold-search-btn"
-          />
-        )}
+      <div className="max-w-6xl mx-auto p-4 -mt-16 relative z-20">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <Suspense fallback={<SearchFallback />}>
+            <SearchHandler 
+              setSearchTerm={setSearchTerm}
+              setPropertyType={setPropertyType}
+              setPropertyFormat={setPropertyFormat}
+              setPriceRange={setPriceRange}
+              setLocation={setLocation}
+            />
+          </Suspense>
 
-        <Row gutter={[16, 16]} className="mb-8">
           {loading ? (
-            <>
-              {[1, 2, 3, 4].map((item) => (
-                <Col xs={24} sm={12} md={6} key={item}>
-                  <div className="skeleton-filter"></div>
-                </Col>
-              ))}
-            </>
+            <div className="skeleton-search mb-6"></div>
           ) : (
-            <>
-              <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-100">
-                <Select
-                  placeholder={t("location") || "Location"}
-                  value={location || undefined}
-                  onChange={(value) => setLocation(value)}
-                  style={{ width: "100%" }}
-                  allowClear
+            <Input.Search
+              placeholder={t("search") || "Search"}
+              enterButton={
+                <Button 
+                  type="primary" 
+                  className="gold-search-button"
+                  style={{ fontSize: "18px", height: "42px" }}
                 >
-                  {locations.map((loc) => (
-                    <Option key={loc} value={loc}>
-                      {loc}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-200">
-                <Select
-                  placeholder={t("propertyType") || "Property Type"}
-                  value={propertyType || undefined}
-                  onChange={(value) => setPropertyType(value)}
-                  style={{ width: "100%" }}
-                  allowClear
-                >
-                  {propertyTypes.map((type) => (
-                    <Option key={type} value={type}>
-                      {type}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-300">
-                <Select
-                  placeholder={t("propertyFormat") || "Property Format"}
-                  value={propertyFormat || undefined}
-                  onChange={(value) => setPropertyFormat(value)}
-                  style={{ width: "100%" }}
-                  allowClear
-                >
-                  {propertyFormats.map((format) => (
-                    <Option key={format} value={format}>
-                      {format}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-400">
-                <Select
-                  placeholder={t("priceRange") || "Price Range"}
-                  value={priceRange || undefined}
-                  onChange={(value) => setPriceRange(value)}
-                  style={{ width: "100%" }}
-                  allowClear
-                >
-                  <Option value="0-10">0 - 10M</Option>
-                  <Option value="10-20">10M - 20M</Option>
-                  <Option value="20+">20M+</Option>
-                </Select>
-              </Col>
-            </>
+                  {t("searchbtn") || "Search"}
+                </Button>
+              }
+              allowClear
+              size="large"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="mb-6 animate-fadeIn gold-search-btn"
+              style={{ fontSize: "18px" }}
+            />
           )}
-        </Row>
+
+          <Row gutter={[16, 16]} className="mb-8">
+            {loading ? (
+              <>
+                {[1, 2, 3, 4].map((item) => (
+                  <Col xs={24} sm={12} md={6} key={item}>
+                    <div className="skeleton-filter"></div>
+                  </Col>
+                ))}
+              </>
+            ) : (
+              <>
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-100">
+                  <Select
+                    placeholder={t("location") || "Location"}
+                    value={location || undefined}
+                    onChange={(value) => setLocation(value)}
+                    style={{ width: "100%", fontSize: "18px" }}
+                    allowClear
+                    dropdownStyle={{ fontSize: "16px" }}
+                  >
+                    {locations.map((loc) => (
+                      <Option key={loc} value={loc} style={{ fontSize: "16px" }}>
+                        {loc}
+                      </Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-200">
+                  <Select
+                    placeholder={t("propertyType") || "Property Type"}
+                    value={propertyType || undefined}
+                    onChange={(value) => setPropertyType(value)}
+                    style={{ width: "100%", fontSize: "18px" }}
+                    allowClear
+                    dropdownStyle={{ fontSize: "16px" }}
+                  >
+                    {propertyTypes.map((type) => (
+                      <Option key={type} value={type} style={{ fontSize: "16px" }}>
+                        {type}
+                      </Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-300">
+                  <Select
+                    placeholder={t("propertyFormat") || "Property Format"}
+                    value={propertyFormat || undefined}
+                    onChange={(value) => setPropertyFormat(value)}
+                    style={{ width: "100%", fontSize: "18px" }}
+                    allowClear
+                    dropdownStyle={{ fontSize: "16px" }}
+                  >
+                    {propertyFormats.map((format) => (
+                      <Option key={format} value={format} style={{ fontSize: "16px" }}>
+                        {format}
+                      </Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-400">
+                  <Select
+                    placeholder={t("priceRange") || "Price Range"}
+                    value={priceRange || undefined}
+                    onChange={(value) => setPriceRange(value)}
+                    style={{ width: "100%", fontSize: "18px" }}
+                    allowClear
+                    dropdownStyle={{ fontSize: "16px" }}
+                  >
+                    <Option value="0-10" style={{ fontSize: "16px" }}>0 - 10M</Option>
+                    <Option value="10-20" style={{ fontSize: "16px" }}>10M - 20M</Option>
+                    <Option value="20+" style={{ fontSize: "16px" }}>20M+</Option>
+                  </Select>
+                </Col>
+              </>
+            )}
+          </Row>
+        </div>
 
         <div className="mt-8">
           {loading ? (
@@ -220,7 +284,7 @@ function PropertySearchContent() {
               ))}
             </Row>
           ) : (
-            <Row gutter={[16, 16]}>
+            <Row gutter={[16, 16]} className="!flex !flex-wrap">
               {filteredProperties.map((property, index) => {
                 const primaryImage =
                   property.images?.find((img) => img.is_primary)?.image_url ||
@@ -235,59 +299,57 @@ function PropertySearchContent() {
                     sm={12}
                     md={8}
                     key={property.id}
-                    className="animate-fadeInUp"
-                    style={{ animationDelay: `${index * 0.1}s` }}
+                    className="animate-fadeInUp flex"
+                    style={{ 
+                      animationDelay: `${index * 0.1}s`,
+                      display: 'flex',
+                      flexDirection: 'column'
+                    }}
                   >
                     <Link
                       href={`/property/${property.id}`}
-                      className="hover:no-underline"
+                      className="hover:no-underline flex-1"
                     >
                       <Card
                         hoverable
-                        className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1 gold-card"
+                        className="transition-all h-full duration-300 hover:shadow-lg hover:-translate-y-1 gold-card flex flex-col"
                         cover={
-                          <div className="h-[200px] relative overflow-hidden">
+                          <div className="h-[220px] relative overflow-hidden">
                             <Image
                               src={primaryImage}
                               alt={property.name}
                               fill
                               className="object-cover transition-transform duration-500 hover:scale-105"
                             />
+                            <Tag 
+                              color={typeTag.color}
+                              className="!absolute !top-4 !right-4 !font-bold !px-3 !py-1"
+                              style={{
+                                color: "white",
+                                fontSize: "15px",
+                                fontWeight: "bold",
+                                padding: "4px 8px",
+                                borderRadius: "4px",
+                                zIndex: 1
+                              }}
+                            >
+                              {typeTag.text}
+                            </Tag>
                           </div>
                         }
+                        bodyStyle={{ flex: 1 }}
                       >
-                        <Card.Meta
-                          title={
-                            <span className="!text-lg">{property.name}</span>
-                          }
-                          description={
-                            <>
-                              <div className="!text-base font-semibold">
-                                📌{" "}
-                                <Tag
-                                  color={typeTag.color}
-                                  className="inline-tag"
-                                  style={{
-                                    color: "white",
-                                    fontSize: "10px",
-                                    fontWeight: "bold",
-                                    padding: "2px 6px",
-                                    borderRadius: "3px",
-                                    marginRight: "8px",
-                                  }}
-                                >
-                                  {typeTag.text}
-                                </Tag>{" "}
-                                | 🛏 {property.bedrooms} | 🚿{" "}
-                                {property.bathrooms} | 🏠{" "}
-                                {property.property_type}
-                              </div>
-                              <div className="text-[#D4AF37] font-semibold mt-1 !text-base">
-                                {property.price.toLocaleString("en-US")} THB
-                              </div>
-                            </>
-                          }
-                        />
+                        <div className="flex flex-col h-full">
+                          <h3 className="text-xl font-semibold mb-2">{property.name}</h3>
+                          <div className="text-gray-600 mb-4 flex-grow">
+                            <p className="mb-1 text-lg">📌 {property.location}</p>
+                            <p className="mb-1 text-lg">🛏 {property.bedrooms} | 🚿 {property.bathrooms}</p>
+                            <p className="mb-1 text-lg">🏠 {property.property_type}</p>
+                          </div>
+                          <div className="text-[#D4AF37] text-xl font-semibold mt-auto">
+                            {property.price.toLocaleString("en-US")} THB
+                          </div>
+                        </div>
                       </Card>
                     </Link>
                   </Col>
@@ -298,17 +360,18 @@ function PropertySearchContent() {
 
           {!loading && filteredProperties.length === 0 && (
             <div className="text-center py-12 animate-fadeIn">
-              <h3 className="text-xl font-medium text-gray-600">
+              <h3 className="text-2xl font-medium text-gray-600" style={{ fontSize: "24px" }}>
                 {t("noMatch")}
               </h3>
-              <p className="text-gray-500 mt-2">{t("tryAdjustFilters")}</p>
+              <p className="text-gray-500 mt-3" style={{ fontSize: "18px" }}>
+                {t("tryAdjustFilters")}
+              </p>
             </div>
           )}
         </div>
       </div>
 
       <style jsx global>{`
-        /* Animation Keyframes */
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -338,7 +401,6 @@ function PropertySearchContent() {
           }
         }
 
-        /* Animation Classes */
         .animate-fadeIn {
           animation: fadeIn 0.6s ease-out forwards;
         }
@@ -363,7 +425,6 @@ function PropertySearchContent() {
           animation-delay: 0.4s;
         }
 
-        /* Skeleton Loading Styles */
         .skeleton-title {
           height: 38px;
           width: 200px;
@@ -401,7 +462,7 @@ function PropertySearchContent() {
         }
 
         .skeleton-image {
-          height: 200px;
+          height: 220px;
           width: 100%;
           background: linear-gradient(
             to right,
@@ -433,21 +494,21 @@ function PropertySearchContent() {
 
         .skeleton-line--title {
           width: 70%;
-          height: 20px;
+          height: 24px;
           margin-bottom: 16px;
         }
 
         .skeleton-line--text {
           width: 90%;
+          height: 18px;
         }
 
         .skeleton-line--price {
           width: 50%;
-          height: 18px;
+          height: 20px;
           margin-top: 8px;
         }
 
-        /* Shimmer effect for all skeletons */
         .skeleton-title:after,
         .skeleton-search:after,
         .skeleton-filter:after,
@@ -468,7 +529,6 @@ function PropertySearchContent() {
           animation: shimmer 2s infinite;
         }
 
-        /* Updated color scheme */
         .gold-search-btn .ant-btn-primary {
           background-color: #d4af37 !important;
           border-color: #d4af37 !important;
@@ -503,7 +563,6 @@ function PropertySearchContent() {
           transform: translateY(-4px);
         }
 
-        /* Select dropdown styling */
         .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
           border-color: #d4af37 !important;
         }
@@ -529,14 +588,28 @@ function PropertySearchContent() {
           color: #d4af37 !important;
         }
 
-        /* Tag styling */
         .ant-tag {
           margin: 0;
         }
 
-        .inline-tag {
-          display: inline-block !important;
-          vertical-align: middle;
+        @media (max-width: 768px) {
+          .ant-typography {
+            font-size: 20px !important;
+          }
+          h2.ant-typography {
+            font-size: 24px !important;
+          }
+          .ant-input, 
+          .ant-select-selector,
+          .ant-btn {
+            font-size: 16px !important;
+          }
+          .ant-card-meta-title {
+            font-size: 18px !important;
+          }
+          .ant-card-meta-description {
+            font-size: 16px !important;
+          }
         }
       `}</style>
     </div>

@@ -82,7 +82,6 @@ const Navbar: React.FC = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          borderBottom: "1px solid #f0f0f0",
           position: "sticky",
           top: 0,
           zIndex: 1000,
@@ -103,8 +102,8 @@ const Navbar: React.FC = () => {
               src="/logo2-remove-bg.png"
               alt="Logo"
               style={{
-                width: "70px",
-                height: "70px",
+                width: "80px",
+                height: "90px",
                 objectFit: "contain",
               }}
               onError={(e) => {
@@ -132,16 +131,26 @@ const Navbar: React.FC = () => {
             <Link href="/contactUs" style={{ color: "white", fontWeight: 500 }}>
               {t("contactUs")}
             </Link>
-
             <Space>
-              <GlobalOutlined style={{ color: "white" }} />
+              <GlobalOutlined  style={{ color: "white" }} />
               <Switch
-                checkedChildren={<span style={{ color: "white" }}>TH</span>}
-                unCheckedChildren={<span style={{ color: "black" }}>EN</span>}
+                checkedChildren={
+                  <span style={{ color: "white", fontSize: "16px", fontWeight: 500 }}>
+                    TH
+                  </span>
+                }
+                unCheckedChildren={
+                  <span style={{ color: "black", fontSize: "16px", fontWeight: 500 }}>
+                    EN
+                  </span>
+                }
                 checked={language === "th"}
                 onChange={handleLanguageToggle}
                 style={{
                   backgroundColor: language === "th" ? "#d4af37" : "#f0f0f0",
+                  height: "32px",
+                  width: "70px",
+                  fontSize: "16px",
                 }}
                 className="gold-switch"
               />
@@ -174,6 +183,14 @@ const Navbar: React.FC = () => {
         .gold-switch.ant-switch .ant-switch-inner {
           color: black !important;
         }
+
+        .gold-switch.ant-switch .ant-switch-handle {
+          top: 7px;
+        }
+        
+        .gold-switch .ant-switch-inner {
+        padding-top: 4px;
+      }
 
         .gold-switch.ant-switch-checked .ant-switch-inner {
           color: white !important;

@@ -1,24 +1,24 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { 
-  Input, 
-  Button, 
-  Typography, 
-  Row, 
-  Col, 
-  Card, 
-  Spin, 
-  Alert, 
+import {
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Card,
+  Spin,
+  Alert,
   Tag,
   Divider,
   message,
   Select,
   Modal,
   Form,
-  Slider
+  Slider,
 } from "antd";
-import { 
+import {
   EnvironmentOutlined,
   StarFilled,
   SearchOutlined,
@@ -28,8 +28,8 @@ import {
   LeftOutlined,
   RightOutlined,
   HomeOutlined,
-  CrownOutlined
-} from '@ant-design/icons';
+  CrownOutlined,
+} from "@ant-design/icons";
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import { useState, useEffect, useCallback, useRef, JSX } from "react";
 import { useRouter } from "next/navigation";
@@ -47,7 +47,7 @@ interface Property {
   id: string;
   name: string;
   type: string;
-  location?: string;  
+  location?: string;
   bedrooms: number;
   bathrooms: number;
   area: number;
@@ -65,6 +65,7 @@ interface Property {
   featured: boolean;
   created_at: string;
   updated_at: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   amenities: any;
 }
 
@@ -96,18 +97,18 @@ export default function Home() {
   const propertiesByLocationRef = useRef<Record<string, Property[]>>({});
   const [currentAreaIndex, setCurrentAreaIndex] = useState(0);
   const popularAreasRef = useRef<HTMLDivElement>(null);
-  
+
   const [searchParams, setSearchParams] = useState({
-    searchQuery: '',
-    transactionType: 'sell',
+    searchQuery: "",
+    transactionType: "sell",
     filters: {
-      propertyType: '',
-      bedrooms: '',
-      bathrooms: '',
-      minPrice: '',
-      maxPrice: '',
-      area: ''
-    }
+      propertyType: "",
+      bedrooms: "",
+      bathrooms: "",
+      minPrice: "",
+      maxPrice: "",
+      area: "",
+    },
   });
 
   // Number of properties to show per slide
@@ -116,102 +117,111 @@ export default function Home() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       const [properties, stats, allProperties] = await Promise.all([
         PropertyService.getFeaturedProperties(),
         PropertyService.getPropertyStats(),
-        PropertyService.getAllProperties()
+        PropertyService.getAllProperties(),
       ]);
-      
-      const formattedProperties: Property[] = properties.map(property => ({
+
+      const formattedProperties: Property[] = properties.map((property) => ({
         ...property,
-        location: property.location || '',
-        images: property.images && Array.isArray(property.images) ? property.images : []
+        location: property.location || "",
+        images:
+          property.images && Array.isArray(property.images)
+            ? property.images
+            : [],
       }));
       setFeaturedProperties(formattedProperties);
-      
+
       // Group properties by location
       const locationMap: Record<string, Property[]> = {};
-      allProperties.forEach(property => {
+      allProperties.forEach((property) => {
         if (!property.location) return;
         if (!locationMap[property.location]) {
           locationMap[property.location] = [];
         }
         locationMap[property.location].push({
           ...property,
-          images: property.images && Array.isArray(property.images) ? property.images : []
+          images:
+            property.images && Array.isArray(property.images)
+              ? property.images
+              : [],
         });
       });
       propertiesByLocationRef.current = locationMap;
-      
+
       if (stats?.locationStats) {
         const areas = Object.entries(stats.locationStats)
-          .filter(([name]) => name && name !== 'null' && name !== 'undefined')
+          .filter(([name]) => name && name !== "null" && name !== "undefined")
           .sort((a, b) => b[1] - a[1])
           .slice(0, 6)
           .map(([name, count]) => {
             // Get first property image from this location
             const locationProperties = locationMap[name] || [];
             const firstProperty = locationProperties[0];
-            const image = firstProperty?.images?.[0]?.image_url || "/default-property.jpg";
-            
+            const image =
+              firstProperty?.images?.[0]?.image_url || "/default-property.jpg";
+
             return {
               name,
               image,
-              count: count as number
+              count: count as number,
             };
           });
-          
-        setPopularAreas(areas.length > 0 ? areas : [
-          { name: "Patong", image: "/header.jpg", count: 24 },
-          { name: "Kamala", image: "/header1.jpeg", count: 18 },
-          { name: "Rawai", image: "/header1.jpeg", count: 12 },
-          { name: "Kata", image: "/header1.jpeg", count: 15 },
-        ]);
+
+        setPopularAreas(
+          areas.length > 0
+            ? areas
+            : [
+                { name: "Patong", image: "/header.jpg", count: 24 },
+                { name: "Kamala", image: "/header1.jpeg", count: 18 },
+                { name: "Rawai", image: "/header1.jpeg", count: 12 },
+                { name: "Kata", image: "/header1.jpeg", count: 15 },
+              ]
+        );
       }
-      
+
       const types: PropertyType[] = [
         {
-          name: language === 'th' ? 'วิลล่า' : 'Villa',
+          name: language === "th" ? "วิลล่า" : "Villa",
           icon: <BankOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.['Villa'] || 0,
-          value: 'Villa'
+          count: stats?.propertyTypeStats?.["Villa"] || 0,
+          value: "Villa",
         },
         {
-          name: language === 'th' ? 'คอนโดมิเนียม' : 'Condominium',
+          name: language === "th" ? "คอนโดมิเนียม" : "Condominium",
           icon: <ApartmentOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.['Condo'] || 0,
-          value: 'Condo'
+          count: stats?.propertyTypeStats?.["Condo"] || 0,
+          value: "Condo",
         },
         {
-          name: language === 'th' ? 'บ้านเดี่ยว' : 'Single House',
+          name: language === "th" ? "บ้านเดี่ยว" : "Single House",
           icon: <HomeOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.['House'] || 0,
-          value: 'House'
+          count: stats?.propertyTypeStats?.["House"] || 0,
+          value: "House",
         },
         {
-          name: language === 'th' ? 'อพาร์ตเมนต์' : 'Apartment',
+          name: language === "th" ? "อพาร์ตเมนต์" : "Apartment",
           icon: <ApartmentOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.['Apartment'] || 0,
-          value: 'Apartment'
+          count: stats?.propertyTypeStats?.["Apartment"] || 0,
+          value: "Apartment",
         },
         {
-          name: language === 'th' ? 'เพนท์เฮาส์' : 'Penthouse',
+          name: language === "th" ? "เพนท์เฮาส์" : "Penthouse",
           icon: <CrownOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.['Penthouse'] || 0,
-          value: 'Penthouse'
-        }
+          count: stats?.propertyTypeStats?.["Penthouse"] || 0,
+          value: "Penthouse",
+        },
       ];
       setPropertyTypes(types);
-      
+
       setError(null);
     } catch (err) {
       console.error("Error fetching data:", err);
       setError("Failed to load data. Please try again later.");
       message.error(
-        language === "th" 
-          ? "ไม่สามารถโหลดข้อมูลได้" 
-          : "Failed to load data"
+        language === "th" ? "ไม่สามารถโหลดข้อมูลได้" : "Failed to load data"
       );
     } finally {
       setLoading(false);
@@ -225,28 +235,30 @@ export default function Home() {
   // Auto slide transition effect for featured properties
   useEffect(() => {
     if (featuredProperties.length <= propertiesPerSlide) return;
-    
+
     const interval = setInterval(() => {
-      setCurrentSlide(prev => 
-        prev === Math.ceil(featuredProperties.length / propertiesPerSlide) - 1 ? 0 : prev + 1
+      setCurrentSlide((prev) =>
+        prev === Math.ceil(featuredProperties.length / propertiesPerSlide) - 1
+          ? 0
+          : prev + 1
       );
       scrollToSlide(currentSlide);
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, [featuredProperties.length, currentSlide]);
 
   // Auto slide transition effect for popular areas
   useEffect(() => {
     if (popularAreas.length <= 4) return;
-    
+
     const interval = setInterval(() => {
-      setCurrentAreaIndex(prev => 
+      setCurrentAreaIndex((prev) =>
         prev === Math.ceil(popularAreas.length / 4) - 1 ? 0 : prev + 1
       );
       scrollToAreaSlide(currentAreaIndex);
     }, 6000);
-    
+
     return () => clearInterval(interval);
   }, [popularAreas.length, currentAreaIndex]);
 
@@ -256,39 +268,44 @@ export default function Home() {
       bedrooms: searchParams.filters.bedrooms,
       bathrooms: searchParams.filters.bathrooms,
       priceRange: [
-        searchParams.filters.minPrice ? parseInt(searchParams.filters.minPrice) : 0,
-        searchParams.filters.maxPrice ? parseInt(searchParams.filters.maxPrice) : 100000000
+        searchParams.filters.minPrice
+          ? parseInt(searchParams.filters.minPrice)
+          : 0,
+        searchParams.filters.maxPrice
+          ? parseInt(searchParams.filters.maxPrice)
+          : 100000000,
       ],
-      area: searchParams.filters.area
+      area: searchParams.filters.area,
     });
     setIsFilterModalVisible(true);
   };
 
   const handleFilterOk = () => {
-    form.validateFields().then(values => {
+    form.validateFields().then((values) => {
       const filters = {
-        propertyType: values.propertyType || '',
-        bedrooms: values.bedrooms || '',
-        bathrooms: values.bathrooms || '',
-        minPrice: values.priceRange ? values.priceRange[0].toString() : '',
-        maxPrice: values.priceRange ? values.priceRange[1].toString() : '',
-        area: values.area || ''
+        propertyType: values.propertyType || "",
+        bedrooms: values.bedrooms || "",
+        bathrooms: values.bathrooms || "",
+        minPrice: values.priceRange ? values.priceRange[0].toString() : "",
+        maxPrice: values.priceRange ? values.priceRange[1].toString() : "",
+        area: values.area || "",
       };
 
       const queryParams = new URLSearchParams();
       if (searchParams.searchQuery) {
-        queryParams.append('search', searchParams.searchQuery);
+        queryParams.append("search", searchParams.searchQuery);
       }
-      queryParams.append('type', searchParams.transactionType);
+      queryParams.append("type", searchParams.transactionType);
 
-      if (filters.propertyType) queryParams.append('propertyType', filters.propertyType);
-      if (filters.bedrooms) queryParams.append('bedrooms', filters.bedrooms);
-      if (filters.bathrooms) queryParams.append('bathrooms', filters.bathrooms);
-      if (filters.minPrice) queryParams.append('minPrice', filters.minPrice);
-      if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice);
-      if (filters.area) queryParams.append('area', filters.area);
+      if (filters.propertyType)
+        queryParams.append("propertyType", filters.propertyType);
+      if (filters.bedrooms) queryParams.append("bedrooms", filters.bedrooms);
+      if (filters.bathrooms) queryParams.append("bathrooms", filters.bathrooms);
+      if (filters.minPrice) queryParams.append("minPrice", filters.minPrice);
+      if (filters.maxPrice) queryParams.append("maxPrice", filters.maxPrice);
+      if (filters.area) queryParams.append("area", filters.area);
 
-      setSearchParams(prev => ({ ...prev, filters }));
+      setSearchParams((prev) => ({ ...prev, filters }));
       setIsFilterModalVisible(false);
       router.push(`/product?${queryParams.toString()}`);
     });
@@ -300,35 +317,35 @@ export default function Home() {
 
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
-    
+
     if (searchParams.searchQuery) {
-      queryParams.append('search', searchParams.searchQuery);
+      queryParams.append("search", searchParams.searchQuery);
     }
-    
-    queryParams.append('type', searchParams.transactionType);
-    
+
+    queryParams.append("type", searchParams.transactionType);
+
     if (searchParams.filters.propertyType) {
-      queryParams.append('propertyType', searchParams.filters.propertyType);
+      queryParams.append("propertyType", searchParams.filters.propertyType);
     }
-    
+
     if (searchParams.filters.bedrooms) {
-      queryParams.append('bedrooms', searchParams.filters.bedrooms);
+      queryParams.append("bedrooms", searchParams.filters.bedrooms);
     }
-    
+
     if (searchParams.filters.bathrooms) {
-      queryParams.append('bathrooms', searchParams.filters.bathrooms);
+      queryParams.append("bathrooms", searchParams.filters.bathrooms);
     }
-    
+
     if (searchParams.filters.minPrice) {
-      queryParams.append('minPrice', searchParams.filters.minPrice);
+      queryParams.append("minPrice", searchParams.filters.minPrice);
     }
-    
+
     if (searchParams.filters.maxPrice) {
-      queryParams.append('maxPrice', searchParams.filters.maxPrice);
+      queryParams.append("maxPrice", searchParams.filters.maxPrice);
     }
-    
+
     if (searchParams.filters.area) {
-      queryParams.append('area', searchParams.filters.area);
+      queryParams.append("area", searchParams.filters.area);
     }
 
     router.push(`/product?${queryParams.toString()}`);
@@ -345,11 +362,16 @@ export default function Home() {
   };
 
   const truncateName = (name: string, maxLength: number = 20) => {
-    return name.length > maxLength ? `${name.substring(0, maxLength)}...` : name;
+    return name.length > maxLength
+      ? `${name.substring(0, maxLength)}...`
+      : name;
   };
 
   const nextSlide = () => {
-    if (currentSlide < Math.ceil(featuredProperties.length / propertiesPerSlide) - 1) {
+    if (
+      currentSlide <
+      Math.ceil(featuredProperties.length / propertiesPerSlide) - 1
+    ) {
       setCurrentSlide(currentSlide + 1);
       scrollToSlide(currentSlide + 1);
     } else {
@@ -363,7 +385,8 @@ export default function Home() {
       setCurrentSlide(currentSlide - 1);
       scrollToSlide(currentSlide - 1);
     } else {
-      const lastSlide = Math.ceil(featuredProperties.length / propertiesPerSlide) - 1;
+      const lastSlide =
+        Math.ceil(featuredProperties.length / propertiesPerSlide) - 1;
       setCurrentSlide(lastSlide);
       scrollToSlide(lastSlide);
     }
@@ -380,20 +403,20 @@ export default function Home() {
       const scrollAmount = index * container.clientWidth;
       container.scrollTo({
         left: scrollAmount,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
 
   const nextArea = () => {
-    setCurrentAreaIndex(prev => 
+    setCurrentAreaIndex((prev) =>
       prev === Math.ceil(popularAreas.length / 4) - 1 ? 0 : prev + 1
     );
     scrollToAreaSlide(currentAreaIndex + 1);
   };
 
   const prevArea = () => {
-    setCurrentAreaIndex(prev => 
+    setCurrentAreaIndex((prev) =>
       prev === 0 ? Math.ceil(popularAreas.length / 4) - 1 : prev - 1
     );
     scrollToAreaSlide(currentAreaIndex - 1);
@@ -405,7 +428,7 @@ export default function Home() {
       const scrollAmount = index * container.clientWidth;
       container.scrollTo({
         left: scrollAmount,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     }
   };
@@ -439,7 +462,10 @@ export default function Home() {
         <div className="relative z-10 h-full flex flex-col justify-center">
           <div className="container mx-auto px-6 text-white">
             <div className="max-w-5xl mx-auto">
-              <Title level={1} className="!text-white !text-5xl md:!text-6xl font-serif">
+              <Title
+                level={1}
+                className="!text-white !text-5xl md:!text-6xl font-serif"
+              >
                 {language === "th"
                   ? "ค้นหาวิลล่าในฝันของคุณที่ภูเก็ต"
                   : "Find your dream villa in Phuket"}
@@ -453,48 +479,57 @@ export default function Home() {
                     : "Explore our exclusive collection of luxury properties in Phuket's most sought-after locations."}
                 </Text>
               </div>
-                <div className="flex mb-0">
-                  <Button
-                    type="primary"
-                    className={`!h-18 !text-xl !px-20 !font-semibold !rounded-none !rounded-tl-lg ${
-                      searchParams.transactionType === 'sell'
-                        ? '!bg-[#D4AF37] !border-[#D4AF37]'
-                        : '!bg-white !text-gray-700 '
-                    }`}
-                    onClick={() =>
-                      setSearchParams({ ...searchParams, transactionType: 'sell' })
-                    }
-                  >
-                    {language === 'th' ? 'ขาย' : 'Sell'}
-                  </Button>
-                  <Button
-                    type="primary"
-                    className={`!h-18 !text-xl !px-20 !font-semibold !rounded-none !rounded-tr-lg ${
-                      searchParams.transactionType === 'rent'
-                        ? '!bg-[#D4AF37] !border-[#D4AF37]'
-                        : '!bg-white !text-gray-700 '
-                    }`}
-                    onClick={() =>
-                      setSearchParams({ ...searchParams, transactionType: 'rent' })
-                    }
-                  >
-                    {language === 'th' ? 'เช่า' : 'Rent'}
-                  </Button>
-                </div>
+              <div className="flex mb-0">
+                <Button
+                  type="primary"
+                  className={`!h-18 !text-xl !px-20 !font-semibold !rounded-none !rounded-tl-lg ${
+                    searchParams.transactionType === "sell"
+                      ? "!bg-[#D4AF37] !border-[#D4AF37]"
+                      : "!bg-white !text-gray-700 "
+                  }`}
+                  onClick={() =>
+                    setSearchParams({
+                      ...searchParams,
+                      transactionType: "sell",
+                    })
+                  }
+                >
+                  {language === "th" ? "ขาย" : "Sell"}
+                </Button>
+                <Button
+                  type="primary"
+                  className={`!h-18 !text-xl !px-20 !font-semibold !rounded-none !rounded-tr-lg ${
+                    searchParams.transactionType === "rent"
+                      ? "!bg-[#D4AF37] !border-[#D4AF37]"
+                      : "!bg-white !text-gray-700 "
+                  }`}
+                  onClick={() =>
+                    setSearchParams({
+                      ...searchParams,
+                      transactionType: "rent",
+                    })
+                  }
+                >
+                  {language === "th" ? "เช่า" : "Rent"}
+                </Button>
+              </div>
               <div className="bg-white bg-opacity-100 p-6 !rounded-r-none !rounded-tr-lg !rounded-br-lg !rounded-bl-lg shadow-md mt-0">
                 <div className="flex flex-col md:flex-row gap-4 items-center w-full">
                   <Input
                     placeholder={
-                      language === 'th'
-                        ? 'ค้นหาด้วยชื่อโครงการหรือสถานที่'
-                        : 'Search your property'
+                      language === "th"
+                        ? "ค้นหาด้วยชื่อโครงการหรือสถานที่"
+                        : "Search your property"
                     }
                     size="large"
                     className="flex-grow !h-14 text-lg !rounded-lg hover:!border-[#D4AF37] focus:!border-[#D4AF37]"
                     prefix={<SearchOutlined className="text-gray-400" />}
                     value={searchParams.searchQuery}
                     onChange={(e) =>
-                      setSearchParams({ ...searchParams, searchQuery: e.target.value })
+                      setSearchParams({
+                        ...searchParams,
+                        searchQuery: e.target.value,
+                      })
                     }
                     onPressEnter={handleSearch}
                   />
@@ -505,7 +540,7 @@ export default function Home() {
                     className="!h-14 !text-lg !rounded-lg hover:!border-[#D4AF37] hover:!text-[#D4AF37]"
                     onClick={showFilterModal}
                   >
-                    {language === 'th' ? 'ตัวกรอง' : 'Filter'}
+                    {language === "th" ? "ตัวกรอง" : "Filter"}
                   </Button>
 
                   <Button
@@ -515,7 +550,7 @@ export default function Home() {
                     icon={<SearchOutlined />}
                     onClick={handleSearch}
                   >
-                    {language === 'th' ? 'ค้นหา' : 'Search'}
+                    {language === "th" ? "ค้นหา" : "Search"}
                   </Button>
                 </div>
               </div>
@@ -526,39 +561,70 @@ export default function Home() {
 
       {/* Filter Modal */}
       <Modal
-        title={language === 'th' ? 'ตัวกรองค้นหา' : 'Search Filters'}
+        title={language === "th" ? "ตัวกรองค้นหา" : "Search Filters"}
         open={isFilterModalVisible}
         onOk={handleFilterOk}
         onCancel={handleFilterCancel}
         width={800}
         footer={[
           <Button key="reset" onClick={() => form.resetFields()}>
-            {language === 'th' ? 'รีเซ็ต' : 'Reset'}
+            {language === "th" ? "รีเซ็ต" : "Reset"}
           </Button>,
           <Button key="cancel" onClick={handleFilterCancel}>
-            {language === 'th' ? 'ยกเลิก' : 'Cancel'}
+            {language === "th" ? "ยกเลิก" : "Cancel"}
           </Button>,
-          <Button key="search" type="primary" onClick={handleFilterOk} className="!bg-[#D4AF37] !border-[#D4AF37] hover:!bg-[#c9a227] hover:!border-[#c9a227]">
-            {language === 'th' ? 'ค้นหา' : 'Search'}
+          <Button
+            key="search"
+            type="primary"
+            onClick={handleFilterOk}
+            className="!bg-[#D4AF37] !border-[#D4AF37] hover:!bg-[#c9a227] hover:!border-[#c9a227]"
+          >
+            {language === "th" ? "ค้นหา" : "Search"}
           </Button>,
         ]}
       >
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="propertyType" label={language === 'th' ? 'ประเภทอสังหาริมทรัพย์' : 'Property Type'}>
-                <Select placeholder={language === 'th' ? 'เลือกประเภท' : 'Select type'} className="hover:!border-[#D4AF37]">
-                  <Option value="Villa">{language === 'th' ? 'วิลล่า' : 'Villa'}</Option>
-                  <Option value="Condo">{language === 'th' ? 'คอนโดมิเนียม' : 'Condominium'}</Option>
-                  <Option value="House">{language === 'th' ? 'บ้านเดี่ยว' : 'Single House'}</Option>
-                  <Option value="Apartment">{language === 'th' ? 'อพาร์ตเมนต์' : 'Apartment'}</Option>
-                  <Option value="Penthouse">{language === 'th' ? 'เพนท์เฮาส์' : 'Penthouse'}</Option>
+              <Form.Item
+                name="propertyType"
+                label={
+                  language === "th" ? "ประเภทอสังหาริมทรัพย์" : "Property Type"
+                }
+              >
+                <Select
+                  placeholder={
+                    language === "th" ? "เลือกประเภท" : "Select type"
+                  }
+                  className="hover:!border-[#D4AF37]"
+                >
+                  <Option value="Villa">
+                    {language === "th" ? "วิลล่า" : "Villa"}
+                  </Option>
+                  <Option value="Condo">
+                    {language === "th" ? "คอนโดมิเนียม" : "Condominium"}
+                  </Option>
+                  <Option value="House">
+                    {language === "th" ? "บ้านเดี่ยว" : "Single House"}
+                  </Option>
+                  <Option value="Apartment">
+                    {language === "th" ? "อพาร์ตเมนต์" : "Apartment"}
+                  </Option>
+                  <Option value="Penthouse">
+                    {language === "th" ? "เพนท์เฮาส์" : "Penthouse"}
+                  </Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="bedrooms" label={language === 'th' ? 'ห้องนอน' : 'Bedrooms'}>
-                <Select placeholder={language === 'th' ? 'ทั้งหมด' : 'Any'} className="hover:!border-[#D4AF37]">
+              <Form.Item
+                name="bedrooms"
+                label={language === "th" ? "ห้องนอน" : "Bedrooms"}
+              >
+                <Select
+                  placeholder={language === "th" ? "ทั้งหมด" : "Any"}
+                  className="hover:!border-[#D4AF37]"
+                >
                   <Option value="1">1+</Option>
                   <Option value="2">2+</Option>
                   <Option value="3">3+</Option>
@@ -568,8 +634,14 @@ export default function Home() {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="bathrooms" label={language === 'th' ? 'ห้องน้ำ' : 'Bathrooms'}>
-                <Select placeholder={language === 'th' ? 'ทั้งหมด' : 'Any'} className="hover:!border-[#D4AF37]">
+              <Form.Item
+                name="bathrooms"
+                label={language === "th" ? "ห้องน้ำ" : "Bathrooms"}
+              >
+                <Select
+                  placeholder={language === "th" ? "ทั้งหมด" : "Any"}
+                  className="hover:!border-[#D4AF37]"
+                >
                   <Option value="1">1+</Option>
                   <Option value="2">2+</Option>
                   <Option value="3">3+</Option>
@@ -578,21 +650,30 @@ export default function Home() {
               </Form.Item>
             </Col>
           </Row>
-          
-          <Form.Item name="priceRange" label={language === 'th' ? 'ช่วงราคา (THB)' : 'Price Range (THB)'}>
+
+          <Form.Item
+            name="priceRange"
+            label={language === "th" ? "ช่วงราคา (THB)" : "Price Range (THB)"}
+          >
             <Slider
               range
               min={0}
               max={100000000}
               step={1000000}
-              trackStyle={[{ backgroundColor: '#D4AF37' }]}
-              handleStyle={[{ borderColor: '#D4AF37' }]}
-              tipFormatter={value => `${(value || 0).toLocaleString()} THB`}
+              trackStyle={[{ backgroundColor: "#D4AF37" }]}
+              handleStyle={[{ borderColor: "#D4AF37" }]}
+              tipFormatter={(value) => `${(value || 0).toLocaleString()} THB`}
             />
           </Form.Item>
-          
-          <Form.Item name="area" label={language === 'th' ? 'พื้นที่ (ตร.ม.)' : 'Area (sqm)'}>
-            <Select placeholder={language === 'th' ? 'เลือกพื้นที่' : 'Select area'} className="hover:!border-[#D4AF37]">
+
+          <Form.Item
+            name="area"
+            label={language === "th" ? "พื้นที่ (ตร.ม.)" : "Area (sqm)"}
+          >
+            <Select
+              placeholder={language === "th" ? "เลือกพื้นที่" : "Select area"}
+              className="hover:!border-[#D4AF37]"
+            >
               <Option value="0-100">0-100 ตร.ม.</Option>
               <Option value="100-200">100-200 ตร.ม.</Option>
               <Option value="200-300">200-300 ตร.ม.</Option>
@@ -637,9 +718,12 @@ export default function Home() {
                         <div className="w-16 h-16 bg-[#D4AF37] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
                           {type.icon}
                         </div>
-                        <Title level={4} className="!mb-2">{type.name}</Title>
+                        <Title level={4} className="!mb-2">
+                          {type.name}
+                        </Title>
                         <Text className="!text-gray-600 mt-auto">
-                          {type.count} {language === "th" ? "รายการ" : "Properties"}
+                          {type.count}{" "}
+                          {language === "th" ? "รายการ" : "Properties"}
                         </Text>
                       </div>
                     </Col>
@@ -659,9 +743,12 @@ export default function Home() {
                         <div className="w-16 h-16 bg-[#D4AF37] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
                           {type.icon}
                         </div>
-                        <Title level={4} className="!mb-2">{type.name}</Title>
+                        <Title level={4} className="!mb-2">
+                          {type.name}
+                        </Title>
                         <Text className="!text-gray-600 mt-auto">
-                          {type.count} {language === "th" ? "รายการ" : "Properties"}
+                          {type.count}{" "}
+                          {language === "th" ? "รายการ" : "Properties"}
                         </Text>
                       </div>
                     </Col>
@@ -682,12 +769,12 @@ export default function Home() {
             </Title>
             <Divider className="!w-16 !m-auto !border-[#D4AF37] !border-2" />
             <Paragraph className="!text-lg !mt-6 !text-gray-600 max-w-2xl mx-auto">
-              {language === "th" 
-                ? "ค้นพบอสังหาริมทรัพย์ระดับพรีเมียมที่คัดสรรมาอย่างดีของเราในภูเก็ต" 
+              {language === "th"
+                ? "ค้นพบอสังหาริมทรัพย์ระดับพรีเมียมที่คัดสรรมาอย่างดีของเราในภูเก็ต"
                 : "Discover our curated selection of premium properties in Phuket"}
             </Paragraph>
           </div>
-          
+
           {loading ? (
             <div className="flex justify-center">
               <Spin size="large" className="!text-[#D4AF37]" />
@@ -699,40 +786,51 @@ export default function Home() {
                 <button
                   onClick={prevSlide}
                   className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-900 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-black-900 transition-all duration-300 opacity-100`}
-                  style={{ left: '-1.25rem' }}
+                  style={{ left: "-1.25rem" }}
                 >
                   <LeftOutlined className="text-black text-lg" />
                 </button>
-                
+
                 {/* Right Arrow */}
                 <button
                   onClick={nextSlide}
                   className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-900 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-black transition-all duration-300 opacity-100`}
-                  style={{ right: '-1.25rem' }}
+                  style={{ right: "-1.25rem" }}
                 >
                   <RightOutlined className="text-black text-lg" />
                 </button>
-                
-                <div 
+
+                <div
                   ref={carouselRef}
-                    className="overflow-hidden relative w-full"
-                     style={{ height: '500px' }}
+                  className="overflow-hidden relative w-full"
+                  style={{ height: "500px" }}
                 >
                   <div className="flex transition-transform duration-300 ease-in-out">
-                    {Array.from({ length: Math.ceil(featuredProperties.length / propertiesPerSlide) }).map((_, slideIndex) => (
-                      <div 
-                        key={slideIndex} 
+                    {Array.from({
+                      length: Math.ceil(
+                        featuredProperties.length / propertiesPerSlide
+                      ),
+                    }).map((_, slideIndex) => (
+                      <div
+                        key={slideIndex}
                         className="w-full flex-shrink-0 px-2"
                       >
                         <Row gutter={[24, 24]}>
                           {featuredProperties
-                            .slice(slideIndex * propertiesPerSlide, (slideIndex + 1) * propertiesPerSlide)
+                            .slice(
+                              slideIndex * propertiesPerSlide,
+                              (slideIndex + 1) * propertiesPerSlide
+                            )
                             .map((property) => {
-                              const primaryImage = (property.images && property.images.length > 0) 
-                                ? (property.images.find(img => img.is_primary)?.image_url || property.images[0]?.image_url)
-                                : "/default-property.jpg";
+                              const primaryImage =
+                                property.images && property.images.length > 0
+                                  ? property.images.find(
+                                      (img) => img.is_primary
+                                    )?.image_url ||
+                                    property.images[0]?.image_url
+                                  : "/default-property.jpg";
                               const typeTag = getPropertyTypeTag(property.type);
-                              
+
                               return (
                                 <Col xs={24} sm={12} lg={8} key={property.id}>
                                   <Link href={`/property/${property.id}`}>
@@ -748,7 +846,9 @@ export default function Home() {
                                               fill
                                               className="object-cover transition-transform duration-500 hover:scale-110"
                                               onError={(e) => {
-                                                (e.target as HTMLImageElement).src = "/default-property.jpg";
+                                                (
+                                                  e.target as HTMLImageElement
+                                                ).src = "/default-property.jpg";
                                               }}
                                             />
                                           ) : (
@@ -756,8 +856,8 @@ export default function Home() {
                                               <span>No Image</span>
                                             </div>
                                           )}
-                                          <Tag 
-                                            color={typeTag.color} 
+                                          <Tag
+                                            color={typeTag.color}
                                             className="!absolute !top-4 !right-4 !font-bold !px-3 !py-1"
                                           >
                                             {typeTag.text}
@@ -766,7 +866,11 @@ export default function Home() {
                                       }
                                     >
                                       <div className="flex justify-between items-start ">
-                                        <Title level={4} className="!m-0 !text-xl" ellipsis={{ tooltip: property.name }}>
+                                        <Title
+                                          level={4}
+                                          className="!m-0 !text-xl"
+                                          ellipsis={{ tooltip: property.name }}
+                                        >
                                           {truncateName(property.name)}
                                         </Title>
                                         <div className="flex items-center">
@@ -774,29 +878,50 @@ export default function Home() {
                                           <span>5.0</span>
                                         </div>
                                       </div>
-                                      
+
                                       <div className="flex items-center text-gray-500 mb-3">
                                         <EnvironmentOutlined className="mr-2" />
-                                        <Text ellipsis={{ tooltip: property.location }}>{property.location || 'N/A'}</Text>
+                                        <Text
+                                          ellipsis={{
+                                            tooltip: property.location,
+                                          }}
+                                        >
+                                          {property.location || "N/A"}
+                                        </Text>
                                       </div>
-                                      
+
                                       <div className="flex justify-between text-gray-700 mb-4">
                                         <div>
-                                          <Text strong>🛏 {property.bedrooms}</Text>
+                                          <Text strong>
+                                            🛏 {property.bedrooms}
+                                          </Text>
                                           <Text className="mx-2">|</Text>
-                                          <Text strong>🚿 {property.bathrooms}</Text>
+                                          <Text strong>
+                                            🚿 {property.bathrooms}
+                                          </Text>
                                         </div>
-                                        <Text strong>🏠 {property.area} sqft</Text>
+                                        <Text strong>
+                                          🏠 {property.area} sqft
+                                        </Text>
                                       </div>
-                                      
+
                                       <Divider className="!my-3" />
-                                      
+
                                       <div className="flex justify-between items-center">
-                                        <Text strong className="!text-lg !text-[#D4AF37]">
+                                        <Text
+                                          strong
+                                          className="!text-lg !text-[#D4AF37]"
+                                        >
                                           {property.price.toLocaleString()} THB
                                         </Text>
-                                        <Button type="primary" ghost className="!border-[#D4AF37] !text-[#D4AF37] hover:!bg-[#D4AF37] hover:!text-white">
-                                          {language === "th" ? "ดูรายละเอียด" : "View Details"}
+                                        <Button
+                                          type="primary"
+                                          ghost
+                                          className="!border-[#D4AF37] !text-[#D4AF37] hover:!bg-[#D4AF37] hover:!text-white"
+                                        >
+                                          {language === "th"
+                                            ? "ดูรายละเอียด"
+                                            : "View Details"}
                                         </Button>
                                       </div>
                                     </Card>
@@ -810,27 +935,31 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Dots indicator */}
               {featuredProperties.length > propertiesPerSlide && (
                 <div className="flex justify-center mt-8 gap-2">
-                  {Array.from({ length: Math.ceil(featuredProperties.length / propertiesPerSlide) }).map((_, index) => (
+                  {Array.from({
+                    length: Math.ceil(
+                      featuredProperties.length / propertiesPerSlide
+                    ),
+                  }).map((_, index) => (
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
                       className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        currentSlide === index ? 'bg-black w-6' : 'bg-gray-300'
+                        currentSlide === index ? "bg-black w-6" : "bg-gray-300"
                       }`}
                       aria-label={`Go to slide ${index + 1}`}
                     />
                   ))}
                 </div>
               )}
-              
+
               <div className="text-center mt-12">
-                <Button 
-                  type="primary" 
-                  size="large" 
+                <Button
+                  type="primary"
+                  size="large"
                   className="!bg-[#D4AF37] !border-[#D4AF37] !px-8 hover:!bg-[#c9a227] hover:!border-[#c9a227]"
                   onClick={() => router.push("/product")}
                 >
@@ -843,127 +972,147 @@ export default function Home() {
       </div>
 
       {/* Popular Areas Section with Animation */}
-{/* Popular Areas Section with Animation */}
-<div className="py-16 bg-gray-50">
-  <div className="container mx-auto px-6">
-    <div className="flex justify-between items-center mb-12">
-      <div>
-        <Title level={2} className="!text-3xl !mb-2 font-serif">
-          {language === "th" ? "พื้นที่ยอดนิยม" : "Popular Areas"}
-        </Title>
-        <Paragraph className="!text-lg !text-gray-600">
-          {language === "th" 
-            ? "ค้นหาอสังหาริมทรัพย์ในพื้นที่ยอดนิยมของภูเก็ต" 
-            : "Explore properties in Phuket's most popular areas"}
-        </Paragraph>
-      </div>
-      <Button 
-        type="text" 
-        className="!text-[#D4AF37] !flex items-center !p-0"
-        onClick={() => router.push("/product")}
-      >
-        {language === "th" ? "ดูทั้งหมด" : "View All"} <RightOutlined className="ml-1" />
-      </Button>
-    </div>
-    
-    {loading ? (
-      <div className="flex justify-center">
-        <Spin size="large" className="!text-[#D4AF37]" />
-      </div>
-    ) : (
-      <div className="relative">
-        {/* Navigation Arrows */}
-        {popularAreas.length > 4 && (
-          <>
-            <button
-              onClick={prevArea}
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all duration-300 -left-5"
+      {/* Popular Areas Section with Animation */}
+      <div className="py-16 bg-gray-50">
+        <div className="container mx-auto px-6">
+          <div className="flex justify-between items-center mb-12">
+            <div>
+              <Title level={2} className="!text-3xl !mb-2 font-serif">
+                {language === "th" ? "พื้นที่ยอดนิยม" : "Popular Areas"}
+              </Title>
+              <Paragraph className="!text-lg !text-gray-600">
+                {language === "th"
+                  ? "ค้นหาอสังหาริมทรัพย์ในพื้นที่ยอดนิยมของภูเก็ต"
+                  : "Explore properties in Phuket's most popular areas"}
+              </Paragraph>
+            </div>
+            <Button
+              type="text"
+              className="!text-[#D4AF37] !flex items-center !p-0"
+              onClick={() => router.push("/product")}
             >
-              <LeftOutlined className="text-white text-lg" />
-            </button>
-            
-            <button
-              onClick={nextArea}
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all duration-300 -right-5"
-            >
-              <RightOutlined className="text-white text-lg" />
-            </button>
-          </>
-        )}
-        
-        <div 
-          ref={popularAreasRef}
-          className="overflow-hidden relative w-full"
-        >
-          <div className="flex transition-transform duration-500 ease-in-out" style={{ width: `${Math.ceil(popularAreas.length / 4) * 100}%` }}>
-            {Array.from({ length: Math.ceil(popularAreas.length / 4) }).map((_, index) => (
-              <div 
-                key={index} 
-                className="w-full flex-shrink-0 px-2"
-                style={{ width: `${100 / Math.ceil(popularAreas.length / 4)}%` }}
+              {language === "th" ? "ดูทั้งหมด" : "View All"}{" "}
+              <RightOutlined className="ml-1" />
+            </Button>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center">
+              <Spin size="large" className="!text-[#D4AF37]" />
+            </div>
+          ) : (
+            <div className="relative">
+              {/* Navigation Arrows */}
+              {popularAreas.length > 4 && (
+                <>
+                  <button
+                    onClick={prevArea}
+                    className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all duration-300 -left-5"
+                  >
+                    <LeftOutlined className="text-white text-lg" />
+                  </button>
+
+                  <button
+                    onClick={nextArea}
+                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all duration-300 -right-5"
+                  >
+                    <RightOutlined className="text-white text-lg" />
+                  </button>
+                </>
+              )}
+
+              <div
+                ref={popularAreasRef}
+                className="overflow-hidden relative w-full"
               >
-                <Row gutter={[24, 24]}>
-                  {popularAreas
-                    .slice(index * 4, (index + 1) * 4)
-                    .map((area) => (
-                      <Col xs={24} sm={12} md={6} key={area.name}>
-                        <Card
-                          hoverable
-                          className="!border-none !rounded-lg !p-0 !overflow-hidden !shadow-sm transition-all duration-300 hover:shadow-md"
-                          onClick={() => router.push(`/product?location=${area.name}`)}
-                          cover={
-                            <div className="h-48 relative overflow-hidden">
-                              <Image
-                                src={area.image}
-                                alt={area.name}
-                                fill
-                                className="object-cover transition-transform duration-500 hover:scale-110"
-                                onError={(e) => {
-                                  (e.target as HTMLImageElement).src = "/default-property.jpg";
-                                }}
-                              />
-                            </div>
-                          }
-                        >
-                          <div className="p-4">
-                            <Title level={4} className="!mb-1">
-                              {area.name}
-                            </Title>
-                            <Text className="!text-gray-600">
-                              {area.count} {language === "th" ? "คุณสมบัติ" : "Properties"}
-                            </Text>
-                          </div>
-                        </Card>
-                      </Col>
-                    ))}
-                </Row>
+                <div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{
+                    width: `${Math.ceil(popularAreas.length / 4) * 100}%`,
+                  }}
+                >
+                  {Array.from({
+                    length: Math.ceil(popularAreas.length / 4),
+                  }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="w-full flex-shrink-0 px-2"
+                      style={{
+                        width: `${100 / Math.ceil(popularAreas.length / 4)}%`,
+                      }}
+                    >
+                      <Row gutter={[24, 24]}>
+                        {popularAreas
+                          .slice(index * 4, (index + 1) * 4)
+                          .map((area) => (
+                            <Col xs={24} sm={12} md={6} key={area.name}>
+                              <Card
+                                hoverable
+                                className="!border-none !rounded-lg !p-0 !overflow-hidden !shadow-sm transition-all duration-300 hover:shadow-md"
+                                onClick={() =>
+                                  router.push(`/product?location=${area.name}`)
+                                }
+                                cover={
+                                  <div className="h-48 relative overflow-hidden">
+                                    <Image
+                                      src={area.image}
+                                      alt={area.name}
+                                      fill
+                                      className="object-cover transition-transform duration-500 hover:scale-110"
+                                      onError={(e) => {
+                                        (e.target as HTMLImageElement).src =
+                                          "/default-property.jpg";
+                                      }}
+                                    />
+                                  </div>
+                                }
+                              >
+                                <div className="p-4">
+                                  <Title level={4} className="!mb-1">
+                                    {area.name}
+                                  </Title>
+                                  <Text className="!text-gray-600">
+                                    {area.count}{" "}
+                                    {language === "th"
+                                      ? "คุณสมบัติ"
+                                      : "Properties"}
+                                  </Text>
+                                </div>
+                              </Card>
+                            </Col>
+                          ))}
+                      </Row>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
+
+              {/* Dots indicator */}
+              {popularAreas.length > 4 && (
+                <div className="flex justify-center mt-8 gap-2">
+                  {Array.from({
+                    length: Math.ceil(popularAreas.length / 4),
+                  }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setCurrentAreaIndex(index);
+                        scrollToAreaSlide(index);
+                      }}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        currentAreaIndex === index
+                          ? "bg-[#D4AF37] w-6"
+                          : "bg-gray-300"
+                      }`}
+                      aria-label={`Go to area group ${index + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        
-        {/* Dots indicator */}
-        {popularAreas.length > 4 && (
-          <div className="flex justify-center mt-8 gap-2">
-            {Array.from({ length: Math.ceil(popularAreas.length / 4) }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentAreaIndex(index);
-                  scrollToAreaSlide(index);
-                }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  currentAreaIndex === index ? 'bg-[#D4AF37] w-6' : 'bg-gray-300'
-                }`}
-                aria-label={`Go to area group ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
       </div>
-    )}
-  </div>
-</div>
     </div>
   );
 }

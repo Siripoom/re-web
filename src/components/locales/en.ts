@@ -64,6 +64,7 @@ const en = {
   formName: "Your Name",
   formEmail: "Email Address",
   formPhone: "Phone Number",
+  contactInformation: "Owner's Contact Information",
   formMessage: "Your Message",
   formNamePlaceholder: "Enter your name",
   formEmailPlaceholder: "Enter your email",

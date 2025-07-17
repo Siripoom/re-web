@@ -62,6 +62,7 @@ const th = {
   contactDetailsTitle: "รายละเอียดการติดต่อ",
   officeHours: "จันทร์ - ศุกร์: 09:00 - 19:00 น.",
   contactTeamTitle: "ทีมงานของเรา",
+  contactInformation: "ข้อมูลติดต่อเจ้าของทรัพย์ ",
   formName: "ชื่อของคุณ",
   formEmail: "อีเมล",
   formPhone: "เบอร์โทรศัพท์",

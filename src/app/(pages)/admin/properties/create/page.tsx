@@ -42,6 +42,7 @@ interface PropertyFormData {
   status: string;
   featured: boolean;
   type: string;
+  contact?: string;
 }
 
 export default function CreatePropertyPage() {
@@ -218,7 +219,15 @@ export default function CreatePropertyPage() {
                   </Form.Item>
                 </Col>
 
-                <Col xs={24} sm={12}></Col>
+                <Col xs={24} sm={12}>
+                  <Form.Item
+                    name="contact"
+                    label="ช่องทางติดต่อ"
+                    rules={[{ required: true, message: "กรุณาระบุช่องทางติดต่อ" }]}
+                  >
+                    <Input placeholder="เช่น เบอร์โทรศัพท์, อีเมล หรือ LINE ID" />
+                  </Form.Item>
+                </Col>
               </Row>
             </Card>
 
@@ -380,4 +389,4 @@ export default function CreatePropertyPage() {
       </Form>
     </div>
   );
-} 
+}

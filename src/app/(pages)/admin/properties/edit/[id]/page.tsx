@@ -99,6 +99,7 @@ export default function EditPropertyPage() {
           status: data.status,
           featured: data.featured,
           type: data.type,
+          contact: data.contact,
         });
       } else {
         message.error("ไม่พบข้อมูลอสังหาริมทรัพย์");
@@ -252,19 +253,6 @@ export default function EditPropertyPage() {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item
-                    name="address"
-                    label="ที่อยู่"
-                    rules={[{ required: true, message: "กรุณาระบุที่อยู่" }]}
-                  >
-                    <TextArea
-                      rows={3}
-                      placeholder="ที่อยู่เต็มของอสังหาริมทรัพย์"
-                    />
-                  </Form.Item>
-                </Col>
-
-                <Col span={24}>
                   <Form.Item name="description" label="รายละเอียด">
                     <TextArea
                       rows={4}
@@ -290,6 +278,18 @@ export default function EditPropertyPage() {
                         เพนท์เฮาส์
                       </Select.Option>
                     </Select>
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item
+                    name="contact"
+                    label="ช่องทางการติดต่อ"
+                    rules={[{ required: true, message: "กรุณาระบุช่องทางการติดต่อ" }]}
+                  >
+                    <Input
+                      placeholder="เช่น เบอร์โทรศัพท์, อีเมล หรือ LINE ID"
+                    />
                   </Form.Item>
                 </Col>
 

@@ -23,6 +23,7 @@ export interface Property {
   updated_at: string;
   type: string;
   images?: PropertyImage[];
+  contact?: string;
 }
 
 export interface PropertyImage {
@@ -53,6 +54,7 @@ export interface CreatePropertyRequest {
   status?: string;
   featured?: boolean;
   type: string;
+  contact?: string;
 }
 
 export interface PropertySearchFilters {

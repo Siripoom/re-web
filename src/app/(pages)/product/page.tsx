@@ -51,9 +51,9 @@ function SearchHandler({
       setLocation(locationQuery);
     }
     if (minPriceQuery && maxPriceQuery) {
-      const min = parseInt(minPriceQuery);
+      // const min = parseInt(minPriceQuery);
       const max = parseInt(maxPriceQuery);
-      
+
       if (max <= 10000000) {
         setPriceRange("0-10");
       } else if (max <= 20000000) {
@@ -62,7 +62,14 @@ function SearchHandler({
         setPriceRange("20+");
       }
     }
-  }, [searchParams, setSearchTerm, setPropertyType, setPropertyFormat, setPriceRange, setLocation]);
+  }, [
+    searchParams,
+    setSearchTerm,
+    setPropertyType,
+    setPropertyFormat,
+    setPriceRange,
+    setLocation,
+  ]);
 
   return null;
 }
@@ -90,14 +97,14 @@ function PropertySearchContent() {
   const { allProperties: properties, loading } = usePropertyContext();
   const { language } = useLanguage();
   const t = (key: keyof typeof en) => translations[language][key];
-  
 
   const filteredProperties = properties.filter((property) => {
     return (
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (location === "" || property.location === location) &&
       (propertyType === "" || property.property_type === propertyType) &&
-      (propertyFormat === "" || property.type.toLowerCase() === propertyFormat.toLowerCase()) &&
+      (propertyFormat === "" ||
+        property.type.toLowerCase() === propertyFormat.toLowerCase()) &&
       (priceRange === "" ||
         (priceRange === "0-10" && property.price < 10000000) ||
         (priceRange === "10-20" &&
@@ -106,7 +113,6 @@ function PropertySearchContent() {
         (priceRange === "20+" && property.price >= 20000000))
     );
   });
-  
 
   const locations = Array.from(
     new Set(
@@ -143,12 +149,15 @@ function PropertySearchContent() {
         />
         <div className="absolute inset-0 bg-black opacity-30"></div>
         <div className="relative z-10 h-full flex flex-col justify-center items-center text-white">
-          <Title level={1} className="!text-white !text-3xl md:!text-5xl text-center mb-4">
+          <Title
+            level={1}
+            className="!text-white !text-3xl md:!text-5xl text-center mb-4"
+          >
             {t("product") || "Properties"}
           </Title>
           <p className="text-xl md:text-3xl text-center max-w-2xl px-4">
-            {language === "th" 
-              ? "ค้นหาอสังหาริมทรัพย์ที่เหมาะกับคุณ" 
+            {language === "th"
+              ? "ค้นหาอสังหาริมทรัพย์ที่เหมาะกับคุณ"
               : "Find the perfect property for you"}
           </p>
         </div>
@@ -157,7 +166,7 @@ function PropertySearchContent() {
       <div className="max-w-6xl mx-auto p-4 -mt-16 relative z-20">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <Suspense fallback={<SearchFallback />}>
-            <SearchHandler 
+            <SearchHandler
               setSearchTerm={setSearchTerm}
               setPropertyType={setPropertyType}
               setPropertyFormat={setPropertyFormat}
@@ -172,8 +181,8 @@ function PropertySearchContent() {
             <Input.Search
               placeholder={t("search") || "Search"}
               enterButton={
-                <Button 
-                  type="primary" 
+                <Button
+                  type="primary"
                   className="gold-search-button"
                   style={{ fontSize: "18px", height: "42px" }}
                 >
@@ -200,7 +209,12 @@ function PropertySearchContent() {
               </>
             ) : (
               <>
-                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-100">
+                <Col
+                  xs={24}
+                  sm={12}
+                  md={6}
+                  className="animate-fadeIn delay-100"
+                >
                   <Select
                     placeholder={t("location") || "Location"}
                     value={location || undefined}
@@ -210,13 +224,22 @@ function PropertySearchContent() {
                     dropdownStyle={{ fontSize: "16px" }}
                   >
                     {locations.map((loc) => (
-                      <Option key={loc} value={loc} style={{ fontSize: "16px" }}>
+                      <Option
+                        key={loc}
+                        value={loc}
+                        style={{ fontSize: "16px" }}
+                      >
                         {loc}
                       </Option>
                     ))}
                   </Select>
                 </Col>
-                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-200">
+                <Col
+                  xs={24}
+                  sm={12}
+                  md={6}
+                  className="animate-fadeIn delay-200"
+                >
                   <Select
                     placeholder={t("propertyType") || "Property Type"}
                     value={propertyType || undefined}
@@ -226,13 +249,22 @@ function PropertySearchContent() {
                     dropdownStyle={{ fontSize: "16px" }}
                   >
                     {propertyTypes.map((type) => (
-                      <Option key={type} value={type} style={{ fontSize: "16px" }}>
+                      <Option
+                        key={type}
+                        value={type}
+                        style={{ fontSize: "16px" }}
+                      >
                         {type}
                       </Option>
                     ))}
                   </Select>
                 </Col>
-                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-300">
+                <Col
+                  xs={24}
+                  sm={12}
+                  md={6}
+                  className="animate-fadeIn delay-300"
+                >
                   <Select
                     placeholder={t("propertyFormat") || "Property Format"}
                     value={propertyFormat || undefined}
@@ -242,13 +274,22 @@ function PropertySearchContent() {
                     dropdownStyle={{ fontSize: "16px" }}
                   >
                     {propertyFormats.map((format) => (
-                      <Option key={format} value={format} style={{ fontSize: "16px" }}>
+                      <Option
+                        key={format}
+                        value={format}
+                        style={{ fontSize: "16px" }}
+                      >
                         {format}
                       </Option>
                     ))}
                   </Select>
                 </Col>
-                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-400">
+                <Col
+                  xs={24}
+                  sm={12}
+                  md={6}
+                  className="animate-fadeIn delay-400"
+                >
                   <Select
                     placeholder={t("priceRange") || "Price Range"}
                     value={priceRange || undefined}
@@ -257,9 +298,15 @@ function PropertySearchContent() {
                     allowClear
                     dropdownStyle={{ fontSize: "16px" }}
                   >
-                    <Option value="0-10" style={{ fontSize: "16px" }}>0 - 10M</Option>
-                    <Option value="10-20" style={{ fontSize: "16px" }}>10M - 20M</Option>
-                    <Option value="20+" style={{ fontSize: "16px" }}>20M+</Option>
+                    <Option value="0-10" style={{ fontSize: "16px" }}>
+                      0 - 10M
+                    </Option>
+                    <Option value="10-20" style={{ fontSize: "16px" }}>
+                      10M - 20M
+                    </Option>
+                    <Option value="20+" style={{ fontSize: "16px" }}>
+                      20M+
+                    </Option>
                   </Select>
                 </Col>
               </>
@@ -300,10 +347,10 @@ function PropertySearchContent() {
                     md={8}
                     key={property.id}
                     className="animate-fadeInUp flex"
-                    style={{ 
+                    style={{
                       animationDelay: `${index * 0.1}s`,
-                      display: 'flex',
-                      flexDirection: 'column'
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
                     <Link
@@ -321,7 +368,7 @@ function PropertySearchContent() {
                               fill
                               className="object-cover transition-transform duration-500 hover:scale-105"
                             />
-                            <Tag 
+                            <Tag
                               color={typeTag.color}
                               className="!absolute !top-4 !right-4 !font-bold !px-3 !py-1"
                               style={{
@@ -330,7 +377,7 @@ function PropertySearchContent() {
                                 fontWeight: "bold",
                                 padding: "4px 8px",
                                 borderRadius: "4px",
-                                zIndex: 1
+                                zIndex: 1,
                               }}
                             >
                               {typeTag.text}
@@ -340,11 +387,19 @@ function PropertySearchContent() {
                         bodyStyle={{ flex: 1 }}
                       >
                         <div className="flex flex-col h-full">
-                          <h3 className="text-xl font-semibold mb-2">{property.name}</h3>
+                          <h3 className="text-xl font-semibold mb-2">
+                            {property.name}
+                          </h3>
                           <div className="text-gray-600 mb-4 flex-grow">
-                            <p className="mb-1 text-lg">📌 {property.location}</p>
-                            <p className="mb-1 text-lg">🛏 {property.bedrooms} | 🚿 {property.bathrooms}</p>
-                            <p className="mb-1 text-lg">🏠 {property.property_type}</p>
+                            <p className="mb-1 text-lg">
+                              📌 {property.location}
+                            </p>
+                            <p className="mb-1 text-lg">
+                              🛏 {property.bedrooms} | 🚿 {property.bathrooms}
+                            </p>
+                            <p className="mb-1 text-lg">
+                              🏠 {property.property_type}
+                            </p>
                           </div>
                           <div className="text-[#D4AF37] text-xl font-semibold mt-auto">
                             {property.price.toLocaleString("en-US")} THB
@@ -360,7 +415,10 @@ function PropertySearchContent() {
 
           {!loading && filteredProperties.length === 0 && (
             <div className="text-center py-12 animate-fadeIn">
-              <h3 className="text-2xl font-medium text-gray-600" style={{ fontSize: "24px" }}>
+              <h3
+                className="text-2xl font-medium text-gray-600"
+                style={{ fontSize: "24px" }}
+              >
                 {t("noMatch")}
               </h3>
               <p className="text-gray-500 mt-3" style={{ fontSize: "18px" }}>
@@ -599,7 +657,7 @@ function PropertySearchContent() {
           h2.ant-typography {
             font-size: 24px !important;
           }
-          .ant-input, 
+          .ant-input,
           .ant-select-selector,
           .ant-btn {
             font-size: 16px !important;

@@ -38,7 +38,7 @@ export default function Footer() {
                 }}
               />
               <Paragraph
-                className="!text-gray-400"
+                className="!text-white"
                 style={{ fontSize: "16px" }}
               >
                 {language === "th"
@@ -55,7 +55,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/"
-                    className="text-gray-400 hover:text-[#D4AF37] transition-colors"
+                    className="text-white hover:text-[#D4AF37] transition-colors"
                   >
                     {language === "th" ? "หน้าแรก" : "Home"}
                   </Link>
@@ -63,7 +63,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/product"
-                    className="text-gray-400 hover:text-[#D4AF37] transition-colors"
+                    className="text-white hover:text-[#D4AF37] transition-colors"
                   >
                     {language === "th" ? "อสังหาริมทรัพย์" : "Properties"}
                   </Link>
@@ -71,7 +71,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/aboutUs"
-                    className="text-gray-400 hover:text-[#D4AF37] transition-colors"
+                    className="text-white hover:text-[#D4AF37] transition-colors"
                   >
                     {language === "th" ? "เกี่ยวกับเรา" : "About Us"}
                   </Link>
@@ -79,7 +79,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/contactUs"
-                    className="text-gray-400 hover:text-[#D4AF37] transition-colors"
+                    className="text-white hover:text-[#D4AF37] transition-colors"
                   >
                     {language === "th" ? "ติดต่อเรา" : "Contact"}
                   </Link>
@@ -91,7 +91,7 @@ export default function Footer() {
               <Title level={4} className="!text-white !mb-4 !text-lg">
                 {language === "th" ? "ติดต่อเรา" : "Contact Us"}
               </Title>
-              <ul className="space-y-2 !text-gray-400">
+              <ul className="space-y-2 !text-white">
                 <li className="flex items-start">
                   <svg
                     className="w-13 h-13 mr-2 mt-0.5 text-[#D4AF37]"
@@ -199,7 +199,7 @@ export default function Footer() {
 
           <Divider className="!border-gray-800 !my-8" />
 
-          <div className="text-center text-gray-400 text-sm">
+          <div className="text-center text-white text-sm">
             <p>
               &copy; {new Date().getFullYear()} Ruby&apos;s Real Estate Phuket.{" "}
               {language === "th"

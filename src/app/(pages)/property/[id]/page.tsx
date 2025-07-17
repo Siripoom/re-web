@@ -22,7 +22,7 @@ import th from "../../../../components/locales/th";
 import { PropertyService } from "@/services/propertyService";
 import type { Property } from "@/types/property";
 import Link from "next/link";
-import { PhoneOutlined, MailOutlined, LineOutlined } from "@ant-design/icons";
+import { PhoneOutlined } from "@ant-design/icons";
 
 const translations = { en, th };
 const { Title, Text, Paragraph } = Typography;

@@ -23,12 +23,9 @@ import {
   StarFilled,
   SearchOutlined,
   FilterOutlined,
-  ApartmentOutlined,
-  BankOutlined,
   LeftOutlined,
   RightOutlined,
-  HomeOutlined,
-  GlobalOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import { useState, useEffect, useCallback, useRef, JSX } from "react";
@@ -58,7 +55,7 @@ interface Property {
   kitchens: number;
   living_rooms: number;
   car_parks: number;
-  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Penthouse";
+  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Land";
   area_sqm?: number;
   land_area_sqm?: number;
   status: "Available" | "Sold" | "Rented";
@@ -97,6 +94,7 @@ export default function Home() {
   const propertiesByLocationRef = useRef<Record<string, Property[]>>({});
   const [currentAreaIndex, setCurrentAreaIndex] = useState(0);
   const popularAreasRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const [searchParams, setSearchParams] = useState({
     searchQuery: "",
@@ -111,8 +109,20 @@ export default function Home() {
     },
   });
 
+  // ตรวจสอบว่าเป็น mobile หรือไม่
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    handleResize(); // ตรวจสอบครั้งแรกเมื่อโหลดหน้า
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Number of properties to show per slide
-  const propertiesPerSlide = 3;
+  const propertiesPerSlide = isMobile ? 1 : 3;
+  const areasPerSlide = isMobile ? 1 : 4;
 
   const fetchData = useCallback(async () => {
     try {
@@ -181,41 +191,90 @@ export default function Home() {
               ]
         );
       }
-
       const types: PropertyType[] = [
-        {
-          name: language === "th" ? "วิลล่า" : "Villa",
-          icon: <BankOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.["Villa"] || 0,
-          value: "Villa",
-        },
-        {
-          name: language === "th" ? "คอนโดมิเนียม" : "Condominium",
-          icon: <ApartmentOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.["Condo"] || 0,
-          value: "Condo",
-        },
-        {
-          name: language === "th" ? "บ้าน" : "House",
-          icon: <HomeOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.["House"] || 0,
-          value: "House",
-        },
-        {
-          name: language === "th" ? "อพาร์ตเมนต์" : "Apartment",
-          icon: <ApartmentOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.["Apartment"] || 0,
-          value: "Apartment",
-        },
-        {
-          name: language === "th" ? "ที่ดิน" : "Land",
-          icon: <GlobalOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.["Land"] || 0,
-          value: "Land",
-        },
-      ];
-      setPropertyTypes(types);
+  {
+    name: language === "th" ? "วิลล่า" : "Villa",
+    icon: (
+      <div className="border-6 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
+        <Image
+          src="/villa.png"
+          alt="Villa"
+          width={48}
+          height={40}
+          className="w-12 h-10"
+        />
+      </div>
+    ),
+    count: stats?.propertyTypeStats?.["Villa"] || 0,
+    value: "Villa",
+  },
+  {
+    name: language === "th" ? "คอนโดมิเนียม" : "Condominium",
+    icon: (
+      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
+        <Image
+          src="/condominium.png"
+          alt="Condominium"
+          width={36}
+          height={36}
+          className="w-9 h-9"
+        />
+      </div>
+    ),
+    count: stats?.propertyTypeStats?.["Condo"] || 0,
+    value: "Condo",
+  },
+  {
+    name: language === "th" ? "บ้าน" : "House",
+    icon: (
+      <div className="border-5 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
+        <Image
+          src="/home.png"
+          alt="House"
+          width={44}
+          height={40}
+          className="w-11 h-10"
+        />
+      </div>
+    ),
+    count: stats?.propertyTypeStats?.["House"] || 0,
+    value: "House",
+  },
+  {
+    name: language === "th" ? "อพาร์ตเมนต์" : "Apartment",
+    icon: (
+      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
+        <Image
+          src="/apartments.png"
+          alt="Apartments"
+          width={30}
+          height={46}
+          className="w-9 h-9"
+        />
+      </div>
+    ),
+    count: stats?.propertyTypeStats?.["Apartment"] || 0,
+    value: "Apartment",
+  },
+  {
+    name: language === "th" ? "ที่ดิน" : "Land",
+    icon: (
+      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
+        <Image
+          src="/land.png"
+          alt="Land"
+          width={36}
+          height={36}
+          className="w-9 h-9"
+        />
+      </div>
+    ),
+    count: stats?.propertyTypeStats?.["Land"] || 0,
+    value: "Land",
+  },
+];
 
+      setPropertyTypes(types);
       setError(null);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -233,34 +292,46 @@ export default function Home() {
   }, [fetchData]);
 
   // Auto slide transition effect for featured properties
+  const currentSlideRef = useRef(currentSlide);
+
+  useEffect(() => {
+    currentSlideRef.current = currentSlide;
+  }, [currentSlide]);
+
   useEffect(() => {
     if (featuredProperties.length <= propertiesPerSlide) return;
 
     const interval = setInterval(() => {
-      setCurrentSlide((prev) =>
-        prev === Math.ceil(featuredProperties.length / propertiesPerSlide) - 1
-          ? 0
-          : prev + 1
-      );
-      scrollToSlide(currentSlide);
+      const nextIndex = (currentSlideRef.current + 1) % 
+        Math.ceil(featuredProperties.length / propertiesPerSlide);
+      
+      setCurrentSlide(nextIndex);
+      scrollToSlide(nextIndex);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [featuredProperties.length, currentSlide]);
+  }, [featuredProperties.length, propertiesPerSlide]);
 
   // Auto slide transition effect for popular areas
+  const currentAreaIndexRef = useRef(currentAreaIndex);
+
   useEffect(() => {
-    if (popularAreas.length <= 4) return;
+    currentAreaIndexRef.current = currentAreaIndex;
+  }, [currentAreaIndex]);
+
+  useEffect(() => {
+    if (popularAreas.length <= areasPerSlide) return;
 
     const interval = setInterval(() => {
-      setCurrentAreaIndex((prev) =>
-        prev === Math.ceil(popularAreas.length / 4) - 1 ? 0 : prev + 1
-      );
-      scrollToAreaSlide(currentAreaIndex);
+      const nextIndex = (currentAreaIndexRef.current + 1) % 
+        Math.ceil(popularAreas.length / areasPerSlide);
+      
+      setCurrentAreaIndex(nextIndex);
+      scrollToAreaSlide(nextIndex);
     }, 6000);
 
     return () => clearInterval(interval);
-  }, [popularAreas.length, currentAreaIndex]);
+  }, [popularAreas.length, areasPerSlide]);
 
   const showFilterModal = () => {
     form.setFieldsValue({
@@ -367,71 +438,62 @@ export default function Home() {
       : name;
   };
 
-  const nextSlide = () => {
-    if (
-      currentSlide <
-      Math.ceil(featuredProperties.length / propertiesPerSlide) - 1
-    ) {
-      setCurrentSlide(currentSlide + 1);
-      scrollToSlide(currentSlide + 1);
-    } else {
-      setCurrentSlide(0);
-      scrollToSlide(0);
+  const scrollToSlide = useCallback((index: number) => {
+    const container = carouselRef.current;
+    if (container) {
+      const scrollAmount = container.clientWidth * index;
+      container.scrollTo({
+        left: scrollAmount,
+        behavior: 'smooth'
+      });
     }
-  };
+  }, []);
 
-  const prevSlide = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
-      scrollToSlide(currentSlide - 1);
-    } else {
-      const lastSlide =
-        Math.ceil(featuredProperties.length / propertiesPerSlide) - 1;
-      setCurrentSlide(lastSlide);
-      scrollToSlide(lastSlide);
-    }
-  };
+  const nextSlide = useCallback(() => {
+    const nextIndex = (currentSlide + 1) % 
+      Math.ceil(featuredProperties.length / propertiesPerSlide);
+    setCurrentSlide(nextIndex);
+    scrollToSlide(nextIndex);
+  }, [currentSlide, featuredProperties.length, propertiesPerSlide, scrollToSlide]);
+
+  const prevSlide = useCallback(() => {
+    const prevIndex = (currentSlide - 1 + 
+      Math.ceil(featuredProperties.length / propertiesPerSlide)) % 
+      Math.ceil(featuredProperties.length / propertiesPerSlide);
+    setCurrentSlide(prevIndex);
+    scrollToSlide(prevIndex);
+  }, [currentSlide, featuredProperties.length, propertiesPerSlide, scrollToSlide]);
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
     scrollToSlide(index);
   };
 
-  const scrollToSlide = (index: number) => {
-    if (carouselRef.current) {
-      const container = carouselRef.current;
-      const scrollAmount = index * container.clientWidth;
+  const scrollToAreaSlide = useCallback((index: number) => {
+    const container = popularAreasRef.current;
+    if (container) {
+      const scrollAmount = container.clientWidth * index;
       container.scrollTo({
         left: scrollAmount,
-        behavior: "smooth",
+        behavior: 'smooth'
       });
     }
-  };
+  }, []);
 
-  const nextArea = () => {
-    setCurrentAreaIndex((prev) =>
-      prev === Math.ceil(popularAreas.length / 4) - 1 ? 0 : prev + 1
-    );
-    scrollToAreaSlide(currentAreaIndex + 1);
-  };
+  const nextArea = useCallback(() => {
+    const nextIndex = (currentAreaIndex + 1) % 
+      Math.ceil(popularAreas.length / areasPerSlide);
+    setCurrentAreaIndex(nextIndex);
+    scrollToAreaSlide(nextIndex);
+  }, [currentAreaIndex, popularAreas.length, areasPerSlide, scrollToAreaSlide]);
 
-  const prevArea = () => {
-    setCurrentAreaIndex((prev) =>
-      prev === 0 ? Math.ceil(popularAreas.length / 4) - 1 : prev - 1
-    );
-    scrollToAreaSlide(currentAreaIndex - 1);
-  };
-
-  const scrollToAreaSlide = (index: number) => {
-    if (popularAreasRef.current) {
-      const container = popularAreasRef.current;
-      const scrollAmount = index * container.clientWidth;
-      container.scrollTo({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
+  const prevArea = useCallback(() => {
+    const prevIndex = (currentAreaIndex - 1 + 
+      Math.ceil(popularAreas.length / areasPerSlide)) % 
+      Math.ceil(popularAreas.length / areasPerSlide);
+    setCurrentAreaIndex(prevIndex);
+    scrollToAreaSlide(prevIndex);
+  }, [currentAreaIndex, popularAreas.length, areasPerSlide, scrollToAreaSlide]);
 
   if (error) {
     return (
@@ -479,7 +541,7 @@ export default function Home() {
                     : "Explore our exclusive collection of luxury properties in Phuket's most sought-after locations."}
                 </Text>
               </div>
-              <div className="flex mb-0">
+              <div className="flex mb-0 mx-auto w-full mobile-search-container ">
                 <Button
                   type="primary"
                   className={`!h-18 !text-xl !px-20 !font-semibold !rounded-none !rounded-tl-lg ${
@@ -605,13 +667,13 @@ export default function Home() {
                     {language === "th" ? "คอนโดมิเนียม" : "Condominium"}
                   </Option>
                   <Option value="House">
-                    {language === "th" ? "บ้านเดี่ยว" : "Single House"}
+                    {language === "th" ? "บ้านเดี่ยว" : "House"}
                   </Option>
                   <Option value="Apartment">
                     {language === "th" ? "อพาร์ตเมนต์" : "Apartment"}
                   </Option>
-                  <Option value="Penthouse">
-                    {language === "th" ? "เพนท์เฮาส์" : "Penthouse"}
+                  <Option value="Land">
+                    {language === "th" ? "ที่ดิน" : "Land"}
                   </Option>
                 </Select>
               </Form.Item>
@@ -700,7 +762,7 @@ export default function Home() {
 
           {loading ? (
             <div className="flex justify-center">
-              <Spin size="large" className="!text-[#D4AF37]" />
+              <Spin size="large" indicator={<LoadingOutlined style={{ color: '#D4AF37' }} spin />} />
             </div>
           ) : (
             <div className="max-w-4xl mx-auto">
@@ -777,45 +839,39 @@ export default function Home() {
 
           {loading ? (
             <div className="flex justify-center">
-              <Spin size="large" className="!text-[#D4AF37]" />
+             <Spin size="large" indicator={<LoadingOutlined style={{ color: '#D4AF37' }} spin />} />
             </div>
           ) : (
             <>
-              <div className="relative group">
-                {/* Left Arrow */}
-                <button
-                  onClick={prevSlide}
-                  className={`absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-900 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-black-900 transition-all duration-300 opacity-100`}
-                  style={{ left: "-1.25rem" }}
-                >
-                  <LeftOutlined className="text-black text-lg" />
-                </button>
-
-                {/* Right Arrow */}
-                <button
-                  onClick={nextSlide}
-                  className={`absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-900 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-black transition-all duration-300 opacity-100`}
-                  style={{ right: "-1.25rem" }}
-                >
-                  <RightOutlined className="text-black text-lg" />
-                </button>
-
+              <div className="relative">
                 <div
                   ref={carouselRef}
                   className="overflow-hidden relative w-full"
-                  style={{ height: "500px" }}
+                  style={{ 
+                    height: "500px",
+                    scrollBehavior: "smooth",
+                    scrollSnapType: "x mandatory"
+                  }}
                 >
-                  <div className="flex transition-transform duration-300 ease-in-out">
+                  <div 
+                    className="flex"
+                    style={{ 
+                      width: `${Math.ceil(featuredProperties.length / propertiesPerSlide) * 100}%`,
+                      transition: "transform 0.5s ease-in-out"
+                    }}
+                  >
                     {Array.from({
-                      length: Math.ceil(
-                        featuredProperties.length / propertiesPerSlide
-                      ),
+                      length: Math.ceil(featuredProperties.length / propertiesPerSlide),
                     }).map((_, slideIndex) => (
                       <div
                         key={slideIndex}
                         className="w-full flex-shrink-0 px-2"
+                        style={{ 
+                          scrollSnapAlign: "start",
+                          width: `${100 / Math.ceil(featuredProperties.length / propertiesPerSlide)}%`
+                        }}
                       >
-                        <Row gutter={[24, 24]}>
+                        <Row gutter={[24, 24]} justify={isMobile ? "center" : "start"}>
                           {featuredProperties
                             .slice(
                               slideIndex * propertiesPerSlide,
@@ -832,11 +888,11 @@ export default function Home() {
                               const typeTag = getPropertyTypeTag(property.type);
 
                               return (
-                                <Col xs={24} sm={12} lg={8} key={property.id}>
+                                <Col xs={24} sm={24} lg={8} key={property.id}>
                                   <Link href={`/property/${property.id}`}>
                                     <Card
                                       hoverable
-                                      className="!border-none !rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
+                                      className="!border-none !rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 property-card"
                                       cover={
                                         <div className="h-64 relative overflow-hidden">
                                           {primaryImage ? (
@@ -934,27 +990,44 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
-              </div>
 
-              {/* Dots indicator */}
-              {featuredProperties.length > propertiesPerSlide && (
-                <div className="flex justify-center mt-8 gap-2">
-                  {Array.from({
-                    length: Math.ceil(
-                      featuredProperties.length / propertiesPerSlide
-                    ),
-                  }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => goToSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        currentSlide === index ? "bg-black w-6" : "bg-gray-300"
-                      }`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
+                {/* Navigation Controls - Bottom Center */}
+                <div className="flex justify-center items-center mt-8 gap-4">
+                  <button
+                    onClick={prevSlide}
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-[#D4AF37] text-white shadow-lg hover:bg-[#c9a227] transition-all duration-300"
+                  >
+                    <LeftOutlined className="text-lg" />
+                  </button>
+                  
+                  {/* Dots indicator */}
+                  {featuredProperties.length > propertiesPerSlide && (
+                    <div className="flex mx-4 gap-2">
+                      {Array.from({
+                        length: Math.ceil(
+                          featuredProperties.length / propertiesPerSlide
+                        ),
+                      }).map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => goToSlide(index)}
+                          className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            currentSlide === index ? "bg-[#D4AF37] w-6" : "bg-gray-300"
+                          }`}
+                          aria-label={`Go to slide ${index + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  
+                  <button
+                    onClick={nextSlide}
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-[#D4AF37] text-white shadow-lg hover:bg-[#c9a227] transition-all duration-300"
+                  >
+                    <RightOutlined className="text-lg" />
+                  </button>
                 </div>
-              )}
+              </div>
 
               <div className="text-center mt-12">
                 <Button
@@ -970,20 +1043,18 @@ export default function Home() {
           )}
         </div>
       </div>
-
-      {/* Popular Areas Section with Animation */}
       {/* Popular Areas Section with Animation */}
       <div className="py-16 bg-gray-50">
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center mb-12">
             <div>
               <Title level={2} className="!text-3xl !mb-2 font-serif">
-                {language === "th" ? "พื้นที่ยอดนิยม" : "Popular Areas"}
+                {language === "th" ? "พื้นที่ยอดนิยม" : "Prime Location"}
               </Title>
               <Paragraph className="!text-lg !text-gray-600">
                 {language === "th"
                   ? "ค้นหาอสังหาริมทรัพย์ในพื้นที่ยอดนิยมของภูเก็ต"
-                  : "Explore properties in Phuket's most popular areas"}
+                  : "Explore properties in Phuket's most Prime Location"}
               </Paragraph>
             </div>
             <Button
@@ -995,60 +1066,45 @@ export default function Home() {
               <RightOutlined className="ml-1" />
             </Button>
           </div>
-
           {loading ? (
             <div className="flex justify-center">
-              <Spin size="large" className="!text-[#D4AF37]" />
+              <Spin size="large" indicator={<LoadingOutlined style={{ color: '#D4AF37' }} spin />} />
             </div>
           ) : (
             <div className="relative">
-              {/* Navigation Arrows */}
-              {popularAreas.length > 4 && (
-                <>
-                  <button
-                    onClick={prevArea}
-                    className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all duration-300 -left-5"
-                  >
-                    <LeftOutlined className="text-white text-lg" />
-                  </button>
-
-                  <button
-                    onClick={nextArea}
-                    className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg hover:bg-gray-100 transition-all duration-300 -right-5"
-                  >
-                    <RightOutlined className="text-white text-lg" />
-                  </button>
-                </>
-              )}
-
               <div
                 ref={popularAreasRef}
                 className="overflow-hidden relative w-full"
+                style={{
+                  scrollBehavior: "smooth",
+                  scrollSnapType: "x mandatory"
+                }}
               >
                 <div
                   className="flex transition-transform duration-500 ease-in-out"
                   style={{
-                    width: `${Math.ceil(popularAreas.length / 4) * 100}%`,
+                    width: `${Math.ceil(popularAreas.length / areasPerSlide) * 100}%`,
                   }}
                 >
                   {Array.from({
-                    length: Math.ceil(popularAreas.length / 4),
+                    length: Math.ceil(popularAreas.length / areasPerSlide),
                   }).map((_, index) => (
                     <div
                       key={index}
                       className="w-full flex-shrink-0 px-2"
                       style={{
-                        width: `${100 / Math.ceil(popularAreas.length / 4)}%`,
+                        scrollSnapAlign: "start",
+                        width: `${100 / Math.ceil(popularAreas.length / areasPerSlide)}%`,
                       }}
                     >
-                      <Row gutter={[24, 24]}>
+                      <Row gutter={[24, 24]} justify={isMobile ? "center" : "start"}>
                         {popularAreas
-                          .slice(index * 4, (index + 1) * 4)
+                          .slice(index * areasPerSlide, (index + 1) * areasPerSlide)
                           .map((area) => (
-                            <Col xs={24} sm={12} md={6} key={area.name}>
+                            <Col xs={24} sm={24} md={6} key={area.name}>
                               <Card
                                 hoverable
-                                className="!border-none !rounded-lg !p-0 !overflow-hidden !shadow-sm transition-all duration-300 hover:shadow-md"
+                                className="!border-none !rounded-lg !p-0 !overflow-hidden !shadow-sm transition-all duration-300 hover:shadow-md area-card"
                                 onClick={() =>
                                   router.push(`/product?location=${area.name}`)
                                 }
@@ -1087,26 +1143,43 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Dots indicator */}
-              {popularAreas.length > 4 && (
-                <div className="flex justify-center mt-8 gap-2">
-                  {Array.from({
-                    length: Math.ceil(popularAreas.length / 4),
-                  }).map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => {
-                        setCurrentAreaIndex(index);
-                        scrollToAreaSlide(index);
-                      }}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        currentAreaIndex === index
-                          ? "bg-[#D4AF37] w-6"
-                          : "bg-gray-300"
-                      }`}
-                      aria-label={`Go to area group ${index + 1}`}
-                    />
-                  ))}
+              {/* Navigation Controls - Moved to bottom */}
+              {popularAreas.length > areasPerSlide && (
+                <div className="flex justify-center items-center mt-8 gap-4">
+                  <button
+                    onClick={prevArea}
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-[#D4AF37] text-white shadow-lg hover:bg-[#c9a227] transition-all duration-300"
+                  >
+                    <LeftOutlined className="text-lg" />
+                  </button>
+                  
+                  {/* Dots indicator */}
+                  <div className="flex mx-4 gap-2">
+                    {Array.from({
+                      length: Math.ceil(popularAreas.length / areasPerSlide),
+                    }).map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          setCurrentAreaIndex(index);
+                          scrollToAreaSlide(index);
+                        }}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          currentAreaIndex === index
+                            ? "bg-[#D4AF37] w-6"
+                            : "bg-gray-300"
+                        }`}
+                        aria-label={`Go to area group ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <button
+                    onClick={nextArea}
+                    className="flex items-center justify-center w-12 h-12 rounded-full bg-[#D4AF37] text-white shadow-lg hover:bg-[#c9a227] transition-all duration-300"
+                  >
+                    <RightOutlined className="text-lg" />
+                  </button>
                 </div>
               )}
             </div>

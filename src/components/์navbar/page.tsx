@@ -115,7 +115,7 @@ const Navbar: React.FC = () => {
               }}
             />
             <Text strong style={{ fontSize: "24px", color: "white" }}>
-              Ruby&apos;s Real Estate
+              Ruby&apos;s Real Estate Phuket
             </Text>
           </div>
         </div>

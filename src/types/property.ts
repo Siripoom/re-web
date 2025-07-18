@@ -13,7 +13,7 @@ export interface Property {
   living_rooms: number;
   car_parks: number;
   price: number;
-  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Penthouse";
+  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Land";
   location?: string;
   area_sqm?: number;
   land_area_sqm?: number;

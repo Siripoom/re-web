@@ -248,7 +248,7 @@ div,
 /* Responsive Typography */
 @media (max-width: 768px) {
   body {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   h1,
@@ -259,6 +259,30 @@ div,
   h2,
   .ant-typography-h2 {
     font-size: 1.5rem !important;
+  }
+
+  .mobile-search-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    
+  }
+
+  .mobile-search-buttons {
+    display: flex;
+    width: 100%;
+  }
+
+  .mobile-search-buttons .ant-btn {
+    flex: 1;
+    height: 48px;
+    font-weight: 600;
+    font-size: 16px;
+    border-radius: 0 !important;
+  }
+
+  .mobile-search-input {
+    width: 100%;
   }
 }
 

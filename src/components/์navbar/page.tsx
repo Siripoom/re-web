@@ -38,34 +38,37 @@ const Navbar: React.FC = () => {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "16px",
-        padding: "16px",
+        gap: "24px",
+        padding: "24px",
         backgroundColor: "#721716",
         height: "100%",
         color: "white",
       }}
     >
-      <Link href="/home" style={{ color: "white", fontWeight: 500 }}>
+      <Link href="/home" style={{ color: "white", fontWeight: 600, fontSize: "20px" }}>
         {t("home")}
       </Link>
-      <Link href="/product" style={{ color: "white", fontWeight: 500 }}>
+      <Link href="/product" style={{ color: "white", fontWeight: 600, fontSize: "20px" }}>
         {t("product")}
       </Link>
-      <Link href="/aboutUs" style={{ color: "white", fontWeight: 500 }}>
+      <Link href="/aboutUs" style={{ color: "white", fontWeight: 600, fontSize: "20px" }}>
         {t("aboutUs")}
       </Link>
-      <Link href="/contactUs" style={{ color: "white", fontWeight: 500 }}>
+      <Link href="/contactUs" style={{ color: "white", fontWeight: 600, fontSize: "20px" }}>
         {t("contactUs")}
       </Link>
       <Space>
-        <GlobalOutlined style={{ color: "white" }} />
+        <GlobalOutlined style={{ color: "white", fontSize: "20px" }} />
         <Switch
-          checkedChildren={<span style={{ color: "white" }}>TH</span>}
-          unCheckedChildren={<span style={{ color: "black" }}>EN</span>}
+          checkedChildren={<span style={{ color: "white", fontSize: "16px", fontWeight: 600 }}>TH</span>}
+          unCheckedChildren={<span style={{ color: "black", fontSize: "16px", fontWeight: 600 }}>EN</span>}
           checked={language === "th"}
           onChange={handleLanguageToggle}
           style={{
             backgroundColor: language === "th" ? "#d4af37" : "#f0f0f0",
+            height: "32px",
+            width: "80px",
+            minWidth: "80px",
           }}
           className="gold-switch"
         />
@@ -85,6 +88,7 @@ const Navbar: React.FC = () => {
           position: "sticky",
           top: 0,
           zIndex: 1000,
+          height: "80px",
         }}
       >
         {/* Logo & Burger */}
@@ -110,7 +114,7 @@ const Navbar: React.FC = () => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
             />
-            <Text strong style={{ fontSize: "20px", color: "white" }}>
+            <Text strong style={{ fontSize: "24px", color: "white" }}>
               Ruby&apos;s Real Estate
             </Text>
           </div>
@@ -118,29 +122,29 @@ const Navbar: React.FC = () => {
 
         {/* Main Menu */}
         {!isMobile && (
-          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <Link href="/home" style={{ color: "white", fontWeight: 500 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "32px" }}>
+            <Link href="/home" style={{ color: "white", fontWeight: 600, fontSize: "18px" }}>
               {t("home")}
             </Link>
-            <Link href="/product" style={{ color: "white", fontWeight: 500 }}>
+            <Link href="/product" style={{ color: "white", fontWeight: 600, fontSize: "18px" }}>
               {t("product")}
             </Link>
-            <Link href="/aboutUs" style={{ color: "white", fontWeight: 500 }}>
+            <Link href="/aboutUs" style={{ color: "white", fontWeight: 600, fontSize: "18px" }}>
               {t("aboutUs")}
             </Link>
-            <Link href="/contactUs" style={{ color: "white", fontWeight: 500 }}>
+            <Link href="/contactUs" style={{ color: "white", fontWeight: 600, fontSize: "18px" }}>
               {t("contactUs")}
             </Link>
             <Space>
-              <GlobalOutlined  style={{ color: "white" }} />
+              <GlobalOutlined style={{ color: "white", fontSize: "20px" }} />
               <Switch
                 checkedChildren={
-                  <span style={{ color: "white", fontSize: "16px", fontWeight: 500 }}>
+                  <span style={{ color: "white", fontSize: "16px", fontWeight: 600 }}>
                     TH
                   </span>
                 }
                 unCheckedChildren={
-                  <span style={{ color: "black", fontSize: "16px", fontWeight: 500 }}>
+                  <span style={{ color: "black", fontSize: "16px", fontWeight: 600 }}>
                     EN
                   </span>
                 }
@@ -149,8 +153,8 @@ const Navbar: React.FC = () => {
                 style={{
                   backgroundColor: language === "th" ? "#d4af37" : "#f0f0f0",
                   height: "32px",
-                  width: "70px",
-                  fontSize: "16px",
+                  width: "80px",
+                  minWidth: "80px",
                 }}
                 className="gold-switch"
               />
@@ -161,7 +165,7 @@ const Navbar: React.FC = () => {
 
       {/* Drawer (Mobile Menu) */}
       <Drawer
-        title={<span style={{ color: "white" }}>{t("menu")}</span>}
+        title={<span style={{ color: "white", fontSize: "20px", fontWeight: 600 }}>{t("menu")}</span>}
         placement="left"
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
@@ -182,18 +186,20 @@ const Navbar: React.FC = () => {
       <style jsx global>{`
         .gold-switch.ant-switch .ant-switch-inner {
           color: black !important;
+          font-weight: 600;
         }
 
         .gold-switch.ant-switch .ant-switch-handle {
-          top: 7px;
+          top: 6px;
         }
         
         .gold-switch .ant-switch-inner {
-        padding-top: 4px;
-      }
+          padding-top: 4px;
+        }
 
         .gold-switch.ant-switch-checked .ant-switch-inner {
           color: white !important;
+          font-weight: 600;
         }
 
         .gold-switch.ant-switch-checked {
@@ -210,13 +216,15 @@ const Navbar: React.FC = () => {
 
         /* Hamburger menu styles */
         .hamburger-icon {
-          font-size: 24px;
+          font-size: 28px;
           color: white !important;
         }
 
         .hamburger-button {
           color: white !important;
-          font-size: 24px;
+          font-size: 28px;
+          width: 48px;
+          height: 48px;
         }
 
         .hamburger-button:hover {
@@ -226,7 +234,7 @@ const Navbar: React.FC = () => {
 
         /* Drawer close icon styles */
         .drawer-close-icon {
-          font-size: 24px !important;
+          font-size: 28px !important;
           color: white !important;
         }
 

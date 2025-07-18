@@ -38,7 +38,7 @@ export default function Footer() {
                 }}
               />
               <Paragraph
-                className="!text-white"
+                className="!text-white !text-xl"
                 style={{ fontSize: "16px" }}
               >
                 {language === "th"
@@ -48,7 +48,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <Title level={4} className="!text-white !mb-4 !text-lg">
+              <Title level={4} className="!text-white !mb-4 !text-xl">
                 {language === "th" ? "ลิงก์ด่วน" : "Quick Links"}
               </Title>
               <ul className="space-y-2">
@@ -88,13 +88,13 @@ export default function Footer() {
             </div>
 
             <div>
-              <Title level={4} className="!text-white !mb-4 !text-lg">
+              <Title level={4} className="!text-white !mb-4 !text-xl">
                 {language === "th" ? "ติดต่อเรา" : "Contact Us"}
               </Title>
               <ul className="space-y-2 !text-white">
                 <li className="flex items-start">
                   <svg
-                    className="w-13 h-13 mr-2 mt-0.5 text-[#D4AF37]"
+                    className="w-9 h-9 mr-2 mt-0.5 text-[#D4AF37]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -118,7 +118,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center">
                   <svg
-                    className="w-5 h-5 mr-2 text-[#D4AF37]"
+                    className="w-6 h-6 mr-2 text-[#D4AF37]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -134,7 +134,7 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center">
                   <svg
-                    className="w-5 h-5 mr-2 text-[#D4AF37]"
+                    className="w-6 h-6 mr-2 text-[#D4AF37]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -152,16 +152,16 @@ export default function Footer() {
             </div>
 
             <div>
-              <Title level={4} className="!text-white !mb-4 !text-lg">
+              <Title level={4} className="!text-white !mb-4 !text-xl">
                 {language === "th" ? "ติดตามเรา" : "Follow Us"}
               </Title>
               <div className="flex space-x-4">
                 <Link
                   href="https://www.facebook.com/share/1YxgLiRMzk/?mibextid=wwXIfr"
-                  className="bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-colors"
+                  className="bg-gray-800 w-13 h-13 rounded-full flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-colors"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-8 h-8"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -170,10 +170,10 @@ export default function Footer() {
                 </Link>
                 <Link
                   href="https://www.instagram.com/ruby_real_estate_phuket/"
-                  className="bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-colors"
+                  className="bg-gray-800 w-13 h-13 rounded-full flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37] hover:text-white transition-colors"
                 >
                   <svg
-                    className="w-5 h-5"
+                    className="w-8 h-8"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -183,7 +183,7 @@ export default function Footer() {
                 <Link
                   href="https://line.me/ti/p/x5SIaYWNt4"
                   target="_blank"
-                  className="bg-gray-800 w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#D4AF37] transition-colors"
+                  className="bg-gray-800 w-13 h-13 rounded-full flex items-center justify-center hover:bg-[#D4AF37] transition-colors"
                 >
                   <Image
                     src="/social-line.svg"
@@ -199,7 +199,7 @@ export default function Footer() {
 
           <Divider className="!border-gray-800 !my-8" />
 
-          <div className="text-center text-white text-sm">
+          <div className="text-center text-white !text-xl">
             <p>
               &copy; {new Date().getFullYear()} Ruby&apos;s Real Estate Phuket.{" "}
               {language === "th"

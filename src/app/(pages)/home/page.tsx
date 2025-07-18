@@ -28,7 +28,7 @@ import {
   LeftOutlined,
   RightOutlined,
   HomeOutlined,
-  CrownOutlined,
+  GlobalOutlined,
 } from "@ant-design/icons";
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import { useState, useEffect, useCallback, useRef, JSX } from "react";
@@ -196,7 +196,7 @@ export default function Home() {
           value: "Condo",
         },
         {
-          name: language === "th" ? "บ้านเดี่ยว" : "Single House",
+          name: language === "th" ? "บ้าน" : "House",
           icon: <HomeOutlined className="text-3xl" />,
           count: stats?.propertyTypeStats?.["House"] || 0,
           value: "House",
@@ -208,10 +208,10 @@ export default function Home() {
           value: "Apartment",
         },
         {
-          name: language === "th" ? "เพนท์เฮาส์" : "Penthouse",
-          icon: <CrownOutlined className="text-3xl" />,
-          count: stats?.propertyTypeStats?.["Penthouse"] || 0,
-          value: "Penthouse",
+          name: language === "th" ? "ที่ดิน" : "Land",
+          icon: <GlobalOutlined className="text-3xl" />,
+          count: stats?.propertyTypeStats?.["Land"] || 0,
+          value: "Land",
         },
       ];
       setPropertyTypes(types);

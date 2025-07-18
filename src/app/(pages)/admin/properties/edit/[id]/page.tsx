@@ -274,8 +274,8 @@ export default function EditPropertyPage() {
                       <Select.Option value="Apartment">
                         อพาร์ตเมนต์
                       </Select.Option>
-                      <Select.Option value="Penthouse">
-                        เพนท์เฮาส์
+                      <Select.Option value="Land">
+                        ที่ดิน
                       </Select.Option>
                     </Select>
                   </Form.Item>

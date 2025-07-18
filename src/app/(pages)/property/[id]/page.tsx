@@ -14,7 +14,6 @@ import {
   Divider,
   Result,
   Tag,
-  List,
 } from "antd";
 import { useLanguage } from "../../../../components/contexts/LanguageContext";
 import en from "../../../../components/locales/en";
@@ -22,7 +21,6 @@ import th from "../../../../components/locales/th";
 import { PropertyService } from "@/services/propertyService";
 import type { Property } from "@/types/property";
 import Link from "next/link";
-import { PhoneOutlined } from "@ant-design/icons";
 
 const translations = { en, th };
 const { Title, Text, Paragraph } = Typography;
@@ -261,31 +259,6 @@ export default function PropertyDetails() {
                 <strong style={{ fontSize: "20px" }}> {property.status}</strong>
               </Col>
             </Row>
-
-            {/* Contact Information Section */}
-            <Divider orientation="left" style={{ fontSize: "22px" }}>
-              {t("contactInformation")}
-            </Divider>
-            
-            <List
-              size="large"
-              dataSource={[
-                {
-                  icon: <PhoneOutlined style={{ color: "#D4AF37" }} />,
-                  content: property.contact || "-",
-                },
-              ]}
-              renderItem={(item) => (
-                <List.Item style={{ padding: "8px 0" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ fontSize: "20px" }}>{item.icon}</div>
-                    <Text strong style={{ fontSize: "18px" }}>
-                      {item.content}
-                    </Text>
-                  </div>
-                </List.Item>
-              )}
-            />
 
             <Button
               href="/contactUs"

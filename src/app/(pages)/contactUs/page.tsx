@@ -158,8 +158,8 @@ export default function ContactPage() {
             {/* Address */}
             <Col xs={24} md={8}>
               <Card className="contact-info-card h-full">
-                <Title level={4}>{t("officeAddressTitle")}</Title>
-                <Paragraph>
+                <Title style={{ fontSize: "20px" }} level={4}>{t("officeAddressTitle")}</Title>
+                <Paragraph style={{ fontSize: "16px" }}>
                   {language === "th"
                     ? "111/151 หมู่ 4 ศุภาลัย เบลล่า ตำบลเกาะแก้ว  อำเภอเมือง จังหวัดภูเก็ต 83000"
                     : "111/151 Moo 4 Supalai bella  Kohkeaw Muang  Phuket 83000"}
@@ -246,7 +246,7 @@ export default function ContactPage() {
                         height={120}
                         className="rounded-avatar"
                       />
-                      <Paragraph strong>Ruby</Paragraph>
+                      <Paragraph strong style={{ fontSize: "16px" }}>Ruby</Paragraph>
                       <Paragraph type="secondary">{t("ceoTitle")}</Paragraph>
                     </div>
                   </Col>
@@ -259,7 +259,7 @@ export default function ContactPage() {
                         height={120}
                         className="rounded-avatar"
                       />
-                      <Paragraph strong>Jeab</Paragraph>
+                      <Paragraph strong style={{ fontSize: "16px" }}>Jeab</Paragraph>
                       <Paragraph type="secondary">
                         {t("salesHeadTitle")}
                       </Paragraph>

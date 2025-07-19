@@ -175,7 +175,7 @@ export default function ContactPage() {
                   className="text-gray-800 space-y-2 "
                   style={{ fontSize: "16px" }}
                 >
-                  <li>📞 093-781-2945 , 087-276-1225</li>
+                  <li>📞 093-781-2945 </li>
                   <li>✉️ rubyagent7@gmail.com</li>
                   <li>🕒 {t("officeHours")}: 09:00 - 19:00 (Mon-Sat)</li>
                 </ul>

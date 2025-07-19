@@ -1054,7 +1054,7 @@ export default function Home() {
               <Paragraph className="!text-lg !text-gray-600">
                 {language === "th"
                   ? "ค้นหาอสังหาริมทรัพย์ในพื้นที่ยอดนิยมของภูเก็ต"
-                  : "Explore properties in Phuket's most Prime Location"}
+                  : "Explore properties in Phuket's Prime Location"}
               </Paragraph>
             </div>
             <Button

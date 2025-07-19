@@ -51,6 +51,26 @@ export default function CreatePropertyPage() {
   const [loading, setLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
 
+  const propertyTypes = [
+    { value: "Villa", label: "วิลล่า" },
+    { value: "Condo", label: "คอนโดมิเนียม" },
+    { value: "House", label: "บ้านเดี่ยว" },
+    { value: "Apartment", label: "อพาร์ตเมนต์" },
+    { value: "Land", label: "ที่ดิน" },
+  ];
+
+  const locations = [
+    { value: "Patong", label: "ป่าตอง" },
+    { value: "Kamala", label: "กะมะลา" },
+    { value: "Kata", label: "กะตะ" },
+    { value: "Karon", label: "กะรน" },
+    { value: "Rawai", label: "ราไวย์" },
+    { value: "Phuket Town", label: "เมืองภูเก็ต" },
+    { value: "Cherngtalay", label: "เชิงทะเล" },
+    { value: "Bang Tao", label: "บางเทา" },
+    { value: "Nai Harn", label: "ในหาน" },
+  ];
+
   const handleSubmit = async (values: PropertyFormData) => {
     try {
       setLoading(true);
@@ -163,17 +183,15 @@ export default function CreatePropertyPage() {
                     label="พื้นที่ตั้ง"
                     rules={[{ required: true, message: "กรุณาระบุพื้นที่ตั้ง" }]}
                   >
-                    <Select placeholder="เลือกพื้นที่ตั้ง">
-                      <Select.Option value="Patong">ป่าตอง</Select.Option>
-                      <Select.Option value="Kamala">กะมะลา</Select.Option>
-                      <Select.Option value="Kata">กะตะ</Select.Option>
-                      <Select.Option value="Karon">กะรน</Select.Option>
-                      <Select.Option value="Rawai">ราไวย์</Select.Option>
-                      <Select.Option value="Phuket Town">เมืองภูเก็ต</Select.Option>
-                      <Select.Option value="Cherngtalay">เชิงทะเล</Select.Option>
-                      <Select.Option value="Bang Tao">บางเทา</Select.Option>
-                      <Select.Option value="Nai Harn">ในหาน</Select.Option>
-                    </Select>
+                    <Select 
+                      showSearch
+                      placeholder="เลือกพื้นที่ตั้ง"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      options={locations}
+                    />
                   </Form.Item>
                 </Col>
 
@@ -205,17 +223,15 @@ export default function CreatePropertyPage() {
                     label="ประเภทอสังหา"
                     rules={[{ required: true, message: "กรุณาเลือกประเภท" }]}
                   >
-                    <Select placeholder="เลือกประเภท">
-                      <Select.Option value="Villa">วิลล่า</Select.Option>
-                      <Select.Option value="Condo">คอนโดมิเนียม</Select.Option>
-                      <Select.Option value="House">บ้านเดี่ยว</Select.Option>
-                      <Select.Option value="Apartment">
-                        อพาร์ตเมนต์
-                      </Select.Option>
-                      <Select.Option value="Land">
-                        ที่ดิน
-                      </Select.Option>
-                    </Select>
+                    <Select 
+                      showSearch
+                      placeholder="เลือกประเภท"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      options={propertyTypes}
+                    />
                   </Form.Item>
                 </Col>
 

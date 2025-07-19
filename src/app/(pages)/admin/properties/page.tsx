@@ -9,7 +9,6 @@ import {
   Popconfirm,
   message,
   Input,
-  Select,
   Row,
   Col,
   Card,
@@ -36,8 +35,8 @@ export default function AdminPropertiesPage() {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedType, setSelectedType] = useState<string>("");
-  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedType] = useState<string>("");
+  const [selectedLocation] = useState<string>("");
 
   useEffect(() => {
     fetchProperties();
@@ -158,8 +157,33 @@ export default function AdminPropertiesPage() {
       title: "รูปแบบอสังหา",
       dataIndex: "type",
       key: "type",
-      width: 100,
+      width: 120,
       render: (type: string) => <Tag color="blue">{type}</Tag>,
+    },
+    {
+      title: "ช่องทางการติดต่อเจ้าของ",
+      dataIndex: "contact",
+      key: "contact",
+      width: 190,
+      render: (type: string) => {
+        if (!type) return null; 
+
+        return (
+          <Tag
+            color="blue"
+            style={{
+              whiteSpace: 'normal',
+              wordBreak: 'break-word',
+              textAlign: 'center',
+              padding: '4px 8px',
+              display: 'inline-block',
+              width: '100%',
+            }}
+          >
+            {type}
+          </Tag>
+        );
+      },
     },
 
     {
@@ -295,38 +319,8 @@ export default function AdminPropertiesPage() {
               allowClear
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ width: "100%" }}
+              style={{ width: "300%" }}
             />
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <Select
-              placeholder="เลือกประเภทอสังหา"
-              allowClear
-              value={selectedType}
-              onChange={setSelectedType}
-              style={{ width: "100%" }}
-            >
-              {/* {PROPERTY_TYPES.map((type) => (
-                <Select.Option key={type} value={type}>
-                  {type}
-                </Select.Option>
-              ))} */}
-            </Select>
-          </Col>
-          <Col xs={24} sm={12} md={8}>
-            <Select
-              placeholder="เลือกสถานที่"
-              allowClear
-              value={selectedLocation}
-              onChange={setSelectedLocation}
-              style={{ width: "100%" }}
-            >
-              {/* {PROPERTY_LOCATIONS.map((location) => (
-                <Select.Option key={location} value={location}>
-                  {location}
-                </Select.Option>
-              ))} */}
-            </Select>
           </Col>
         </Row>
       </Card>

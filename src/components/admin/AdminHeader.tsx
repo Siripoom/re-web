@@ -90,7 +90,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ collapsed, onToggle }) => {
         />
         <div>
           <Text strong style={{ fontSize: "18px", color: "#1890ff" }}>
-            Ruby Real Estate
+             Ruby&apos;s Real Estate Phuket
           </Text>
           <Text
             type="secondary"

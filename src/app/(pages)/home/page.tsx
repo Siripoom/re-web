@@ -26,6 +26,7 @@ import {
   LeftOutlined,
   RightOutlined,
   LoadingOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import { useState, useEffect, useCallback, useRef, JSX } from "react";
@@ -55,15 +56,13 @@ interface Property {
   kitchens: number;
   living_rooms: number;
   car_parks: number;
-  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Land";
+  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Land" | string;
   area_sqm?: number;
   land_area_sqm?: number;
   status: "Available" | "Sold" | "Rented";
   featured: boolean;
   created_at: string;
   updated_at: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  amenities: any;
 }
 
 interface PopularArea {
@@ -78,6 +77,74 @@ interface PropertyType {
   count: number;
   value: string;
 }
+
+
+const LOCAL_ICONS: Record<string, string> = {
+  "Villa": "/villa.png",
+  "Condo": "/condominium.png",
+  "House": "/home.png",
+  "Apartment": "/apartments.png",
+  "Land": "/land.png"
+};
+
+const PropertyTypeIcon = ({ typeName }: { typeName: string }) => {
+  const [iconSrc, setIconSrc] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+
+    if (LOCAL_ICONS[typeName]) {
+      setIconSrc(LOCAL_ICONS[typeName]);
+      return;
+    }
+
+
+    const iconMap: Record<string, string> = {
+      "Townhouse": "mdi:home-city",
+      "Penthouse": "mdi:penthouse",
+      "Office": "mdi:office-building",
+      "Shop": "mdi:store",
+      "Hotel": "mdi:hotel",
+
+    };
+
+    const iconId = iconMap[typeName] || "mdi:home";
+    setIconSrc(`https://api.iconify.design/${iconId}.svg`);
+  }, [typeName]);
+
+  if (error || !iconSrc) {
+    return (
+      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]  flex items-center justify-center"
+          style={{ 
+          color:"white"
+        }}>
+        <HomeOutlined className="text-white text-2xl" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627] flex items-center justify-center">
+      {iconSrc.startsWith("https://") ? (
+        <img 
+          src={iconSrc}
+          alt={typeName}
+          className="w-9 h-9 filter invert"
+          onError={() => setError(true)}
+        />
+      ) : (
+        <Image 
+          src={iconSrc}
+          alt={typeName}
+          width={36}
+          height={36}
+          className="w-9 h-9"
+          onError={() => setError(true)}
+        />
+      )}
+    </div>
+  );
+};
 
 export default function Home() {
   const { language } = useLanguage();
@@ -109,18 +176,16 @@ export default function Home() {
     },
   });
 
-  // ตรวจสอบว่าเป็น mobile หรือไม่
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
     };
     
-    handleResize(); // ตรวจสอบครั้งแรกเมื่อโหลดหน้า
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Number of properties to show per slide
   const propertiesPerSlide = isMobile ? 1 : 3;
   const areasPerSlide = isMobile ? 1 : 4;
 
@@ -144,34 +209,46 @@ export default function Home() {
       }));
       setFeaturedProperties(formattedProperties);
 
-      // Group properties by location
       const locationMap: Record<string, Property[]> = {};
+      const typeMap: Record<string, Property[]> = {};
+      
       allProperties.forEach((property) => {
-        if (!property.location) return;
-        if (!locationMap[property.location]) {
-          locationMap[property.location] = [];
+        if (property.location) {
+          if (!locationMap[property.location]) {
+            locationMap[property.location] = [];
+          }
+          locationMap[property.location].push({
+            ...property,
+            images: property.images && Array.isArray(property.images) ? property.images : [],
+          });
         }
-        locationMap[property.location].push({
-          ...property,
-          images:
-            property.images && Array.isArray(property.images)
-              ? property.images
-              : [],
-        });
+
+        if (property.property_type) {
+          if (!typeMap[property.property_type]) {
+            typeMap[property.property_type] = [];
+          }
+          typeMap[property.property_type].push({
+            ...property,
+            images: property.images && Array.isArray(property.images) ? property.images : [],
+          });
+        }
       });
+      
       propertiesByLocationRef.current = locationMap;
 
       if (stats?.locationStats) {
         const areas = Object.entries(stats.locationStats)
           .filter(([name]) => name && name !== "null" && name !== "undefined")
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 6)
+          .slice(0, 32)
           .map(([name, count]) => {
-            // Get first property image from this location
             const locationProperties = locationMap[name] || [];
             const firstProperty = locationProperties[0];
-            const image =
-              firstProperty?.images?.[0]?.image_url || "/default-property.jpg";
+            let image = "/default-property.jpg";
+            if (firstProperty?.images?.length > 0) {
+              image = firstProperty.images.find(img => img.is_primary)?.image_url || 
+                     firstProperty.images[0].image_url;
+            }
 
             return {
               name,
@@ -180,99 +257,31 @@ export default function Home() {
             };
           });
 
-        setPopularAreas(
-          areas.length > 0
-            ? areas
-            : [
-                { name: "Patong", image: "/header.jpg", count: 24 },
-                { name: "Kamala", image: "/header1.jpeg", count: 18 },
-                { name: "Rawai", image: "/header1.jpeg", count: 12 },
-                { name: "Kata", image: "/header1.jpeg", count: 15 },
-              ]
-        );
+        setPopularAreas(areas.length > 0 ? areas : [
+          { name: "Patong", image: "/default-property.jpg", count: 24 },
+          { name: "Kamala", image: "/default-property.jpg", count: 18 },
+          { name: "Rawai", image: "/default-property.jpg", count: 12 },
+          { name: "Kata", image: "/default-property.jpg", count: 15 },
+        ]);
       }
-      const types: PropertyType[] = [
-  {
-    name: language === "th" ? "วิลล่า" : "Villa",
-    icon: (
-      <div className="border-6 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
-        <Image
-          src="/villa.png"
-          alt="Villa"
-          width={48}
-          height={40}
-          className="w-12 h-10"
-        />
-      </div>
-    ),
-    count: stats?.propertyTypeStats?.["Villa"] || 0,
-    value: "Villa",
-  },
-  {
-    name: language === "th" ? "คอนโดมิเนียม" : "Condominium",
-    icon: (
-      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
-        <Image
-          src="/condominium.png"
-          alt="Condominium"
-          width={36}
-          height={36}
-          className="w-9 h-9"
-        />
-      </div>
-    ),
-    count: stats?.propertyTypeStats?.["Condo"] || 0,
-    value: "Condo",
-  },
-  {
-    name: language === "th" ? "บ้าน" : "House",
-    icon: (
-      <div className="border-5 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
-        <Image
-          src="/home.png"
-          alt="House"
-          width={44}
-          height={40}
-          className="w-11 h-10"
-        />
-      </div>
-    ),
-    count: stats?.propertyTypeStats?.["House"] || 0,
-    value: "House",
-  },
-  {
-    name: language === "th" ? "อพาร์ตเมนต์" : "Apartment",
-    icon: (
-      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
-        <Image
-          src="/apartments.png"
-          alt="Apartments"
-          width={30}
-          height={46}
-          className="w-9 h-9"
-        />
-      </div>
-    ),
-    count: stats?.propertyTypeStats?.["Apartment"] || 0,
-    value: "Apartment",
-  },
-  {
-    name: language === "th" ? "ที่ดิน" : "Land",
-    icon: (
-      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]">
-        <Image
-          src="/land.png"
-          alt="Land"
-          width={36}
-          height={36}
-          className="w-9 h-9"
-        />
-      </div>
-    ),
-    count: stats?.propertyTypeStats?.["Land"] || 0,
-    value: "Land",
-  },
-];
+
+      const types: PropertyType[] = Object.entries(stats?.propertyTypeStats || {})
+        .filter(([typeName]) => typeName && typeName !== "null" && typeName !== "undefined")
+        .map(([typeName, count]) => {
+          return {
+            name: language === "th" ? 
+              (typeName === "Villa" ? "วิลล่า" :
+               typeName === "Condo" ? "คอนโดมิเนียม" :
+               typeName === "House" ? "บ้าน" :
+               typeName === "Apartment" ? "อพาร์ตเมนต์" :
+               typeName === "Land" ? "ที่ดิน" : typeName) : 
+              typeName,
+            icon: <PropertyTypeIcon typeName={typeName} />,
+            count: count as number,
+            value: typeName,
+          };
+        })
+        .sort((a, b) => b.count - a.count); 
 
       setPropertyTypes(types);
       setError(null);
@@ -291,7 +300,6 @@ export default function Home() {
     fetchData();
   }, [fetchData]);
 
-  // Auto slide transition effect for featured properties
   const currentSlideRef = useRef(currentSlide);
 
   useEffect(() => {
@@ -312,7 +320,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [featuredProperties.length, propertiesPerSlide]);
 
-  // Auto slide transition effect for popular areas
   const currentAreaIndexRef = useRef(currentAreaIndex);
 
   useEffect(() => {
@@ -660,21 +667,11 @@ export default function Home() {
                   }
                   className="hover:!border-[#D4AF37]"
                 >
-                  <Option value="Villa">
-                    {language === "th" ? "วิลล่า" : "Villa"}
-                  </Option>
-                  <Option value="Condo">
-                    {language === "th" ? "คอนโดมิเนียม" : "Condominium"}
-                  </Option>
-                  <Option value="House">
-                    {language === "th" ? "บ้านเดี่ยว" : "House"}
-                  </Option>
-                  <Option value="Apartment">
-                    {language === "th" ? "อพาร์ตเมนต์" : "Apartment"}
-                  </Option>
-                  <Option value="Land">
-                    {language === "th" ? "ที่ดิน" : "Land"}
-                  </Option>
+                  {propertyTypes.map((type) => (
+                    <Option key={type.value} value={type.value}>
+                      {type.name}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -767,55 +764,25 @@ export default function Home() {
           ) : (
             <div className="max-w-4xl mx-auto">
               <Row gutter={[24, 24]} justify="center">
-                {/* Row 1: 3 items */}
-                <Row gutter={[24, 24]} className="w-full mb-6" justify="center">
-                  {propertyTypes.slice(0, 3).map((type) => (
-                    <Col xs={24} sm={12} md={8} key={type.name}>
-                      <div
-                        className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-all duration-300 cursor-pointer h-full flex flex-col items-center hover:border-[#D4AF37]"
-                        onClick={() =>
-                          router.push(`/product?propertyType=${type.value}`)
-                        }
-                      >
-                        <div className="w-16 h-16 bg-[#D4AF37] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
-                          {type.icon}
-                        </div>
-                        <Title level={4} className="!mb-2">
-                          {type.name}
-                        </Title>
-                        <Text className="!text-gray-600 mt-auto">
-                          {type.count}{" "}
-                          {language === "th" ? "รายการ" : "Properties"}
-                        </Text>
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
-
-                {/* Row 2: 2 items */}
-                <Row gutter={[24, 24]} className="w-full" justify="center">
-                  {propertyTypes.slice(3, 5).map((type) => (
-                    <Col xs={24} sm={12} md={8} key={type.name}>
-                      <div
-                        className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-all duration-300 cursor-pointer h-full flex flex-col items-center hover:border-[#D4AF37]"
-                        onClick={() =>
-                          router.push(`/product?propertyType=${type.value}`)
-                        }
-                      >
-                        <div className="w-16 h-16 bg-[#D4AF37] bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
-                          {type.icon}
-                        </div>
-                        <Title level={4} className="!mb-2">
-                          {type.name}
-                        </Title>
-                        <Text className="!text-gray-600 mt-auto">
-                          {type.count}{" "}
-                          {language === "th" ? "รายการ" : "Properties"}
-                        </Text>
-                      </div>
-                    </Col>
-                  ))}
-                </Row>
+                {propertyTypes.map((type) => (
+                  <Col xs={24} sm={12} md={8} lg={6} key={type.name}>
+                    <div
+                      className="bg-white border border-gray-200 rounded-lg p-6 text-center hover:shadow-md transition-all duration-300 cursor-pointer h-full flex flex-col items-center hover:border-[#D4AF37]"
+                      onClick={() =>
+                        router.push(`/product?propertyType=${type.value}`)
+                      }
+                    >
+                      <PropertyTypeIcon typeName={type.value} />
+                      <Title level={4} className="!mb-2">
+                        {type.name}
+                      </Title>
+                      <Text className="!text-gray-600 mt-auto">
+                        {type.count}{" "}
+                        {language === "th" ? "รายการ" : "Properties"}
+                      </Text>
+                    </div>
+                  </Col>
+                ))}
               </Row>
             </div>
           )}
@@ -957,7 +924,7 @@ export default function Home() {
                                           </Text>
                                         </div>
                                         <Text strong>
-                                          🏠 {property.area} sqft
+                                           🏠 {property.land_area_sqm } sqft
                                         </Text>
                                       </div>
 

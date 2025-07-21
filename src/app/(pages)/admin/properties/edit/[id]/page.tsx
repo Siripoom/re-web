@@ -1,4 +1,3 @@
-// src/app/(pages)/admin/properties/edit/[id]/page.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import {
@@ -18,6 +17,7 @@ import {
   Space,
   Popconfirm,
   Spin,
+  Tag,
 } from "antd";
 import {
   SaveOutlined,
@@ -53,9 +53,16 @@ interface PropertyFormData {
   status: string;
   featured: boolean;
   type: string;
+  contact?: string;
+}
+
+interface OptionType {
+  value: string;
+  label: string;
 }
 
 export default function EditPropertyPage() {
+  const [messageApi, contextHolder] = message.useMessage();
   const router = useRouter();
   const params = useParams();
   const propertyId = params.id as string;
@@ -67,9 +74,18 @@ export default function EditPropertyPage() {
   const [existingImages, setExistingImages] = useState<PropertyImage[]>([]);
   const [newImageFiles, setNewImageFiles] = useState<UploadFile[]>([]);
 
+  // Locations state
+  const [locations, setLocations] = useState<OptionType[]>([]);
+  const [newLocationInput, setNewLocationInput] = useState("");
+
+  // Property types state
+  const [propertyTypes, setPropertyTypes] = useState<OptionType[]>([]);
+  const [newPropertyTypeInput, setNewPropertyTypeInput] = useState("");
+
   useEffect(() => {
     if (propertyId) {
       fetchProperty();
+      fetchDropdownData();
     }
   }, [propertyId]);
 
@@ -102,14 +118,37 @@ export default function EditPropertyPage() {
           contact: data.contact,
         });
       } else {
-        message.error("ไม่พบข้อมูลอสังหาริมทรัพย์");
+        messageApi.error("ไม่พบข้อมูลอสังหาริมทรัพย์");
         router.push("/admin/properties");
       }
     } catch (error) {
-      message.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+      messageApi.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
       console.error("Error fetching property:", error);
     } finally {
       setPageLoading(false);
+    }
+  };
+
+  const fetchDropdownData = async () => {
+    try {
+      // Fetch locations
+      const locationsData = await PropertyService.getLocations();
+      const locationOptions = locationsData.map((loc: string) => ({
+        value: loc,
+        label: loc,
+      }));
+      setLocations(locationOptions);
+
+      // Fetch property types
+      const typesData = await PropertyService.getPropertyTypes();
+      const typeOptions = typesData.map((type: string) => ({
+        value: type,
+        label: type,
+      }));
+      setPropertyTypes(typeOptions);
+    } catch (error) {
+      console.error("Error fetching dropdown data:", error);
+      messageApi.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
     }
   };
 
@@ -141,16 +180,16 @@ export default function EditPropertyPage() {
               );
             } catch (imageError) {
               console.error("Error uploading image:", imageError);
-              message.warning(`ไม่สามารถอัปโหลดรูปภาพ ${file.name} ได้`);
+              messageApi.warning(`ไม่สามารถอัปโหลดรูปภาพ ${file.name} ได้`);
             }
           }
         }
       }
 
-      message.success("อัปเดตอสังหาริมทรัพย์สำเร็จ");
+      messageApi.success("อัปเดตอสังหาริมทรัพย์สำเร็จ");
       router.push("/admin/properties");
     } catch (error) {
-      message.error("เกิดข้อผิดพลาดในการอัปเดต");
+      messageApi.error("เกิดข้อผิดพลาดในการอัปเดต");
       console.error("Error updating property:", error);
     } finally {
       setLoading(false);
@@ -161,9 +200,9 @@ export default function EditPropertyPage() {
     try {
       await PropertyService.deletePropertyImage(imageId);
       setExistingImages(existingImages.filter((img) => img.id !== imageId));
-      message.success("ลบรูปภาพสำเร็จ");
+      messageApi.success("ลบรูปภาพสำเร็จ");
     } catch (error) {
-      message.error("เกิดข้อผิดพลาดในการลบรูปภาพ");
+      messageApi.error("เกิดข้อผิดพลาดในการลบรูปภาพ");
       console.error("Error deleting image:", error);
     }
   };
@@ -177,15 +216,61 @@ export default function EditPropertyPage() {
           is_primary: img.id === imageId,
         }))
       );
-      message.success("ตั้งเป็นรูปหลักสำเร็จ");
+      messageApi.success("ตั้งเป็นรูปหลักสำเร็จ");
     } catch (error) {
-      message.error("เกิดข้อผิดพลาดในการตั้งรูปหลัก");
+      messageApi.error("เกิดข้อผิดพลาดในการตั้งรูปหลัก");
       console.error("Error setting primary image:", error);
     }
   };
 
   const handleNewImageChange = ({ fileList }: { fileList: UploadFile[] }) => {
     setNewImageFiles(fileList);
+  };
+
+  const handleAddNewLocation = async () => {
+    if (newLocationInput.trim() === "") return;
+
+    const newLocation = {
+      value: newLocationInput,
+      label: newLocationInput,
+    };
+
+    if (!locations.some(loc => loc.value.toLowerCase() === newLocationInput.toLowerCase())) {
+      try {
+        setLocations([...locations, newLocation]);
+        form.setFieldsValue({ location: newLocationInput });
+        setNewLocationInput("");
+        messageApi.success(`เพิ่มพื้นที่ใหม่ "${newLocationInput}" เรียบร้อยแล้ว`);
+      } catch (error) {
+        console.error("Error adding new location:", error);
+        messageApi.error("เกิดข้อผิดพลาดในการเพิ่มพื้นที่ใหม่");
+      }
+    } else {
+      messageApi.warning("พื้นที่นี้มีอยู่แล้วในระบบ");
+    }
+  };
+
+  const handleAddNewPropertyType = async () => {
+    if (newPropertyTypeInput.trim() === "") return;
+
+    const newPropertyType = {
+      value: newPropertyTypeInput,
+      label: newPropertyTypeInput,
+    };
+
+    if (!propertyTypes.some(type => type.value.toLowerCase() === newPropertyTypeInput.toLowerCase())) {
+      try {
+        setPropertyTypes([...propertyTypes, newPropertyType]);
+        form.setFieldsValue({ property_type: newPropertyTypeInput });
+        setNewPropertyTypeInput("");
+        messageApi.success(`เพิ่มประเภทอสังหาใหม่ "${newPropertyTypeInput}" เรียบร้อยแล้ว`);
+      } catch (error) {
+        console.error("Error adding new property type:", error);
+        messageApi.error("เกิดข้อผิดพลาดในการเพิ่มประเภทใหม่");
+      }
+    } else {
+      messageApi.warning("ประเภทนี้มีอยู่แล้วในระบบ");
+    }
   };
 
   if (pageLoading) {
@@ -216,6 +301,7 @@ export default function EditPropertyPage() {
 
   return (
     <div style={{ padding: "0" }}>
+      {contextHolder}
       {/* Page Header */}
       <div
         style={{
@@ -253,6 +339,59 @@ export default function EditPropertyPage() {
                 </Col>
 
                 <Col span={24}>
+                  <Form.Item
+                    name="location"
+                    label="พื้นที่ตั้ง"
+                    rules={[{ required: true, message: "กรุณาระบุพื้นที่ตั้ง" }]}
+                  >
+                    <Select
+                      showSearch
+                      placeholder="เลือกหรือพิมพ์พื้นที่ตั้งใหม่"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      options={locations}
+                      onSearch={(value) => setNewLocationInput(value)}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          {newLocationInput && !locations.some(loc => 
+                            loc.value.toLowerCase() === newLocationInput.toLowerCase()
+                          ) && (
+                            <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
+                              <Tag color="blue" style={{ marginRight: 8 }}>ใหม่</Tag>
+                              <span style={{ flex: 1 }}>{newLocationInput}</span>
+                              <Button 
+                                type="link" 
+                                size="small"
+                                onClick={handleAddNewLocation}
+                                style={{ padding: 0 }}
+                              >
+                                เพิ่ม
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item
+                    name="address"
+                    label="ที่อยู่"
+                    rules={[{ required: true, message: "กรุณาระบุที่อยู่" }]}
+                  >
+                    <TextArea
+                      rows={3}
+                      placeholder="ที่อยู่เต็มของอสังหาริมทรัพย์"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
                   <Form.Item name="description" label="รายละเอียด">
                     <TextArea
                       rows={4}
@@ -267,49 +406,47 @@ export default function EditPropertyPage() {
                     label="ประเภทอสังหา"
                     rules={[{ required: true, message: "กรุณาเลือกประเภท" }]}
                   >
-                    <Select placeholder="เลือกประเภท">
-                      <Select.Option value="Villa">วิลล่า</Select.Option>
-                      <Select.Option value="Condo">คอนโดมิเนียม</Select.Option>
-                      <Select.Option value="House">บ้านเดี่ยว</Select.Option>
-                      <Select.Option value="Apartment">
-                        อพาร์ตเมนต์
-                      </Select.Option>
-                      <Select.Option value="Land">
-                        ที่ดิน
-                      </Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-
-                <Col span={24}>
-                  <Form.Item
-                    name="contact"
-                    label="ช่องทางการติดต่อ"
-                    rules={[{ required: true, message: "กรุณาระบุช่องทางการติดต่อ" }]}
-                  >
-                    <Input
-                      placeholder="เช่น เบอร์โทรศัพท์, อีเมล หรือ LINE ID"
+                    <Select
+                      showSearch
+                      placeholder="เลือกหรือพิมพ์ประเภทใหม่"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                      }
+                      options={propertyTypes}
+                      onSearch={(value) => setNewPropertyTypeInput(value)}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          {newPropertyTypeInput && !propertyTypes.some(type => 
+                            type.value.toLowerCase() === newPropertyTypeInput.toLowerCase()
+                          ) && (
+                            <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
+                              <Tag color="blue" style={{ marginRight: 8 }}>ใหม่</Tag>
+                              <span style={{ flex: 1 }}>{newPropertyTypeInput}</span>
+                              <Button 
+                                type="link" 
+                                size="small"
+                                onClick={handleAddNewPropertyType}
+                                style={{ padding: 0 }}
+                              >
+                                เพิ่ม
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
                     />
                   </Form.Item>
                 </Col>
 
                 <Col xs={24} sm={12}>
                   <Form.Item
-                    name="location"
-                    label="พื้นที่"
-                    rules={[{ required: true, message: "กรุณาเลือกพื้นที่" }]}
+                    name="contact"
+                    label="ช่องทางติดต่อ"
+                    rules={[{ required: true, message: "กรุณาระบุช่องทางติดต่อ" }]}
                   >
-                    <Select placeholder="เลือกพื้นที่">
-                      <Select.Option value="Patong">ป่าตอง</Select.Option>
-                      <Select.Option value="Kamala">กะมะลา</Select.Option>
-                      <Select.Option value="Kata">กะตะ</Select.Option>
-                      <Select.Option value="Karon">กะรน</Select.Option>
-                      <Select.Option value="Rawai">ราไวย์</Select.Option>
-                      <Select.Option value="Phuket Town">เมืองภูเก็ต</Select.Option>
-                      <Select.Option value="Cherngtalay">เชิงทะเล</Select.Option>
-                      <Select.Option value="Bang Tao">บางเทา</Select.Option>
-                      <Select.Option value="Nai Harn">ในหาน</Select.Option>
-                    </Select>
+                    <Input placeholder="เช่น เบอร์โทรศัพท์, อีเมล หรือ LINE ID" />
                   </Form.Item>
                 </Col>
               </Row>

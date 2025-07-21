@@ -1,6 +1,5 @@
-// src/app/(pages)/admin/properties/create/page.tsx
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
@@ -15,6 +14,7 @@ import {
   Typography,
   Upload,
   Space,
+  Tag,
 } from "antd";
 import { PlusOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -45,31 +45,52 @@ interface PropertyFormData {
   contact?: string;
 }
 
+interface OptionType {
+  value: string;
+  label: string;
+}
+
 export default function CreatePropertyPage() {
   const router = useRouter();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [imageFiles, setImageFiles] = useState<UploadFile[]>([]);
+  
+  // Locations state
+  const [locations, setLocations] = useState<OptionType[]>([]);
+  const [newLocationInput, setNewLocationInput] = useState("");
 
-  const propertyTypes = [
-    { value: "Villa", label: "วิลล่า" },
-    { value: "Condo", label: "คอนโดมิเนียม" },
-    { value: "House", label: "บ้านเดี่ยว" },
-    { value: "Apartment", label: "อพาร์ตเมนต์" },
-    { value: "Land", label: "ที่ดิน" },
-  ];
+  // Property types state
+  const [propertyTypes, setPropertyTypes] = useState<OptionType[]>([]);
+  const [newPropertyTypeInput, setNewPropertyTypeInput] = useState("");
 
-  const locations = [
-    { value: "Patong", label: "ป่าตอง" },
-    { value: "Kamala", label: "กะมะลา" },
-    { value: "Kata", label: "กะตะ" },
-    { value: "Karon", label: "กะรน" },
-    { value: "Rawai", label: "ราไวย์" },
-    { value: "Phuket Town", label: "เมืองภูเก็ต" },
-    { value: "Cherngtalay", label: "เชิงทะเล" },
-    { value: "Bang Tao", label: "บางเทา" },
-    { value: "Nai Harn", label: "ในหาน" },
-  ];
+  // Fetch locations and property types from database on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch locations
+        const locationsData = await PropertyService.getLocations();
+        const locationOptions = locationsData.map((loc: string) => ({
+          value: loc,
+          label: loc,
+        }));
+        setLocations(locationOptions);
+
+        // Fetch property types
+        const typesData = await PropertyService.getPropertyTypes();
+        const typeOptions = typesData.map((type: string) => ({
+          value: type,
+          label: type,
+        }));
+        setPropertyTypes(typeOptions);
+      } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        message.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSubmit = async (values: PropertyFormData) => {
     try {
@@ -119,10 +140,58 @@ export default function CreatePropertyPage() {
     setImageFiles(fileList);
   };
 
+  const handleAddNewLocation = async () => {
+    if (newLocationInput.trim() === "") return;
+
+    const newLocation = {
+      value: newLocationInput,
+      label: newLocationInput,
+    };
+
+    if (!locations.some(loc => loc.value.toLowerCase() === newLocationInput.toLowerCase())) {
+      try {
+        // This will be saved when the property is created
+        setLocations([...locations, newLocation]);
+        form.setFieldsValue({ location: newLocationInput });
+        setNewLocationInput("");
+        message.success(`เพิ่มพื้นที่ใหม่ "${newLocationInput}" เรียบร้อยแล้ว`);
+      } catch (error) {
+        console.error("Error adding new location:", error);
+        message.error("เกิดข้อผิดพลาดในการเพิ่มพื้นที่ใหม่");
+      }
+    } else {
+      message.warning("พื้นที่นี้มีอยู่แล้วในระบบ");
+    }
+  };
+
+  const handleAddNewPropertyType = async () => {
+    if (newPropertyTypeInput.trim() === "") return;
+
+    const newPropertyType = {
+      value: newPropertyTypeInput,
+      label: newPropertyTypeInput,
+    };
+
+    if (!propertyTypes.some(type => type.value.toLowerCase() === newPropertyTypeInput.toLowerCase())) {
+      try {
+        // This will be saved when the property is created
+        setPropertyTypes([...propertyTypes, newPropertyType]);
+        form.setFieldsValue({ property_type: newPropertyTypeInput });
+        setNewPropertyTypeInput("");
+        message.success(`เพิ่มประเภทอสังหาใหม่ "${newPropertyTypeInput}" เรียบร้อยแล้ว`);
+      } catch (error) {
+        console.error("Error adding new property type:", error);
+        message.error("เกิดข้อผิดพลาดในการเพิ่มประเภทใหม่");
+      }
+    } else {
+      message.warning("ประเภทนี้มีอยู่แล้วในระบบ");
+    }
+  };
+
   const uploadButton = (
     <div>
       <PlusOutlined />
-      <div style={{ marginTop: 8 }}>อัปโหลด</div>
+      <div style={{ marginTop: 8 }}>เพิ่มรูป</div>
     </div>
   );
 
@@ -183,14 +252,36 @@ export default function CreatePropertyPage() {
                     label="พื้นที่ตั้ง"
                     rules={[{ required: true, message: "กรุณาระบุพื้นที่ตั้ง" }]}
                   >
-                    <Select 
+                    <Select
                       showSearch
-                      placeholder="เลือกพื้นที่ตั้ง"
+                      placeholder="เลือกหรือพิมพ์พื้นที่ตั้งใหม่"
                       optionFilterProp="children"
                       filterOption={(input, option) =>
                         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                       }
                       options={locations}
+                      onSearch={(value) => setNewLocationInput(value)}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          {newLocationInput && !locations.some(loc => 
+                            loc.value.toLowerCase() === newLocationInput.toLowerCase()
+                          ) && (
+                            <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
+                              <Tag color="blue" style={{ marginRight: 8 }}>ใหม่</Tag>
+                              <span style={{ flex: 1 }}>{newLocationInput}</span>
+                              <Button 
+                                type="link" 
+                                size="small"
+                                onClick={handleAddNewLocation}
+                                style={{ padding: 0 }}
+                              >
+                                เพิ่ม
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
                     />
                   </Form.Item>
                 </Col>
@@ -223,14 +314,36 @@ export default function CreatePropertyPage() {
                     label="ประเภทอสังหา"
                     rules={[{ required: true, message: "กรุณาเลือกประเภท" }]}
                   >
-                    <Select 
+                    <Select
                       showSearch
-                      placeholder="เลือกประเภท"
+                      placeholder="เลือกหรือพิมพ์ประเภทใหม่"
                       optionFilterProp="children"
                       filterOption={(input, option) =>
                         (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                       }
                       options={propertyTypes}
+                      onSearch={(value) => setNewPropertyTypeInput(value)}
+                      dropdownRender={(menu) => (
+                        <>
+                          {menu}
+                          {newPropertyTypeInput && !propertyTypes.some(type => 
+                            type.value.toLowerCase() === newPropertyTypeInput.toLowerCase()
+                          ) && (
+                            <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
+                              <Tag color="blue" style={{ marginRight: 8 }}>ใหม่</Tag>
+                              <span style={{ flex: 1 }}>{newPropertyTypeInput}</span>
+                              <Button 
+                                type="link" 
+                                size="small"
+                                onClick={handleAddNewPropertyType}
+                                style={{ padding: 0 }}
+                              >
+                                เพิ่ม
+                              </Button>
+                            </div>
+                          )}
+                        </>
+                      )}
                     />
                   </Form.Item>
                 </Col>

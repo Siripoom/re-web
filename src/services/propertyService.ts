@@ -8,6 +8,46 @@ import {
 } from "@/types/property";
 
 export class PropertyService {
+  // ดึงข้อมูลพื้นที่ทั้งหมด
+  static async getLocations(): Promise<string[]> {
+    const { data, error } = await supabase
+      .from("properties")
+      .select("location")
+      .not("location", "is", null);
+
+    if (error) {
+      console.error("Error fetching locations:", error);
+      throw error;
+    }
+
+    // Remove duplicates and return sorted array
+    const uniqueLocations = Array.from(
+      new Set(data?.map((item) => item.location))
+    ).sort();
+
+    return uniqueLocations || [];
+  }
+
+  // ดึงข้อมูลประเภทอสังหาทั้งหมด
+  static async getPropertyTypes(): Promise<string[]> {
+    const { data, error } = await supabase
+      .from("properties")
+      .select("property_type")
+      .not("property_type", "is", null);
+
+    if (error) {
+      console.error("Error fetching property types:", error);
+      throw error;
+    }
+
+    // Remove duplicates and return sorted array
+    const uniqueTypes = Array.from(
+      new Set(data?.map((item) => item.property_type))
+    ).sort();
+
+    return uniqueTypes || [];
+  }
+
   // ดึงข้อมูลอสังหาทั้งหมด
   static async getAllProperties(): Promise<Property[]> {
     const { data, error } = await supabase
@@ -49,7 +89,6 @@ export class PropertyService {
 
     return data || [];
   }
-  
 
   // ดึงข้อมูลอสังหาตาม ID
   static async getPropertyById(id: string): Promise<Property | null> {
@@ -71,8 +110,6 @@ export class PropertyService {
 
     return data;
   }
-
-  
 
   // ค้นหาอสังหาตามเงื่อนไข
   static async searchProperties(
@@ -326,10 +363,10 @@ export class PropertyService {
 
     const totalProperties = data?.length || 0;
     const availableProperties =
-      data?.filter((p: { status: string; }) => p.status === "Available").length || 0;
-    const soldProperties = data?.filter((p: { status: string; }) => p.status === "Sold").length || 0;
+      data?.filter((p: { status: string }) => p.status === "Available").length || 0;
+    const soldProperties = data?.filter((p: { status: string }) => p.status === "Sold").length || 0;
     const rentedProperties =
-      data?.filter((p: { status: string; }) => p.status === "Rented").length || 0;
+      data?.filter((p: { status: string }) => p.status === "Rented").length || 0;
 
     const propertyTypeStats =
       data?.reduce(

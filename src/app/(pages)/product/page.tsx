@@ -398,7 +398,8 @@ function PropertySearchContent() {
                               🛏 {property.bedrooms} | 🚿 {property.bathrooms}
                             </p>
                             <p className="mb-1 text-lg">
-                              🏠 {property.property_type}
+                              🏠 {property.property_type} |  {property.land_area_sqm } sqft
+            
                             </p>
                           </div>
                           <div className="text-[#D4AF37] text-xl font-semibold mt-auto">

@@ -7,8 +7,8 @@ import { usePropertyContext } from "../../../components/contexts/PropertyContext
 import { useLanguage } from "../../../components/contexts/LanguageContext";
 import en from "../../../components/locales/en";
 import th from "../../../components/locales/th";
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense, useCallback } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -16,12 +16,22 @@ const { Option } = Select;
 const translations = { en, th };
 
 function SearchHandler({
+  searchTerm,
+  location,
+  propertyType,
+  propertyFormat,
+  priceRange,
   setSearchTerm,
   setPropertyType,
   setPropertyFormat,
   setPriceRange,
   setLocation,
 }: {
+  searchTerm: string;
+  location: string;
+  propertyType: string;
+  propertyFormat: string;
+  priceRange: string;
   setSearchTerm: (term: string) => void;
   setPropertyType: (type: string) => void;
   setPropertyFormat: (format: string) => void;
@@ -38,38 +48,35 @@ function SearchHandler({
     const maxPriceQuery = searchParams.get("maxPrice");
     const locationQuery = searchParams.get("location");
 
-    if (searchQuery) {
+    if (searchQuery !== null && searchQuery !== searchTerm) {
       setSearchTerm(decodeURIComponent(searchQuery));
     }
-    if (typeQuery) {
+    if (typeQuery !== null && typeQuery !== propertyFormat) {
       setPropertyFormat(typeQuery);
     }
-    if (propertyTypeQuery) {
+    if (propertyTypeQuery !== null && propertyTypeQuery !== propertyType) {
       setPropertyType(propertyTypeQuery);
     }
-    if (locationQuery) {
+    if (locationQuery !== null && locationQuery !== location) {
       setLocation(locationQuery);
     }
     if (minPriceQuery && maxPriceQuery) {
-      // const min = parseInt(minPriceQuery);
       const max = parseInt(maxPriceQuery);
+      let range = "";
 
       if (max <= 10000000) {
-        setPriceRange("0-10");
+        range = "0-10";
       } else if (max <= 20000000) {
-        setPriceRange("10-20");
+        range = "10-20";
       } else {
-        setPriceRange("20+");
+        range = "20+";
+      }
+
+      if (range !== priceRange) {
+        setPriceRange(range);
       }
     }
-  }, [
-    searchParams,
-    setSearchTerm,
-    setPropertyType,
-    setPropertyFormat,
-    setPriceRange,
-    setLocation,
-  ]);
+  }, [searchParams]);
 
   return null;
 }
@@ -97,15 +104,91 @@ function PropertySearchContent() {
   const { allProperties: properties, loading } = usePropertyContext();
   const { language } = useLanguage();
   const t = (key: keyof typeof en) => translations[language][key];
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const updateURL = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (searchTerm) {
+      params.set("search", encodeURIComponent(searchTerm));
+    } else {
+      params.delete("search");
+    }
+    
+    if (propertyFormat) {
+      params.set("type", propertyFormat);
+    } else {
+      params.delete("type");
+    }
+    
+    if (propertyType) {
+      params.set("propertyType", propertyType);
+    } else {
+      params.delete("propertyType");
+    }
+    
+    if (location) {
+      params.set("location", location);
+    } else {
+      params.delete("location");
+    }
+    
+    if (priceRange) {
+      if (priceRange === "0-10") {
+        params.set("minPrice", "0");
+        params.set("maxPrice", "10000000");
+      } else if (priceRange === "10-20") {
+        params.set("minPrice", "10000000");
+        params.set("maxPrice", "20000000");
+      } else if (priceRange === "20+") {
+        params.set("minPrice", "20000000");
+        params.set("maxPrice", "100000000");
+      }
+    } else {
+      params.delete("minPrice");
+      params.delete("maxPrice");
+    }
+
+    // Only update if the URL has actually changed
+    if (params.toString() !== searchParams.toString()) {
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [searchTerm, location, propertyType, propertyFormat, priceRange, pathname, router, searchParams]);
+
+  useEffect(() => {
+    updateURL();
+  }, [searchTerm, location, propertyType, propertyFormat, priceRange, updateURL]);
+
+  const handleClearFilter = (type: string) => {
+    switch (type) {
+      case "location":
+        setLocation("");
+        break;
+      case "propertyType":
+        setPropertyType("");
+        break;
+      case "propertyFormat":
+        setPropertyFormat("");
+        break;
+      case "priceRange":
+        setPriceRange("");
+        break;
+      default:
+        break;
+    }
+  };
 
   const filteredProperties = properties.filter((property) => {
     return (
       property.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (location === "" || property.location === location) &&
-      (propertyType === "" || property.property_type === propertyType) &&
-      (propertyFormat === "" ||
-        property.type.toLowerCase() === propertyFormat.toLowerCase()) &&
-      (priceRange === "" ||
+      (!location || property.location === location) &&
+      (!propertyType || property.property_type === propertyType) &&
+      (!propertyFormat ||
+        String(property.type || "").toLowerCase() ===
+          String(propertyFormat).toLowerCase()) &&
+      (!priceRange ||
         (priceRange === "0-10" && property.price < 10000000) ||
         (priceRange === "10-20" &&
           property.price >= 10000000 &&
@@ -141,7 +224,7 @@ function PropertySearchContent() {
       {/* Hero Section with Header Image */}
       <div className="relative h-64 md:h-96">
         <Image
-          src="/bg.jpg" // Replace with your header image path
+          src="/bg.jpg"
           alt="Property Search"
           fill
           className="object-cover"
@@ -167,6 +250,11 @@ function PropertySearchContent() {
         <div className="bg-white rounded-lg shadow-lg p-6">
           <Suspense fallback={<SearchFallback />}>
             <SearchHandler
+              searchTerm={searchTerm}
+              location={location}
+              propertyType={propertyType}
+              propertyFormat={propertyFormat}
+              priceRange={priceRange}
               setSearchTerm={setSearchTerm}
               setPropertyType={setPropertyType}
               setPropertyFormat={setPropertyFormat}
@@ -193,6 +281,7 @@ function PropertySearchContent() {
               size="large"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onSearch={updateURL}
               className="mb-6 animate-fadeIn gold-search-btn"
               style={{ fontSize: "18px" }}
             />
@@ -209,91 +298,101 @@ function PropertySearchContent() {
               </>
             ) : (
               <>
-                <Col
-                  xs={24}
-                  sm={12}
-                  md={6}
-                  className="animate-fadeIn delay-100"
-                >
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-100">
                   <Select
                     placeholder={t("location") || "Location"}
                     value={location || undefined}
-                    onChange={(value) => setLocation(value)}
+                    onChange={(value) => {
+                      setLocation(value || "");
+                      if (value === undefined) handleClearFilter("location");
+                    }}
                     style={{ width: "100%", fontSize: "18px" }}
                     allowClear
                     dropdownStyle={{ fontSize: "16px" }}
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) => {
+                    const label = typeof option?.children === "string"
+                      ? option.children
+                      : String(option?.children ?? "");
+
+                    return label.toLowerCase().includes(input.toLowerCase());
+                  }}
+
                   >
                     {locations.map((loc) => (
-                      <Option
-                        key={loc}
-                        value={loc}
-                        style={{ fontSize: "16px" }}
-                      >
+                      <Option key={loc} value={loc} style={{ fontSize: "16px" }}>
                         {loc}
                       </Option>
                     ))}
                   </Select>
                 </Col>
-                <Col
-                  xs={24}
-                  sm={12}
-                  md={6}
-                  className="animate-fadeIn delay-200"
-                >
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-200">
                   <Select
                     placeholder={t("propertyType") || "Property Type"}
                     value={propertyType || undefined}
-                    onChange={(value) => setPropertyType(value)}
+                    onChange={(value) => {
+                      setPropertyType(value || "");
+                      if (value === undefined) handleClearFilter("propertyType");
+                    }}
                     style={{ width: "100%", fontSize: "18px" }}
                     allowClear
                     dropdownStyle={{ fontSize: "16px" }}
+                    showSearch
+                    optionFilterProp="children"
+                  filterOption={(input, option) => {
+                  const label = typeof option?.children === "string"
+                    ? option.children
+                    : String(option?.children ?? "");
+
+                  return label.toLowerCase().includes(input.toLowerCase());
+                }}
+
                   >
                     {propertyTypes.map((type) => (
-                      <Option
-                        key={type}
-                        value={type}
-                        style={{ fontSize: "16px" }}
-                      >
+                      <Option key={type} value={type} style={{ fontSize: "16px" }}>
                         {type}
                       </Option>
                     ))}
                   </Select>
                 </Col>
-                <Col
-                  xs={24}
-                  sm={12}
-                  md={6}
-                  className="animate-fadeIn delay-300"
-                >
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-300">
                   <Select
                     placeholder={t("propertyFormat") || "Property Format"}
                     value={propertyFormat || undefined}
-                    onChange={(value) => setPropertyFormat(value)}
+                    onChange={(value) => {
+                      setPropertyFormat(value || "");
+                      if (value === undefined) handleClearFilter("propertyFormat");
+                    }}
                     style={{ width: "100%", fontSize: "18px" }}
                     allowClear
                     dropdownStyle={{ fontSize: "16px" }}
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) => {
+                    const label = typeof option?.children === "string"
+                      ? option.children
+                      : String(option?.children ?? "");
+
+                      return label.toLowerCase().includes(input.toLowerCase());
+                    }}
+
                   >
                     {propertyFormats.map((format) => (
-                      <Option
-                        key={format}
-                        value={format}
-                        style={{ fontSize: "16px" }}
-                      >
+                      <Option key={format} value={format} style={{ fontSize: "16px" }}>
                         {format}
                       </Option>
                     ))}
                   </Select>
                 </Col>
-                <Col
-                  xs={24}
-                  sm={12}
-                  md={6}
-                  className="animate-fadeIn delay-400"
-                >
+                <Col xs={24} sm={12} md={6} className="animate-fadeIn delay-400">
                   <Select
                     placeholder={t("priceRange") || "Price Range"}
                     value={priceRange || undefined}
-                    onChange={(value) => setPriceRange(value)}
+                    onChange={(value) => {
+                      setPriceRange(value || "");
+                      if (value === undefined) handleClearFilter("priceRange");
+                    }}
                     style={{ width: "100%", fontSize: "18px" }}
                     allowClear
                     dropdownStyle={{ fontSize: "16px" }}
@@ -314,6 +413,7 @@ function PropertySearchContent() {
           </Row>
         </div>
 
+        {/* Rest of the component remains the same */}
         <div className="mt-8">
           {loading ? (
             <Row gutter={[16, 16]}>
@@ -398,8 +498,7 @@ function PropertySearchContent() {
                               🛏 {property.bedrooms} | 🚿 {property.bathrooms}
                             </p>
                             <p className="mb-1 text-lg">
-                              🏠 {property.property_type} |  {property.land_area_sqm } sqft
-            
+                              🏠 {property.property_type} |  {property.land_area_sqm} sqft
                             </p>
                           </div>
                           <div className="text-[#D4AF37] text-xl font-semibold mt-auto">
@@ -430,6 +529,7 @@ function PropertySearchContent() {
         </div>
       </div>
 
+      {/* Rest of the styles remain the same */}
       <style jsx global>{`
         @keyframes fadeIn {
           from {

@@ -721,9 +721,12 @@ export default function Home() {
               step={1000000}
               trackStyle={[{ backgroundColor: "#D4AF37" }]}
               handleStyle={[{ borderColor: "#D4AF37" }]}
-              tipFormatter={(value) => `${(value || 0).toLocaleString()} THB`}
+              tooltip={{
+                formatter: (value) => `${(value || 0).toLocaleString()} THB`
+              }}
             />
           </Form.Item>
+
 
           <Form.Item
             name="area"

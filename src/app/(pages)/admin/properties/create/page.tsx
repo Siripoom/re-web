@@ -15,6 +15,7 @@ import {
   Upload,
   Space,
   Tag,
+  Checkbox,
 } from "antd";
 import { PlusOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -35,14 +36,19 @@ interface PropertyFormData {
   living_rooms: number;
   car_parks: number;
   price: number;
-  property_type: string;
+  property_type: "Villa" | "Condo" | "House" | "Apartment" | "Land";
   location?: string;
   area_sqm?: number;
   land_area_sqm?: number;
-  status: string;
+  status: "Available" | "Sold" | "Rented";
   featured: boolean;
   type: string;
   contact?: string;
+  amenitie?: { 
+    swimming_pool: boolean;
+    fitness: boolean;
+    playground: boolean;
+  };
 }
 
 interface OptionType {
@@ -61,10 +67,15 @@ export default function CreatePropertyPage() {
   const [newLocationInput, setNewLocationInput] = useState("");
 
   // Property types state
-  const [propertyTypes, setPropertyTypes] = useState<OptionType[]>([]);
-  const [newPropertyTypeInput, setNewPropertyTypeInput] = useState("");
+  const [propertyTypes] = useState<OptionType[]>([
+    { value: "Villa", label: "Villa" },
+    { value: "Condo", label: "Condo" },
+    { value: "House", label: "House" },
+    { value: "Apartment", label: "Apartment" },
+    { value: "Land", label: "Land" },
+  ]);
 
-  // Fetch locations and property types from database on component mount
+  // Fetch locations from database on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,14 +86,6 @@ export default function CreatePropertyPage() {
           label: loc,
         }));
         setLocations(locationOptions);
-
-        // Fetch property types
-        const typesData = await PropertyService.getPropertyTypes();
-        const typeOptions = typesData.map((type: string) => ({
-          value: type,
-          label: type,
-        }));
-        setPropertyTypes(typeOptions);
       } catch (error) {
         console.error("Error fetching dropdown data:", error);
         message.error("เกิดข้อผิดพลาดในการโหลดข้อมูล");
@@ -164,30 +167,6 @@ export default function CreatePropertyPage() {
     }
   };
 
-  const handleAddNewPropertyType = async () => {
-    if (newPropertyTypeInput.trim() === "") return;
-
-    const newPropertyType = {
-      value: newPropertyTypeInput,
-      label: newPropertyTypeInput,
-    };
-
-    if (!propertyTypes.some(type => type.value.toLowerCase() === newPropertyTypeInput.toLowerCase())) {
-      try {
-        // This will be saved when the property is created
-        setPropertyTypes([...propertyTypes, newPropertyType]);
-        form.setFieldsValue({ property_type: newPropertyTypeInput });
-        setNewPropertyTypeInput("");
-        message.success(`เพิ่มประเภทอสังหาใหม่ "${newPropertyTypeInput}" เรียบร้อยแล้ว`);
-      } catch (error) {
-        console.error("Error adding new property type:", error);
-        message.error("เกิดข้อผิดพลาดในการเพิ่มประเภทใหม่");
-      }
-    } else {
-      message.warning("ประเภทนี้มีอยู่แล้วในระบบ");
-    }
-  };
-
   const uploadButton = (
     <div>
       <PlusOutlined />
@@ -229,6 +208,11 @@ export default function CreatePropertyPage() {
           status: "Available",
           featured: false,
           type: "sell",
+          amenitie: {
+            swimming_pool: false,
+            fitness: false,
+            playground: false,
+          },
         }}
       >
         <Row gutter={[24, 0]}>
@@ -315,35 +299,8 @@ export default function CreatePropertyPage() {
                     rules={[{ required: true, message: "กรุณาเลือกประเภท" }]}
                   >
                     <Select
-                      showSearch
-                      placeholder="เลือกหรือพิมพ์ประเภทใหม่"
-                      optionFilterProp="children"
-                      filterOption={(input, option) =>
-                        (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
-                      }
+                      placeholder="เลือกประเภทอสังหา"
                       options={propertyTypes}
-                      onSearch={(value) => setNewPropertyTypeInput(value)}
-                      dropdownRender={(menu) => (
-                        <>
-                          {menu}
-                          {newPropertyTypeInput && !propertyTypes.some(type => 
-                            type.value.toLowerCase() === newPropertyTypeInput.toLowerCase()
-                          ) && (
-                            <div style={{ padding: 8, display: 'flex', alignItems: 'center' }}>
-                              <Tag color="blue" style={{ marginRight: 8 }}>ใหม่</Tag>
-                              <span style={{ flex: 1 }}>{newPropertyTypeInput}</span>
-                              <Button 
-                                type="link" 
-                                size="small"
-                                onClick={handleAddNewPropertyType}
-                                style={{ padding: 0 }}
-                              >
-                                เพิ่ม
-                              </Button>
-                            </div>
-                          )}
-                        </>
-                      )}
                     />
                   </Form.Item>
                 </Col>
@@ -427,6 +384,28 @@ export default function CreatePropertyPage() {
                 </Col>
               </Row>
             </Card>
+
+            {/* Amenities */}
+            <Card title="สิ่งอำนวยความสะดวก" style={{ marginBottom: "16px" }}>
+              <Row gutter={[16, 16]}>
+                <Col span={8}>
+                  <Form.Item name={['amenitie', 'swimming_pool']} valuePropName="checked">
+                    <Checkbox>สระว่ายน้ำ</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item name={['amenitie', 'fitness']} valuePropName="checked">
+                    <Checkbox>ฟิตเนส</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item name={['amenitie', 'playground']} valuePropName="checked">
+                    <Checkbox>สนามเด็กเล่น</Checkbox>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+
           </Col>
 
           {/* Right Column - Price & Settings */}

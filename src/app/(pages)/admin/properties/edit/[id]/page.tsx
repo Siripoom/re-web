@@ -18,6 +18,7 @@ import {
   Popconfirm,
   Spin,
   Tag,
+  Checkbox,
 } from "antd";
 import {
   SaveOutlined,
@@ -54,6 +55,11 @@ interface PropertyFormData {
   featured: boolean;
   type: string;
   contact?: string;
+  amenitie?: {
+    swimming_pool: boolean;
+    fitness: boolean;
+    playground: boolean;
+  };
 }
 
 interface OptionType {
@@ -116,6 +122,11 @@ export default function EditPropertyPage() {
           featured: data.featured,
           type: data.type,
           contact: data.contact,
+          amenitie: data.amenitie || {
+            swimming_pool: false,
+            fitness: false,
+            playground: false,
+          },
         });
       } else {
         messageApi.error("ไม่พบข้อมูลอสังหาริมทรัพย์");
@@ -515,6 +526,27 @@ export default function EditPropertyPage() {
                       style={{ width: "100%" }}
                       placeholder="0"
                     />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+
+            {/* Amenities */}
+            <Card title="สิ่งอำนวยความสะดวก" style={{ marginBottom: "16px" }}>
+              <Row gutter={[16, 16]}>
+                <Col span={8}>
+                  <Form.Item name={['amenitie', 'swimming_pool']} valuePropName="checked">
+                    <Checkbox>สระว่ายน้ำ</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item name={['amenitie', 'fitness']} valuePropName="checked">
+                    <Checkbox>ฟิตเนส</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item name={['amenitie', 'playground']} valuePropName="checked">
+                    <Checkbox>สนามเด็กเล่น</Checkbox>
                   </Form.Item>
                 </Col>
               </Row>

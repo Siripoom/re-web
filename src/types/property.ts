@@ -24,6 +24,13 @@ export interface Property {
   type: string;
   images?: PropertyImage[];
   contact?: string;
+  amenitie?: Amenities;
+}
+
+export interface Amenities {
+  swimming_pool?: boolean;
+  fitness?: boolean;
+  playground?: boolean;
 }
 
 export interface PropertyImage {

@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -14,6 +14,7 @@ import {
   Divider,
   Result,
   Tag,
+  Space,
 } from "antd";
 import { useLanguage } from "../../../../components/contexts/LanguageContext";
 import en from "../../../../components/locales/en";
@@ -24,6 +25,27 @@ import Link from "next/link";
 
 const translations = { en, th };
 const { Title, Text, Paragraph } = Typography;
+
+export interface Amenities {
+  swimming_pool?: boolean;
+  fitness?: boolean;
+  playground?: boolean;
+}
+
+const amenityTranslations = {
+  swimming_pool: {
+    en: "Swimming Pool",
+    th: "สระว่ายน้ำ"
+  },
+  fitness: {
+    en: "Fitness Center",
+    th: "ฟิตเนส"
+  },
+  playground: {
+    en: "Playground",
+    th: "สนามเด็กเล่น"
+  }
+};
 
 export default function PropertyDetails() {
   const router = useRouter();
@@ -130,6 +152,35 @@ export default function PropertyDetails() {
     );
   }
 
+  // Function to render amenities
+  const renderAmenities = (amenities: Amenities) => {
+    return (
+      <Space wrap>
+        {Object.entries(amenities).map(([key, value]) => {
+          if (value) {
+            return (
+              <Tag
+                key={key}
+                style={{
+                  backgroundColor: "rgba(212, 175, 55, 0.1)",
+                  color: "#b18f13ff",
+                  borderColor: "#D4AF37",
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  fontSize: "16px",
+                  marginBottom: "8px",
+                }}
+              >
+                {amenityTranslations[key as keyof typeof amenityTranslations][language]}
+              </Tag>
+            );
+          }
+          return null;
+        })}
+      </Space>
+    );
+  };
+
   return (
     <div style={{ padding: "24px", fontSize: "18px" }}>
       <Breadcrumb
@@ -164,7 +215,7 @@ export default function PropertyDetails() {
       <Row gutter={[24, 24]} style={{ marginTop: 24 }}>
         <Col xs={24} lg={16}>
           <Image.PreviewGroup>
-            {/* รูปหลัก (แสดงใหญ่) */}
+            {/* Main image (large display) */}
             <Image
               width="100%"
               height={400}
@@ -173,7 +224,7 @@ export default function PropertyDetails() {
               alt={property.name}
             />
             
-            {/* รูปย่อย (แสดงเป็นแถว) */}
+            {/* Thumbnail images (displayed in a row) */}
             <Row gutter={[8, 8]} style={{ marginTop: 16 }}>
               {property.images?.slice(1).map((img, index) => (
                 <Col key={index} xs={8} sm={6} md={4} lg={4}>
@@ -291,6 +342,16 @@ export default function PropertyDetails() {
               </Col>
             </Row>
 
+            {/* Amenities section in the right card */}
+            {property.amenitie && (
+              <>
+                <Divider orientation="left" style={{ fontSize: "22px" }}>
+                  {t("amenities")}
+                </Divider>
+                {renderAmenities(property.amenitie)}
+              </>
+            )}
+
             <Button
               href="/contactUs"
               type="primary"
@@ -310,28 +371,6 @@ export default function PropertyDetails() {
         </Col>
       </Row>
 
-      {property.amenities?.length > 0 && (
-        <>
-          <Divider orientation="left">{t("amenities")}</Divider>
-          <Row gutter={[12, 12]}>
-            {property.amenities.map((item: string, i: number) => (
-              <Col key={i}>
-                <Tag
-                  style={{
-                    backgroundColor: "rgba(212, 175, 55, 0.1)",
-                    color: "#D4AF37",
-                    borderColor: "#D4AF37",
-                    padding: "4px 12px",
-                    borderRadius: "4px",
-                  }}
-                >
-                  {item}
-                </Tag>
-              </Col>
-            ))}
-          </Row>
-        </>
-      )}
     </div>
   );
 }

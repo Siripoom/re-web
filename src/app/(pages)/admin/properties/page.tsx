@@ -1,4 +1,3 @@
-// src/app/(pages)/admin/properties/page.tsx
 "use client";
 import React, { useEffect, useState } from "react";
 import {
@@ -15,6 +14,7 @@ import {
   Typography,
   Image,
   Switch,
+  Tooltip,
 } from "antd";
 import {
   PlusOutlined,
@@ -166,7 +166,7 @@ export default function AdminPropertiesPage() {
       key: "contact",
       width: 190,
       render: (type: string) => {
-        if (!type) return null; 
+        if (!type) return null;
 
         return (
           <Tag
@@ -185,7 +185,6 @@ export default function AdminPropertiesPage() {
         );
       },
     },
-
     {
       title: "ห้องนอน/ห้องน้ำ",
       key: "rooms",
@@ -196,6 +195,33 @@ export default function AdminPropertiesPage() {
           <div>🚿 {record.bathrooms} ห้องน้ำ</div>
         </div>
       ),
+    },
+    {
+      title: "สิ่งอำนวยความสะดวก",
+      key: "amenities",
+      width: 160,
+      render: (record: Property) => {
+        const amenities = record.amenitie || {};
+        return (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+            {amenities.swimming_pool && (
+              <Tooltip title="สระว่ายน้ำ">
+                <Tag color="blue">สระว่ายน้ำ</Tag>
+              </Tooltip>
+            )}
+            {amenities.fitness && (
+              <Tooltip title="ฟิตเนส">
+                <Tag color="green">ฟิตเนส</Tag>
+              </Tooltip>
+            )}
+            {amenities.playground && (
+              <Tooltip title="สนามเด็กเล่น">
+                <Tag color="orange">สนามเด็กเล่น</Tag>
+              </Tooltip>
+            )}
+          </div>
+        );
+      },
     },
     {
       title: "ราคา",
@@ -339,7 +365,7 @@ export default function AdminPropertiesPage() {
             showTotal: (total, range) =>
               `${range[0]}-${range[1]} จาก ${total} รายการ`,
           }}
-          scroll={{ x: 1200 }}
+          scroll={{ x: 1500 }}
           size="small"
         />
       </Card>

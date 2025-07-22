@@ -658,12 +658,12 @@ export default function EditPropertyPage() {
                 beforeUpload={() => false}
                 multiple
               >
-                {newImageFiles.length >= 5 ? null : uploadButton}
+                {newImageFiles.length >= 13 ? null : uploadButton}
               </Upload>
               <div
-                style={{ marginTop: "8px", color: "#666", fontSize: "12px" }}
+                style={{ marginTop: "5px", color: "#666", fontSize: "12px" }}
               >
-                รองรับไฟล์: JPG, PNG, WEBP (สูงสุด 5 รูปใหม่)
+                รองรับไฟล์: JPG, PNG, WEBP (สูงสุด 13 รูปใหม่)
               </div>
             </Card>
           </Col>

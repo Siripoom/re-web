@@ -487,12 +487,12 @@ export default function CreatePropertyPage() {
                 beforeUpload={() => false} // Prevent auto upload
                 multiple
               >
-                {imageFiles.length >= 8 ? null : uploadButton}
+                {imageFiles.length >= 13 ? null : uploadButton}
               </Upload>
               <div
                 style={{ marginTop: "8px", color: "#666", fontSize: "12px" }}
               >
-                รองรับไฟล์: JPG, PNG, WEBP (สูงสุด 8 รูป)
+                รองรับไฟล์: JPG, PNG, WEBP (สูงสุด 13 รูป)
               </div>
             </Card>
           </Col>

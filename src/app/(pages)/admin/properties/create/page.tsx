@@ -27,6 +27,7 @@ const { Title } = Typography;
 const { TextArea } = Input;
 
 interface PropertyFormData {
+  property_code: string; 
   name: string;
   address: string;
   description?: string;
@@ -220,6 +221,7 @@ export default function CreatePropertyPage() {
           <Col xs={24} lg={14}>
             <Card title="ข้อมูลพื้นฐาน" style={{ marginBottom: "16px" }}>
               <Row gutter={[16, 0]}>
+
                 <Col span={24}>
                   <Form.Item
                     name="name"
@@ -227,6 +229,16 @@ export default function CreatePropertyPage() {
                     rules={[{ required: true, message: "กรุณาระบุชื่ออสังหา" }]}
                   >
                     <Input placeholder="เช่น Luxury Villa in Kamala" />
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item
+                    name="property_code"
+                    label="รหัสสินทรัพย์"
+                    rules={[{ required: true, message: "กรุณาระบุรหัสสินทรัพย์" }]}
+                  >
+                    <Input placeholder="ระบุรหัสสินทรัพย์" />
                   </Form.Item>
                 </Col>
 
@@ -497,4 +509,4 @@ export default function CreatePropertyPage() {
       </Form>
     </div>
   );
-}
+} 

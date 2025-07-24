@@ -4,6 +4,7 @@ export interface Property {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   area: any;
   id: string;
+  property_code: string; // Added asset_id to Property interface
   name: string;
   address: string;
   description?: string;

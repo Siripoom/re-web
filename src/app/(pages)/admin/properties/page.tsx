@@ -63,10 +63,12 @@ export default function AdminPropertiesPage() {
     let filtered = [...properties];
 
     if (searchTerm) {
+      const searchTermLower = searchTerm.toLowerCase();
       filtered = filtered.filter(
         (property) =>
-          property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          property.address.toLowerCase().includes(searchTerm.toLowerCase())
+          (property.name || "").toLowerCase().includes(searchTermLower) ||
+          (property.address || "").toLowerCase().includes(searchTermLower) ||
+          (property.property_code || "").toLowerCase().includes(searchTermLower)
       );
     }
 
@@ -111,12 +113,22 @@ export default function AdminPropertiesPage() {
 
   const columns = [
     {
+      title: "รหัสสินทรัพย์",
+      dataIndex: "property_code",
+      key: "property_code",
+      width: 120,
+      render: (code: string) => (
+        <Tag color={code ? "purple" : "default"} style={{ fontWeight: "bold" }}>
+          {code || "ไม่มีข้อมูล"}
+        </Tag>
+      ),
+    },
+    {
       title: "รูปภาพ",
       dataIndex: "images",
       key: "image",
       width: 80,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (images: any[]) => {
+      render: (images: { is_primary?: boolean; image_url?: string }[]) => {
         const primaryImage =
           images?.find((img) => img.is_primary) || images?.[0];
         return (
@@ -137,11 +149,15 @@ export default function AdminPropertiesPage() {
       key: "name",
       render: (text: string, record: Property) => (
         <div>
-          <div style={{ fontWeight: "bold", marginBottom: "4px" }}>{text}</div>
+          <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+            {text || "ไม่มีข้อมูล"}
+          </div>
           <div style={{ fontSize: "12px", color: "#666" }}>
-            {record.address.length > 50
-              ? `${record.address.substring(0, 50)}...`
-              : record.address}
+            {record.address
+              ? record.address.length > 50
+                ? `${record.address.substring(0, 50)}...`
+                : record.address
+              : "ไม่มีข้อมูล"}
           </div>
         </div>
       ),
@@ -151,14 +167,14 @@ export default function AdminPropertiesPage() {
       dataIndex: "property_type",
       key: "property_type",
       width: 100,
-      render: (type: string) => <Tag color="blue">{type}</Tag>,
+      render: (type: string) => <Tag color="blue">{type || "ไม่มีข้อมูล"}</Tag>,
     },
     {
       title: "รูปแบบอสังหา",
       dataIndex: "type",
       key: "type",
       width: 120,
-      render: (type: string) => <Tag color="blue">{type}</Tag>,
+      render: (type: string) => <Tag color="blue">{type || "ไม่มีข้อมูล"}</Tag>,
     },
     {
       title: "ช่องทางการติดต่อเจ้าของ",
@@ -166,18 +182,18 @@ export default function AdminPropertiesPage() {
       key: "contact",
       width: 190,
       render: (type: string) => {
-        if (!type) return null;
+        if (!type) return "ไม่มีข้อมูล";
 
         return (
           <Tag
             color="blue"
             style={{
-              whiteSpace: 'normal',
-              wordBreak: 'break-word',
-              textAlign: 'center',
-              padding: '4px 8px',
-              display: 'inline-block',
-              width: '100%',
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+              textAlign: "center",
+              padding: "4px 8px",
+              display: "inline-block",
+              width: "100%",
             }}
           >
             {type}
@@ -191,8 +207,8 @@ export default function AdminPropertiesPage() {
       width: 130,
       render: (record: Property) => (
         <div style={{ fontSize: "12px" }}>
-          <div>🛏️ {record.bedrooms} ห้องนอน</div>
-          <div>🚿 {record.bathrooms} ห้องน้ำ</div>
+          <div>🛏️ {record.bedrooms || 0} ห้องนอน</div>
+          <div>🚿 {record.bathrooms || 0} ห้องน้ำ</div>
         </div>
       ),
     },
@@ -203,7 +219,7 @@ export default function AdminPropertiesPage() {
       render: (record: Property) => {
         const amenities = record.amenitie || {};
         return (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
             {amenities.swimming_pool && (
               <Tooltip title="สระว่ายน้ำ">
                 <Tag color="blue">สระว่ายน้ำ</Tag>
@@ -219,6 +235,9 @@ export default function AdminPropertiesPage() {
                 <Tag color="orange">สนามเด็กเล่น</Tag>
               </Tooltip>
             )}
+            {!amenities.swimming_pool && !amenities.fitness && !amenities.playground && (
+              <span>ไม่มีข้อมูล</span>
+            )}
           </div>
         );
       },
@@ -230,7 +249,7 @@ export default function AdminPropertiesPage() {
       width: 120,
       render: (price: number) => (
         <div style={{ fontWeight: "bold", color: "#1890ff" }}>
-          {price?.toLocaleString("th-TH")} บาท
+          {price?.toLocaleString("th-TH") || "0"} บาท
         </div>
       ),
     },
@@ -247,7 +266,7 @@ export default function AdminPropertiesPage() {
         };
         const config = statusConfig[status as keyof typeof statusConfig] || {
           color: "default",
-          text: status,
+          text: status || "ไม่มีข้อมูล",
         };
         return <Tag color={config.color}>{config.text}</Tag>;
       },
@@ -259,7 +278,7 @@ export default function AdminPropertiesPage() {
       width: 80,
       render: (featured: boolean, record: Property) => (
         <Switch
-          checked={featured}
+          checked={featured || false}
           size="small"
           onChange={(checked) => handleToggleFeatured(record.id, checked)}
         />
@@ -269,8 +288,7 @@ export default function AdminPropertiesPage() {
       title: "การดำเนินการ",
       key: "action",
       width: 150,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_: any, record: Property) => (
+      render: (_: unknown, record: Property) => (
         <Space size="small">
           <Button
             type="text"
@@ -341,7 +359,7 @@ export default function AdminPropertiesPage() {
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8}>
             <Search
-              placeholder="ค้นหาชื่อหรือที่อยู่"
+              placeholder="ค้นหาชื่อ, ที่อยู่ หรือรหัสสินทรัพย์"
               allowClear
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}

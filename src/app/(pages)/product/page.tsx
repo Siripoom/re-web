@@ -21,22 +21,26 @@ function SearchHandler({
   propertyType,
   propertyFormat,
   priceRange,
+  propertyCode,
   setSearchTerm,
   setPropertyType,
   setPropertyFormat,
   setPriceRange,
   setLocation,
+  setPropertyCode,
 }: {
   searchTerm: string;
   location: string;
   propertyType: string;
   propertyFormat: string;
   priceRange: string;
+  propertyCode: string;
   setSearchTerm: (term: string) => void;
   setPropertyType: (type: string) => void;
   setPropertyFormat: (format: string) => void;
   setPriceRange: (range: string) => void;
   setLocation: (loc: string) => void;
+  setPropertyCode: (code: string) => void;
 }) {
   const searchParams = useSearchParams();
 
@@ -47,6 +51,7 @@ function SearchHandler({
     const minPriceQuery = searchParams.get("minPrice");
     const maxPriceQuery = searchParams.get("maxPrice");
     const locationQuery = searchParams.get("location");
+    const propertyCodeQuery = searchParams.get("propertyCode");
 
     if (searchQuery !== null && searchQuery !== searchTerm) {
       setSearchTerm(decodeURIComponent(searchQuery));
@@ -59,6 +64,9 @@ function SearchHandler({
     }
     if (locationQuery !== null && locationQuery !== location) {
       setLocation(locationQuery);
+    }
+    if (propertyCodeQuery !== null && propertyCodeQuery !== propertyCode) {
+      setPropertyCode(propertyCodeQuery);
     }
     if (minPriceQuery && maxPriceQuery) {
       const max = parseInt(maxPriceQuery);
@@ -101,6 +109,7 @@ function PropertySearchContent() {
   const [propertyType, setPropertyType] = useState("");
   const [propertyFormat, setPropertyFormat] = useState("");
   const [priceRange, setPriceRange] = useState("");
+  const [propertyCode, setPropertyCode] = useState("");
   const { allProperties: properties, loading } = usePropertyContext();
   const { language } = useLanguage();
   const t = (key: keyof typeof en) => translations[language][key];
@@ -135,6 +144,12 @@ function PropertySearchContent() {
       params.delete("location");
     }
     
+    if (propertyCode) {
+      params.set("propertyCode", propertyCode);
+    } else {
+      params.delete("propertyCode");
+    }
+    
     if (priceRange) {
       if (priceRange === "0-10") {
         params.set("minPrice", "0");
@@ -151,15 +166,14 @@ function PropertySearchContent() {
       params.delete("maxPrice");
     }
 
-    // Only update if the URL has actually changed
     if (params.toString() !== searchParams.toString()) {
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
-  }, [searchTerm, location, propertyType, propertyFormat, priceRange, pathname, router, searchParams]);
+  }, [searchTerm, location, propertyType, propertyFormat, priceRange, propertyCode, pathname, router, searchParams]);
 
   useEffect(() => {
     updateURL();
-  }, [searchTerm, location, propertyType, propertyFormat, priceRange, updateURL]);
+  }, [searchTerm, location, propertyType, propertyFormat, priceRange, propertyCode, updateURL]);
 
   const handleClearFilter = (type: string) => {
     switch (type) {
@@ -175,14 +189,26 @@ function PropertySearchContent() {
       case "priceRange":
         setPriceRange("");
         break;
+      case "propertyCode":
+        setPropertyCode("");
+        break;
       default:
         break;
     }
   };
 
   const filteredProperties = properties.filter((property) => {
+    const matchesSearch = 
+      property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (property.property_code && property.property_code.toLowerCase().includes(searchTerm.toLowerCase()));
+    
+    const matchesPropertyCode = 
+      !propertyCode || 
+      (property.property_code && property.property_code.toLowerCase().includes(propertyCode.toLowerCase()));
+
     return (
-      property.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      matchesSearch &&
+      matchesPropertyCode &&
       (!location || property.location === location) &&
       (!propertyType || property.property_type === propertyType) &&
       (!propertyFormat ||
@@ -255,11 +281,13 @@ function PropertySearchContent() {
               propertyType={propertyType}
               propertyFormat={propertyFormat}
               priceRange={priceRange}
+              propertyCode={propertyCode}
               setSearchTerm={setSearchTerm}
               setPropertyType={setPropertyType}
               setPropertyFormat={setPropertyFormat}
               setPriceRange={setPriceRange}
               setLocation={setLocation}
+              setPropertyCode={setPropertyCode}
             />
           </Suspense>
 
@@ -267,7 +295,7 @@ function PropertySearchContent() {
             <div className="skeleton-search mb-6"></div>
           ) : (
             <Input.Search
-              placeholder={t("search") || "Search"}
+              placeholder={t("search") || "Search by name or property code"}
               enterButton={
                 <Button
                   type="primary"
@@ -290,7 +318,7 @@ function PropertySearchContent() {
           <Row gutter={[16, 16]} className="mb-8">
             {loading ? (
               <>
-                {[1, 2, 3, 4].map((item) => (
+                {[1, 2, 3, 4, 5].map((item) => (
                   <Col xs={24} sm={12} md={6} key={item}>
                     <div className="skeleton-filter"></div>
                   </Col>
@@ -312,13 +340,11 @@ function PropertySearchContent() {
                     showSearch
                     optionFilterProp="children"
                     filterOption={(input, option) => {
-                    const label = typeof option?.children === "string"
-                      ? option.children
-                      : String(option?.children ?? "");
-
-                    return label.toLowerCase().includes(input.toLowerCase());
-                  }}
-
+                      const label = typeof option?.children === "string"
+                        ? option.children
+                        : String(option?.children ?? "");
+                      return label.toLowerCase().includes(input.toLowerCase());
+                    }}
                   >
                     {locations.map((loc) => (
                       <Option key={loc} value={loc} style={{ fontSize: "16px" }}>
@@ -340,14 +366,12 @@ function PropertySearchContent() {
                     dropdownStyle={{ fontSize: "16px" }}
                     showSearch
                     optionFilterProp="children"
-                  filterOption={(input, option) => {
-                  const label = typeof option?.children === "string"
-                    ? option.children
-                    : String(option?.children ?? "");
-
-                  return label.toLowerCase().includes(input.toLowerCase());
-                }}
-
+                    filterOption={(input, option) => {
+                      const label = typeof option?.children === "string"
+                        ? option.children
+                        : String(option?.children ?? "");
+                      return label.toLowerCase().includes(input.toLowerCase());
+                    }}
                   >
                     {propertyTypes.map((type) => (
                       <Option key={type} value={type} style={{ fontSize: "16px" }}>
@@ -370,13 +394,11 @@ function PropertySearchContent() {
                     showSearch
                     optionFilterProp="children"
                     filterOption={(input, option) => {
-                    const label = typeof option?.children === "string"
-                      ? option.children
-                      : String(option?.children ?? "");
-
+                      const label = typeof option?.children === "string"
+                        ? option.children
+                        : String(option?.children ?? "");
                       return label.toLowerCase().includes(input.toLowerCase());
                     }}
-
                   >
                     {propertyFormats.map((format) => (
                       <Option key={format} value={format} style={{ fontSize: "16px" }}>
@@ -413,7 +435,7 @@ function PropertySearchContent() {
           </Row>
         </div>
 
-        {/* Rest of the component remains the same */}
+        {/* Property Listings */}
         <div className="mt-8">
           {loading ? (
             <Row gutter={[16, 16]}>
@@ -498,8 +520,13 @@ function PropertySearchContent() {
                               🛏 {property.bedrooms} | 🚿 {property.bathrooms}
                             </p>
                             <p className="mb-1 text-lg">
-                              🏠 {property.property_type} |  {property.land_area_sqm} sqft
+                              🏠 {property.property_type} | {property.land_area_sqm} sqft
                             </p>
+                            {property.property_code && (
+                              <p className="mb-1 text-lg">
+                                #️⃣ {property.property_code}
+                              </p>
+                            )}
                           </div>
                           <div className="text-[#D4AF37] text-xl font-semibold mt-auto">
                             {property.price.toLocaleString("en-US")} THB
@@ -529,7 +556,6 @@ function PropertySearchContent() {
         </div>
       </div>
 
-      {/* Rest of the styles remain the same */}
       <style jsx global>{`
         @keyframes fadeIn {
           from {
@@ -582,6 +608,10 @@ function PropertySearchContent() {
 
         .delay-400 {
           animation-delay: 0.4s;
+        }
+
+        .delay-500 {
+          animation-delay: 0.5s;
         }
 
         .skeleton-title {
@@ -784,7 +814,7 @@ export default function PropertySearch() {
             <div className="skeleton-title mb-6"></div>
             <div className="skeleton-search mb-6"></div>
             <Row gutter={[16, 16]} className="mb-8">
-              {[1, 2, 3, 4].map((item) => (
+              {[1, 2, 3, 4, 5].map((item) => (
                 <Col xs={24} sm={12} md={6} key={item}>
                   <div className="skeleton-filter"></div>
                 </Col>

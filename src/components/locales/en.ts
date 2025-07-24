@@ -10,7 +10,7 @@ const en = {
   privacyPolicy: "Privacy Policy",
   terms: "Terms of Service",
   allRightsReserved: "All rights reserved",
-  search: "Search by location, property type, or keyword",
+  search: "Search by location, property code, or keyword ",
   searchbtn: "Search",
   location: "Location",
   propertyType: "Property Type",

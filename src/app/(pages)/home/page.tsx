@@ -13,10 +13,7 @@ import {
   Tag,
   Divider,
   message,
-  Select,
-  Modal,
   Form,
-  Slider,
 } from "antd";
 import {
   EnvironmentOutlined,
@@ -34,7 +31,6 @@ import { useRouter } from "next/navigation";
 import { PropertyService } from "@/services/propertyService";
 
 const { Title, Paragraph, Text } = Typography;
-const { Option } = Select;
 
 interface PropertyImage {
   image_url: string;
@@ -43,6 +39,7 @@ interface PropertyImage {
 
 interface Property {
   id: string;
+  property_code: string;
   name: string;
   type: string;
   location?: string;
@@ -78,7 +75,6 @@ interface PropertyType {
   value: string;
 }
 
-
 const LOCAL_ICONS: Record<string, string> = {
   "Villa": "/villa.png",
   "Condo": "/condominium.png",
@@ -92,12 +88,10 @@ const PropertyTypeIcon = ({ typeName }: { typeName: string }) => {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-
     if (LOCAL_ICONS[typeName]) {
       setIconSrc(LOCAL_ICONS[typeName]);
       return;
     }
-
 
     const iconMap: Record<string, string> = {
       "Townhouse": "mdi:home-city",
@@ -105,7 +99,6 @@ const PropertyTypeIcon = ({ typeName }: { typeName: string }) => {
       "Office": "mdi:office-building",
       "Shop": "mdi:store",
       "Hotel": "mdi:hotel",
-
     };
 
     const iconId = iconMap[typeName] || "mdi:home";
@@ -114,7 +107,7 @@ const PropertyTypeIcon = ({ typeName }: { typeName: string }) => {
 
   if (error || !iconSrc) {
     return (
-      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627]  flex items-center justify-center"
+      <div className="border-4 border-[#FFB823] rounded-full p-2 shadow-lg hover:scale-110 transition duration-300 ease-in-out bg-[#443627] flex items-center justify-center"
           style={{ 
           color:"white"
         }}>
@@ -152,7 +145,7 @@ export default function Home() {
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const [, setIsFilterModalVisible] = useState(false);
   const [popularAreas, setPopularAreas] = useState<PopularArea[]>([]);
   const [propertyTypes, setPropertyTypes] = useState<PropertyType[]>([]);
   const [form] = Form.useForm();
@@ -358,41 +351,6 @@ export default function Home() {
     setIsFilterModalVisible(true);
   };
 
-  const handleFilterOk = () => {
-    form.validateFields().then((values) => {
-      const filters = {
-        propertyType: values.propertyType || "",
-        bedrooms: values.bedrooms || "",
-        bathrooms: values.bathrooms || "",
-        minPrice: values.priceRange ? values.priceRange[0].toString() : "",
-        maxPrice: values.priceRange ? values.priceRange[1].toString() : "",
-        area: values.area || "",
-      };
-
-      const queryParams = new URLSearchParams();
-      if (searchParams.searchQuery) {
-        queryParams.append("search", searchParams.searchQuery);
-      }
-      queryParams.append("type", searchParams.transactionType);
-
-      if (filters.propertyType)
-        queryParams.append("propertyType", filters.propertyType);
-      if (filters.bedrooms) queryParams.append("bedrooms", filters.bedrooms);
-      if (filters.bathrooms) queryParams.append("bathrooms", filters.bathrooms);
-      if (filters.minPrice) queryParams.append("minPrice", filters.minPrice);
-      if (filters.maxPrice) queryParams.append("maxPrice", filters.maxPrice);
-      if (filters.area) queryParams.append("area", filters.area);
-
-      setSearchParams((prev) => ({ ...prev, filters }));
-      setIsFilterModalVisible(false);
-      router.push(`/product?${queryParams.toString()}`);
-    });
-  };
-
-  const handleFilterCancel = () => {
-    setIsFilterModalVisible(false);
-  };
-
   const handleSearch = () => {
     const queryParams = new URLSearchParams();
 
@@ -587,8 +545,8 @@ export default function Home() {
                   <Input
                     placeholder={
                       language === "th"
-                        ? "ค้นหาด้วยชื่อโครงการหรือสถานที่"
-                        : "Search your property"
+                        ? "ค้นหาด้วยชื่อโครงการ, สถานที่ หรือรหัสสินทรัพย์"
+                        : "Search by property name, location or code"
                     }
                     size="large"
                     className="flex-grow !h-14 text-lg !rounded-lg hover:!border-[#D4AF37] focus:!border-[#D4AF37]"
@@ -627,123 +585,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Filter Modal */}
-      <Modal
-        title={language === "th" ? "ตัวกรองค้นหา" : "Search Filters"}
-        open={isFilterModalVisible}
-        onOk={handleFilterOk}
-        onCancel={handleFilterCancel}
-        width={800}
-        footer={[
-          <Button key="reset" onClick={() => form.resetFields()}>
-            {language === "th" ? "รีเซ็ต" : "Reset"}
-          </Button>,
-          <Button key="cancel" onClick={handleFilterCancel}>
-            {language === "th" ? "ยกเลิก" : "Cancel"}
-          </Button>,
-          <Button
-            key="search"
-            type="primary"
-            onClick={handleFilterOk}
-            className="!bg-[#D4AF37] !border-[#D4AF37] hover:!bg-[#c9a227] hover:!border-[#c9a227]"
-          >
-            {language === "th" ? "ค้นหา" : "Search"}
-          </Button>,
-        ]}
-      >
-        <Form form={form} layout="vertical">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="propertyType"
-                label={
-                  language === "th" ? "ประเภทอสังหาริมทรัพย์" : "Property Type"
-                }
-              >
-                <Select
-                  placeholder={
-                    language === "th" ? "เลือกประเภท" : "Select type"
-                  }
-                  className="hover:!border-[#D4AF37]"
-                >
-                  {propertyTypes.map((type) => (
-                    <Option key={type.value} value={type.value}>
-                      {type.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                name="bedrooms"
-                label={language === "th" ? "ห้องนอน" : "Bedrooms"}
-              >
-                <Select
-                  placeholder={language === "th" ? "ทั้งหมด" : "Any"}
-                  className="hover:!border-[#D4AF37]"
-                >
-                  <Option value="1">1+</Option>
-                  <Option value="2">2+</Option>
-                  <Option value="3">3+</Option>
-                  <Option value="4">4+</Option>
-                  <Option value="5">5+</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                name="bathrooms"
-                label={language === "th" ? "ห้องน้ำ" : "Bathrooms"}
-              >
-                <Select
-                  placeholder={language === "th" ? "ทั้งหมด" : "Any"}
-                  className="hover:!border-[#D4AF37]"
-                >
-                  <Option value="1">1+</Option>
-                  <Option value="2">2+</Option>
-                  <Option value="3">3+</Option>
-                  <Option value="4">4+</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Form.Item
-            name="priceRange"
-            label={language === "th" ? "ช่วงราคา (THB)" : "Price Range (THB)"}
-          >
-            <Slider
-              range
-              min={0}
-              max={100000000}
-              step={1000000}
-              trackStyle={[{ backgroundColor: "#D4AF37" }]}
-              handleStyle={[{ borderColor: "#D4AF37" }]}
-              tooltip={{
-                formatter: (value) => `${(value || 0).toLocaleString()} THB`
-              }}
-            />
-          </Form.Item>
-
-
-          <Form.Item
-            name="area"
-            label={language === "th" ? "พื้นที่ (ตร.ม.)" : "Area (sqm)"}
-          >
-            <Select
-              placeholder={language === "th" ? "เลือกพื้นที่" : "Select area"}
-              className="hover:!border-[#D4AF37]"
-            >
-              <Option value="0-100">0-100 ตร.ม.</Option>
-              <Option value="100-200">100-200 ตร.ม.</Option>
-              <Option value="200-300">200-300 ตร.ม.</Option>
-              <Option value="300+">300+ ตร.ม.</Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
 
       {/* Property Types Section */}
       <div className="py-16 bg-gray-50">
@@ -888,6 +729,14 @@ export default function Home() {
                                           >
                                             {typeTag.text}
                                           </Tag>
+                                          {property.property_code && (
+                                            <Tag
+                                              color="purple"
+                                              className="!absolute !top-4 !left-4 !font-bold !px-3 !py-1"
+                                            >
+                                              {property.property_code}
+                                            </Tag>
+                                          )}
                                         </div>
                                       }
                                     >

@@ -1,14 +1,7 @@
-// src/app/layout.tsx
-"use client";
-
-// import type { Metadata } from "next";
-
 import "./globals.css";
 import { Prompt, Inter, Kanit } from "next/font/google";
-
 import LayoutWrapper from "../components/LayoutWrapper";
 
-// Google Fonts สำหรับภาษาไทย-อังกฤษ
 const prompt = Prompt({
   subsets: ["thai", "latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -28,6 +21,13 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
+export const metadata = {
+  title: "Ruby's Real Estate Phuket",
+  icons: {
+    icon: "/logo2.jpg", 
+  },
+};
 
 export default function RootLayout({
   children,

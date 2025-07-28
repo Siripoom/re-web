@@ -36,7 +36,7 @@ export const metadata = {
     "Phuket real estate agent"
   ],
   icons: {
-    icon: "/logo2.jpg",
+    icon: "https://www.ruby-realestate.com/logo2.jpg", 
   },
   openGraph: {
     title: "Ruby's Real Estate Phuket | Luxury Properties in Thailand",
@@ -45,7 +45,7 @@ export const metadata = {
     siteName: "Ruby's Real Estate Phuket",
     images: [
       {
-        url: "/logo2.jpg",
+        url: "https://www.ruby-realestate.com/logo2.jpg", 
         width: 1200,
         height: 630,
         alt: "Ruby's Real Estate Phuket Logo",
@@ -73,7 +73,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": "Ruby's Real Estate Phuket",
-    "image": "https://www.ruby-realestate.com/logo2.jpg",
+    "image": "https://www.ruby-realestate.com/logo2.jpg", 
     "url": "https://www.ruby-realestate.com",
     "telephone": "+66937812945",
     "address": {
@@ -102,6 +102,8 @@ export default function RootLayout({
       className={`${prompt.variable} ${kanit.variable} ${inter.variable}`}
     >
       <head>
+        <link rel="icon" href="https://www.ruby-realestate.com/logo2.jpg" />
+          
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

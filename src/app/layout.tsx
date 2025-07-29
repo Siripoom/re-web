@@ -109,16 +109,19 @@ export default function RootLayout({
       className={`${prompt.variable} ${kanit.variable} ${inter.variable}`}
     >
       <head>
-        {/* ใช้ timestamp เพื่อป้องกันการแคช */}
+        <meta
+          name="google-site-verification"
+          content="ZB8IJ7dy6wf4fKU10Sv9PPIkyo8YWmpkstTiBp_TBak"
+        />
+
         <link 
           rel="icon" 
           href={`https://www.ruby-realestate.com/logo2.jpg?${Date.now()}`} 
           type="image/jpg" 
         />
-        {/* กำหนด favicon ทุกประเภท */}
         <link rel="shortcut icon" href="/logo2.jpg" />
         <link rel="apple-touch-icon" href="/logo2.jpg" />
-        
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

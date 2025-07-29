@@ -36,9 +36,9 @@ export const metadata = {
     "Phuket real estate agent"
   ],
   icons: {
-    icon: "/logo3.jpg",
-    apple: "/logo3.jpg",
-    shortcut: "/logo3.jpg"
+    icon: "/favicon.ico",        
+    apple: "/apple-touch-icon.png", 
+    shortcut: "/favicon.ico"      
   },
   openGraph: {
     title: "Ruby's Real Estate Phuket | Luxury Properties in Thailand",
@@ -47,7 +47,7 @@ export const metadata = {
     siteName: "Ruby's Real Estate Phuket",
     images: [
       {
-        url: "https://www.ruby-realestate.com/logo3.jpg", 
+        url: "https://www.ruby-realestate.com/logo3.png", 
         width: 1200,
         height: 630,
         alt: "Ruby's Real Estate Phuket Logo",
@@ -75,7 +75,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": "Ruby's Real Estate Phuket",
-    "image": "https://www.ruby-realestate.com/logo3.jpg", 
+    "image": "https://www.ruby-realestate.com/logo3.png", 
     "url": "https://www.ruby-realestate.com",
     "telephone": "+66937812945",
     "address": {
@@ -108,6 +108,9 @@ export default function RootLayout({
           name="google-site-verification"
           content="ZB8IJ7dy6wf4fKU10Sv9PPIkyo8YWmpkstTiBp_TBak"
         />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

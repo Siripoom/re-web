@@ -36,13 +36,9 @@ export const metadata = {
     "Phuket real estate agent"
   ],
   icons: {
-    icon: [
-      { url: "/logo3.jpg", type: "image/jpg" }
-    ],
-    apple: [
-      { url: "/logo3.jpg", type: "image/jpg" }
-    ],
-    shortcut: ["/logo3.jpg"]
+    icon: "/logo3.jpg",
+    apple: "/logo3.jpg",
+    shortcut: "/logo3.jpg"
   },
   openGraph: {
     title: "Ruby's Real Estate Phuket | Luxury Properties in Thailand",
@@ -112,15 +108,6 @@ export default function RootLayout({
           name="google-site-verification"
           content="ZB8IJ7dy6wf4fKU10Sv9PPIkyo8YWmpkstTiBp_TBak"
         />
-
-        <link 
-          rel="icon" 
-          href="/logo3.jpg" 
-          type="image/jpeg" 
-        />
-        <link rel="apple-touch-icon" href="/logo3.jpg" />
-        <link rel="shortcut icon" href="/logo3.jpg" />
-
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

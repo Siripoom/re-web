@@ -37,13 +37,12 @@ export const metadata = {
   ],
   icons: {
     icon: [
-      { url: "/logo2.jpg", type: "image/jpg" },
-      { url: "https://www.ruby-realestate.com/logo2.jpg", type: "image/jpg" }
+      { url: "/logo3.jpg", type: "image/jpg" }
     ],
     apple: [
-      { url: "/logo2.jpg", type: "image/jpg" }
+      { url: "/logo3.jpg", type: "image/jpg" }
     ],
-    shortcut: ["https://www.ruby-realestate.com/logo2.jpg"]
+    shortcut: ["/logo3.jpg"]
   },
   openGraph: {
     title: "Ruby's Real Estate Phuket | Luxury Properties in Thailand",
@@ -52,7 +51,7 @@ export const metadata = {
     siteName: "Ruby's Real Estate Phuket",
     images: [
       {
-        url: "https://www.ruby-realestate.com/logo2.jpg", 
+        url: "https://www.ruby-realestate.com/logo3.jpg", 
         width: 1200,
         height: 630,
         alt: "Ruby's Real Estate Phuket Logo",
@@ -80,7 +79,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
     "name": "Ruby's Real Estate Phuket",
-    "image": "https://www.ruby-realestate.com/logo2.jpg", 
+    "image": "https://www.ruby-realestate.com/logo3.jpg", 
     "url": "https://www.ruby-realestate.com",
     "telephone": "+66937812945",
     "address": {
@@ -116,11 +115,11 @@ export default function RootLayout({
 
         <link 
           rel="icon" 
-          href={`https://www.ruby-realestate.com/logo2.jpg?${Date.now()}`} 
-          type="image/jpg" 
+          href="/logo3.jpg" 
+          type="image/jpeg" 
         />
-        <link rel="shortcut icon" href="/logo2.jpg" />
-        <link rel="apple-touch-icon" href="/logo2.jpg" />
+        <link rel="apple-touch-icon" href="/logo3.jpg" />
+        <link rel="shortcut icon" href="/logo3.jpg" />
 
         <script
           type="application/ld+json"

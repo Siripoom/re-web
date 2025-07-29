@@ -36,7 +36,14 @@ export const metadata = {
     "Phuket real estate agent"
   ],
   icons: {
-    icon: "https://www.ruby-realestate.com/logo2.jpg", 
+    icon: [
+      { url: "/logo2.jpg", type: "image/jpg" },
+      { url: "https://www.ruby-realestate.com/logo2.jpg", type: "image/jpg" }
+    ],
+    apple: [
+      { url: "/logo2.jpg", type: "image/jpg" }
+    ],
+    shortcut: ["https://www.ruby-realestate.com/logo2.jpg"]
   },
   openGraph: {
     title: "Ruby's Real Estate Phuket | Luxury Properties in Thailand",
@@ -102,8 +109,16 @@ export default function RootLayout({
       className={`${prompt.variable} ${kanit.variable} ${inter.variable}`}
     >
       <head>
-        <link rel="icon" href="https://www.ruby-realestate.com/logo2.jpg" />
-          
+        {/* ใช้ timestamp เพื่อป้องกันการแคช */}
+        <link 
+          rel="icon" 
+          href={`https://www.ruby-realestate.com/logo2.jpg?${Date.now()}`} 
+          type="image/jpg" 
+        />
+        {/* กำหนด favicon ทุกประเภท */}
+        <link rel="shortcut icon" href="/logo2.jpg" />
+        <link rel="apple-touch-icon" href="/logo2.jpg" />
+        
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

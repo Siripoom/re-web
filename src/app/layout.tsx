@@ -33,12 +33,12 @@ export const metadata = {
     "Real estate Phuket",
     "Property for sale Phuket",
     "Luxury villas Phuket",
-    "Phuket real estate agent"
+    "Phuket real estate agent."
   ],
   icons: {
-    icon: "/favicon.ico",        
+    icon: "/favicon-v2.ico",        
     apple: "/apple-touch-icon.png", 
-    shortcut: "/favicon.ico"      
+    shortcut: "/favicon-v2.ico"      
   },
   openGraph: {
     title: "Ruby's Real Estate Phuket | Luxury Properties in Thailand",
@@ -108,8 +108,8 @@ export default function RootLayout({
           name="google-site-verification"
           content="ZB8IJ7dy6wf4fKU10Sv9PPIkyo8YWmpkstTiBp_TBak"
         />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/favicon-v2.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon-v2.ico" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <script
           type="application/ld+json"

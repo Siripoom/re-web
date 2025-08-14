@@ -5,7 +5,6 @@ import { Layout, Avatar, Dropdown, Space, Typography, Button } from "antd";
 import {
   UserOutlined,
   LogoutOutlined,
-  SettingOutlined,
   BellOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -21,17 +20,16 @@ interface AdminHeaderProps {
 }
 
 const AdminHeader: React.FC<AdminHeaderProps> = ({ collapsed, onToggle }) => {
+  // Get user data from session storage
+  const [currentUser, setCurrentUser] = React.useState(() => {
+    if (typeof window !== 'undefined') {
+      const user = sessionStorage.getItem("currentUser");
+      return user ? JSON.parse(user) : null;
+    }
+    return null;
+  });
+
   const userMenuItems: MenuProps["items"] = [
-    {
-      key: "profile",
-      icon: <UserOutlined />,
-      label: "โปรไฟล์",
-    },
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "ตั้งค่า",
-    },
     {
       type: "divider",
     },
@@ -46,16 +44,9 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ collapsed, onToggle }) => {
   const handleMenuClick: MenuProps["onClick"] = ({ key }) => {
     switch (key) {
       case "logout":
-        // Handle logout logic here
-        console.log("Logout clicked");
-        break;
-      case "profile":
-        // Handle profile navigation
-        console.log("Profile clicked");
-        break;
-      case "settings":
-        // Handle settings navigation
-        console.log("Settings clicked");
+        // Handle logout logic
+        sessionStorage.removeItem("currentUser");
+        window.location.href = "/login";
         break;
       default:
         break;
@@ -90,7 +81,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ collapsed, onToggle }) => {
         />
         <div>
           <Text strong style={{ fontSize: "18px", color: "#1890ff" }}>
-             Ruby&apos;s Real Estate Phuket
+            Ruby&apos;s Real Estate Phuket
           </Text>
           <Text
             type="secondary"
@@ -140,13 +131,13 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ collapsed, onToggle }) => {
               }}
             >
               <Text strong style={{ fontSize: "14px", lineHeight: 1 }}>
-                Admin User
+                {currentUser?.username || 'Admin'}
               </Text>
               <Text
                 type="secondary"
                 style={{ fontSize: "12px", lineHeight: 1 }}
               >
-                ผู้ดูแลระบบ
+                {currentUser?.role || 'ผู้ดูแลระบบ'}
               </Text>
             </div>
           </Space>

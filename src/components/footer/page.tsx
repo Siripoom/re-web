@@ -84,6 +84,14 @@ export default function Footer() {
                     {language === "th" ? "ติดต่อเรา" : "Contact"}
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/login"
+                    className="text-white hover:text-[#D4AF37] transition-colors"
+                  >
+                    {language === "th" ? "เข้าสู่ระบบ" : "Login"}
+                  </Link>
+                </li>
               </ul>
             </div>
 

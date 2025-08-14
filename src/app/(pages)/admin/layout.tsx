@@ -1,4 +1,4 @@
-// src/app/(pages)/admin/layout.tsx
+import LayoutWrapper from "@/components/LayoutWrapper";
 import AdminLayout from "@/components/admin/AdminLayout";
 
 export default function AdminLayoutWrapper({
@@ -6,5 +6,10 @@ export default function AdminLayoutWrapper({
 }: {
   children: React.ReactNode;
 }) {
-  return <AdminLayout>{children}</AdminLayout>;
+  // ครอบ AdminLayout ด้วย LayoutWrapper เพื่อเช็ค login
+  return (
+    <LayoutWrapper>
+      <AdminLayout>{children}</AdminLayout>
+    </LayoutWrapper>
+  );
 }

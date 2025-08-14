@@ -44,22 +44,20 @@ export default function CreateUserPage() {
     try {
       setLoading(true);
 
-      // ตรวจสอบ username ซ้ำ
-      const usernameExists = await UserService.checkUsernameExists(
-        values.username
-      );
+      const usernameExists = await UserService.checkUsernameExists(values.username);
       if (usernameExists) {
         message.error("ชื่อผู้ใช้นี้มีอยู่แล้ว กรุณาเลือกชื่อผู้ใช้อื่น");
         return;
       }
 
+      console.log("Submitting user data:", values);
       await UserService.createUser(values);
+      
       message.success("เพิ่มผู้ใช้สำเร็จ");
       router.push("/admin/users");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      message.error("เกิดข้อผิดพลาดในการเพิ่มผู้ใช้");
-      console.error("Error creating user:", error);
+      console.error("Create user error:", error);
+      message.error(error.message || "เกิดข้อผิดพลาดในการเพิ่มผู้ใช้");
     } finally {
       setLoading(false);
     }
@@ -87,8 +85,7 @@ export default function CreateUserPage() {
   };
 
   const generatePassword = () => {
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
     let password = "";
     for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -98,54 +95,25 @@ export default function CreateUserPage() {
 
   const getRoleIcon = (role: string) => {
     switch (role) {
-      case "super_admin":
-        return <CrownOutlined style={{ color: "#f5222d" }} />;
-      case "admin":
-        return <UserOutlined style={{ color: "#1890ff" }} />;
-      case "editor":
-        return <EditOutlined style={{ color: "#52c41a" }} />;
-      default:
-        return <UserOutlined />;
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getRoleDescription = (role: string) => {
-    switch (role) {
-      case "super_admin":
-        return "สามารถจัดการระบบทั้งหมด รวมถึงการจัดการผู้ใช้งาน";
-      case "admin":
-        return "สามารถจัดการอสังหาริมทรัพย์และดูรายงาน";
-      case "editor":
-        return "สามารถแก้ไขเนื้อหาและข้อมูลอสังหา";
-      default:
-        return "";
+      case "super_admin": return <CrownOutlined style={{ color: "#f5222d" }} />;
+      case "admin": return <UserOutlined style={{ color: "#1890ff" }} />;
+      case "editor": return <EditOutlined style={{ color: "#52c41a" }} />;
+      default: return <UserOutlined />;
     }
   };
 
   return (
     <div style={{ padding: "0" }}>
-      {/* Page Header */}
-      <div
-        style={{
-          marginBottom: "24px",
-          display: "flex",
-          alignItems: "center",
-          gap: "16px",
-        }}
-      >
+      <div style={{ marginBottom: "24px", display: "flex", alignItems: "center", gap: "16px" }}>
         <Button icon={<ArrowLeftOutlined />} onClick={() => router.back()}>
           ย้อนกลับ
         </Button>
         <div>
-          <Title level={2} style={{ margin: 0 }}>
-            เพิ่มผู้ใช้ใหม่
-          </Title>
+          <Title level={2} style={{ margin: 0 }}>เพิ่มผู้ใช้ใหม่</Title>
           <Text type="secondary">สร้างบัญชีผู้ใช้งานใหม่สำหรับระบบ</Text>
         </div>
       </div>
 
-      {/* Info Alert */}
       <Alert
         message="ข้อมูลสำคัญ"
         description="ผู้ใช้จะได้รับชื่อผู้ใช้และรหัสผ่านเพื่อเข้าสู่ระบบ กรุณาแจ้งข้อมูลนี้ให้กับผู้ใช้อย่างปลอดภัย"
@@ -155,17 +123,13 @@ export default function CreateUserPage() {
       />
 
       <Row gutter={[24, 0]}>
-        {/* Left Column - Form */}
         <Col xs={24} lg={16}>
           <Card title="ข้อมูลผู้ใช้">
             <Form
               form={form}
               layout="vertical"
               onFinish={handleSubmit}
-              initialValues={{
-                role: "admin",
-                is_active: true,
-              }}
+              initialValues={{ role: "admin", is_active: true }}
             >
               <Row gutter={[16, 0]}>
                 <Col xs={24} sm={12}>
@@ -177,11 +141,7 @@ export default function CreateUserPage() {
                       { min: 2, message: "ชื่อต้องมีอย่างน้อย 2 ตัวอักษร" },
                     ]}
                   >
-                    <Input
-                      prefix={<UserOutlined />}
-                      placeholder="เช่น สมชาย ใจดี"
-                      size="large"
-                    />
+                    <Input prefix={<UserOutlined />} placeholder="เช่น สมชาย ใจดี" size="large" />
                   </Form.Item>
                 </Col>
 
@@ -191,14 +151,8 @@ export default function CreateUserPage() {
                     label="ชื่อผู้ใช้"
                     rules={[
                       { required: true, message: "กรุณาระบุชื่อผู้ใช้" },
-                      {
-                        min: 3,
-                        message: "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร",
-                      },
-                      {
-                        pattern: /^[a-zA-Z0-9_]+$/,
-                        message: "ใช้ได้เฉพาะตัวอักษร ตัวเลข และ _",
-                      },
+                      { min: 3, message: "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร" },
+                      { pattern: /^[a-zA-Z0-9_]+$/, message: "ใช้ได้เฉพาะตัวอักษร ตัวเลข และ _" },
                     ]}
                   >
                     <Input
@@ -206,11 +160,7 @@ export default function CreateUserPage() {
                       placeholder="เช่น admin01"
                       size="large"
                       onChange={(e) => handleUsernameChange(e.target.value)}
-                      suffix={
-                        checkingUsername ? (
-                          <div className="animate-spin">⏳</div>
-                        ) : null
-                      }
+                      suffix={checkingUsername ? <div className="animate-spin">⏳</div> : null}
                     />
                   </Form.Item>
                 </Col>
@@ -228,9 +178,7 @@ export default function CreateUserPage() {
                       prefix={<LockOutlined />}
                       placeholder="กรุณาระบุรหัสผ่าน"
                       size="large"
-                      iconRender={(visible) =>
-                        visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                      }
+                      iconRender={(visible) => visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
                       addonAfter={
                         <Button
                           type="link"
@@ -254,21 +202,11 @@ export default function CreateUserPage() {
                     <Select size="large" placeholder="เลือกบทบาท">
                       {USER_ROLES.map((role) => (
                         <Select.Option key={role.value} value={role.value}>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                          >
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             {getRoleIcon(role.value)}
                             <div>
-                              <div style={{ fontWeight: "bold" }}>
-                                {role.label}
-                              </div>
-                              <div style={{ fontSize: "11px", color: "#666" }}>
-                                {role.description}
-                              </div>
+                              <div style={{ fontWeight: "bold" }}>{role.label}</div>
+                              <div style={{ fontSize: "11px", color: "#666" }}>{role.description}</div>
                             </div>
                           </div>
                         </Select.Option>
@@ -278,16 +216,8 @@ export default function CreateUserPage() {
                 </Col>
 
                 <Col xs={24}>
-                  <Form.Item
-                    name="is_active"
-                    valuePropName="checked"
-                    label="สถานะการใช้งาน"
-                  >
-                    <Switch
-                      checkedChildren="เปิดใช้งาน"
-                      unCheckedChildren="ปิดใช้งาน"
-                      defaultChecked
-                    />
+                  <Form.Item name="is_active" valuePropName="checked" label="สถานะการใช้งาน">
+                    <Switch checkedChildren="เปิดใช้งาน" unCheckedChildren="ปิดใช้งาน" defaultChecked />
                   </Form.Item>
                 </Col>
               </Row>
@@ -296,9 +226,7 @@ export default function CreateUserPage() {
 
               <div style={{ textAlign: "center" }}>
                 <Space size="middle">
-                  <Button size="large" onClick={() => router.back()}>
-                    ยกเลิก
-                  </Button>
+                  <Button size="large" onClick={() => router.back()}>ยกเลิก</Button>
                   <Button
                     type="primary"
                     size="large"
@@ -314,16 +242,11 @@ export default function CreateUserPage() {
           </Card>
         </Col>
 
-        {/* Right Column - Info */}
         <Col xs={24} lg={8}>
           <Space direction="vertical" style={{ width: "100%" }} size="large">
-            {/* Role Information */}
             <Card title="ข้อมูลบทบาท" size="small">
               <div style={{ marginBottom: "16px" }}>
-                <Title
-                  level={5}
-                  style={{ margin: "0 0 8px 0", color: "#f5222d" }}
-                >
+                <Title level={5} style={{ margin: "0 0 8px 0", color: "#f5222d" }}>
                   <CrownOutlined /> Super Admin
                 </Title>
                 <Text style={{ fontSize: "12px", color: "#666" }}>
@@ -332,10 +255,7 @@ export default function CreateUserPage() {
               </div>
 
               <div style={{ marginBottom: "16px" }}>
-                <Title
-                  level={5}
-                  style={{ margin: "0 0 8px 0", color: "#1890ff" }}
-                >
+                <Title level={5} style={{ margin: "0 0 8px 0", color: "#1890ff" }}>
                   <UserOutlined /> Admin
                 </Title>
                 <Text style={{ fontSize: "12px", color: "#666" }}>
@@ -344,10 +264,7 @@ export default function CreateUserPage() {
               </div>
 
               <div>
-                <Title
-                  level={5}
-                  style={{ margin: "0 0 8px 0", color: "#52c41a" }}
-                >
+                <Title level={5} style={{ margin: "0 0 8px 0", color: "#52c41a" }}>
                   <EditOutlined /> Editor
                 </Title>
                 <Text style={{ fontSize: "12px", color: "#666" }}>
@@ -356,29 +273,19 @@ export default function CreateUserPage() {
               </div>
             </Card>
 
-            {/* Security Tips */}
             <Card title="คำแนะนำด้านความปลอดภัย" size="small">
               <div style={{ fontSize: "12px", lineHeight: "1.6" }}>
-                <div style={{ marginBottom: "8px" }}>
-                  • ใช้รหัสผ่านที่แข็งแรง (อย่างน้อย 8 ตัวอักษร)
-                </div>
-                <div style={{ marginBottom: "8px" }}>
-                  • ผสมตัวอักษรใหญ่ เล็ก ตัวเลข และสัญลักษณ์
-                </div>
-                <div style={{ marginBottom: "8px" }}>
-                  • ไม่ใช้ข้อมูลส่วนตัวเป็นรหัสผ่าน
-                </div>
+                <div style={{ marginBottom: "8px" }}>• ใช้รหัสผ่านที่แข็งแรง (อย่างน้อย 8 ตัวอักษร)</div>
+                <div style={{ marginBottom: "8px" }}>• ผสมตัวอักษรใหญ่ เล็ก ตัวเลข และสัญลักษณ์</div>
+                <div style={{ marginBottom: "8px" }}>• ไม่ใช้ข้อมูลส่วนตัวเป็นรหัสผ่าน</div>
                 <div>• แจ้งให้ผู้ใช้เปลี่ยนรหัสผ่านในการเข้าใช้ครั้งแรก</div>
               </div>
             </Card>
 
-            {/* Quick Stats */}
             <Card title="สถิติผู้ใช้" size="small">
               <div style={{ textAlign: "center" }}>
                 <div style={{ marginBottom: "8px" }}>
-                  <TeamOutlined
-                    style={{ fontSize: "24px", color: "#1890ff" }}
-                  />
+                  <TeamOutlined style={{ fontSize: "24px", color: "#1890ff" }} />
                 </div>
                 <Text style={{ fontSize: "12px", color: "#666" }}>
                   เมื่อเพิ่มผู้ใช้ใหม่เสร็จ จะมีผู้ใช้งานในระบบเพิ่มขึ้น

@@ -1,5 +1,6 @@
 // src/services/userService.ts
 import { supabase } from "@/config/supabase";
+import bcrypt from 'bcryptjs';
 import type {
   User,
   CreateUserRequest,
@@ -23,9 +24,7 @@ export class UserService {
       throw error;
     }
 
-    // ไม่ส่ง password กลับไป
     return (data || []).map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
@@ -46,29 +45,24 @@ export class UserService {
 
     if (!data) return null;
 
-    // ไม่ส่ง password กลับไป
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
 
-  // ค้นหาผู้ใช้ตามเงื่อนไข
+  // ค้นหาผู้ใช้
   static async searchUsers(filters: UserSearchFilters): Promise<User[]> {
     let query = supabase.from("users").select("*");
 
-    // Filter by search term (username or name)
     if (filters.search_term) {
       query = query.or(
         `username.ilike.%${filters.search_term}%,name.ilike.%${filters.search_term}%`
       );
     }
 
-    // Filter by role
     if (filters.role) {
       query = query.eq("role", filters.role);
     }
 
-    // Filter by active status
     if (filters.is_active !== undefined) {
       query = query.eq("is_active", filters.is_active);
     }
@@ -82,50 +76,51 @@ export class UserService {
       throw error;
     }
 
-    // ไม่ส่ง password กลับไป
     return (data || []).map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
   }
 
-  // สร้างผู้ใช้ใหม่
-  static async createUser(userData: CreateUserRequest): Promise<User> {
-    // Hash password ก่อนบันทึก (ในการใช้งานจริงควรใช้ bcrypt)
+  // สร้างผู้ใช้ใหม่ (แก้ไขแล้ว)
+static async createUser(userData: CreateUserRequest): Promise<User> {
+  try {
     const hashedPassword = await this.hashPassword(userData.password);
+    const payload = {
+      ...userData,
+      password: hashedPassword,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    console.log("Payload >>>", payload);
 
     const { data, error } = await supabase
       .from("users")
-      .insert([
-        {
-          ...userData,
-          password: hashedPassword,
-        },
-      ])
+      .insert([payload])
       .select()
       .single();
 
     if (error) {
-      console.error("Error creating user:", error);
+      console.error("Supabase error:", error);
       throw error;
     }
 
-    // ไม่ส่ง password กลับไป
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    if (!data) throw new Error("No user data returned");
+
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
+  } catch (err: any) {
+    console.error("Create user error:", err);
+    throw err;
   }
+}
 
-  // อัปเดตข้อมูลผู้ใช้
-  static async updateUser(
-    id: string,
-    userData: UpdateUserRequest
-  ): Promise<User> {
-    // eslint-disable-next-line prefer-const
+
+  // อัปเดตผู้ใช้
+  static async updateUser(id: string, userData: UpdateUserRequest): Promise<User> {
     let updateData = { ...userData };
 
-    // Hash password ใหม่ถ้ามีการเปลี่ยน
     if (userData.password) {
       updateData.password = await this.hashPassword(userData.password);
     }
@@ -142,8 +137,6 @@ export class UserService {
       throw error;
     }
 
-    // ไม่ส่ง password กลับไป
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
@@ -158,7 +151,7 @@ export class UserService {
     }
   }
 
-  // เปิด/ปิดการใช้งานผู้ใช้
+  // เปิด/ปิดการใช้งาน
   static async toggleUserStatus(id: string, isActive: boolean): Promise<User> {
     const { data, error } = await supabase
       .from("users")
@@ -172,17 +165,12 @@ export class UserService {
       throw error;
     }
 
-    // ไม่ส่ง password กลับไป
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
     return userWithoutPassword;
   }
 
-  // ตรวจสอบว่า username ซ้ำหรือไม่
-  static async checkUsernameExists(
-    username: string,
-    excludeId?: string
-  ): Promise<boolean> {
+  // ตรวจสอบชื่อผู้ใช้
+  static async checkUsernameExists(username: string, excludeId?: string): Promise<boolean> {
     let query = supabase.from("users").select("id").eq("username", username);
 
     if (excludeId) {
@@ -199,7 +187,7 @@ export class UserService {
     return (data || []).length > 0;
   }
 
-  // เข้าสู่ระบบ (สำหรับอนาคต)
+  // เข้าสู่ระบบ
   static async login(credentials: LoginRequest): Promise<LoginResponse> {
     const { data, error } = await supabase
       .from("users")
@@ -209,27 +197,23 @@ export class UserService {
       .single();
 
     if (error || !data) {
-      throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+      throw new Error("Invalid username or password");
     }
 
-    // ตรวจสอบรหัสผ่าน (ในการใช้งานจริงควรใช้ bcrypt.compare)
     const isPasswordValid = await this.verifyPassword(
       credentials.password,
       data.password
     );
 
     if (!isPasswordValid) {
-      throw new Error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+      throw new Error("Invalid username or password");
     }
 
-    // อัปเดต last_login
     await supabase
       .from("users")
       .update({ last_login: new Date().toISOString() })
       .eq("id", data.id);
 
-    // ไม่ส่ง password กลับไป
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userWithoutPassword } = data;
 
     return {
@@ -237,7 +221,7 @@ export class UserService {
     };
   }
 
-  // ดึงสถิติผู้ใช้
+  // ดึงสถิติ
   static async getUserStats(): Promise<UserStats> {
     const { data, error } = await supabase
       .from("users")
@@ -252,11 +236,10 @@ export class UserService {
     const activeUsers = data?.filter((u) => u.is_active).length || 0;
     const inactiveUsers = totalUsers - activeUsers;
 
-    const roleStats =
-      data?.reduce((acc: Record<string, number>, user) => {
-        acc[user.role] = (acc[user.role] || 0) + 1;
-        return acc;
-      }, {}) || {};
+    const roleStats = data?.reduce((acc: Record<string, number>, user) => {
+      acc[user.role] = (acc[user.role] || 0) + 1;
+      return acc;
+    }, {}) || {};
 
     return {
       totalUsers,
@@ -264,33 +247,6 @@ export class UserService {
       inactiveUsers,
       roleStats,
     };
-  }
-
-  // Helper function สำหรับ hash password
-  private static async hashPassword(password: string): Promise<string> {
-    // ในการใช้งานจริงควรใช้ bcrypt
-    // npm install bcryptjs และ npm install -D @types/bcryptjs
-    // import bcrypt from 'bcryptjs';
-    // return await bcrypt.hash(password, 10);
-
-    // สำหรับตัวอย่างใช้ simple encoding (ไม่ปลอดภัย)
-    return btoa(password);
-  }
-
-  // Helper function สำหรับตรวจสอบ password
-  private static async verifyPassword(
-    password: string,
-    hashedPassword: string
-  ): Promise<boolean> {
-    // ในการใช้งานจริงควรใช้ bcrypt
-    // return await bcrypt.compare(password, hashedPassword);
-
-    // สำหรับตัวอย่างใช้ simple decoding (ไม่ปลอดภัย)
-    try {
-      return atob(hashedPassword) === password;
-    } catch {
-      return false;
-    }
   }
 
   // รีเซ็ตรหัสผ่าน
@@ -308,7 +264,7 @@ export class UserService {
     }
   }
 
-  // ดึงรายการผู้ใช้ที่เข้าสู่ระบบล่าสุด
+  // ผู้ใช้ที่เข้าสู่ระบบล่าสุด
   static async getRecentActiveUsers(limit: number = 5): Promise<User[]> {
     const { data, error } = await supabase
       .from("users")
@@ -323,11 +279,46 @@ export class UserService {
       throw error;
     }
 
-    // ไม่ส่ง password กลับไป
     return (data || []).map((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     });
   }
+
+  private static async hashPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    return await bcrypt.hash(password, saltRounds);
+  }
+
+private static async verifyPassword(
+  password: string,
+  hashedPassword: string
+): Promise<boolean> {
+  try {
+    if (hashedPassword === password) {
+      console.warn("Warning: Using plain text password comparison");
+      return true;
+    }
+
+    try {
+      const decodedPassword = atob(hashedPassword);
+      if (decodedPassword === password) {
+        console.warn("Warning: Using base64 password comparison");
+        return true;
+      }
+    } catch (e) {
+
+    }
+
+    const isBcryptMatch = await bcrypt.compare(password, hashedPassword);
+    if (isBcryptMatch) {
+      return true;
+    }
+
+    return false;
+  } catch (err) {
+    console.error("Password verification error:", err);
+    return false;
+  }
+}
 }

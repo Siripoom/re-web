@@ -244,10 +244,10 @@ export default function PropertyDetails() {
             </Row>
           </Image.PreviewGroup>
 
-          <Divider style={{ fontSize: "22px" }} orientation="left">
+          <Divider style={{ fontSize: "20px" }} orientation="left">
             {t("description")}
           </Divider>
-          <Paragraph style={{ fontSize: "18px" }}>
+          <Paragraph style={{ fontSize: "16px" }}>
             {property.description?.split("\n").map((p, i) => (
               <p key={i}>{p}</p>
             ))}
@@ -255,10 +255,10 @@ export default function PropertyDetails() {
 
           {property.address && (
             <>
-              <Divider orientation="left" style={{ fontSize: "22px" }}>
+              <Divider orientation="left" style={{ fontSize: "20px" }}>
                 {language === "th" ? "แผนที่" : "Location Map"}
               </Divider>
-              <Paragraph type="secondary" style={{ fontSize: "18px" }}>
+              <Paragraph type="secondary" style={{ fontSize: "16px" }}>
                 {property.address}
               </Paragraph>
               <iframe
